@@ -10,5 +10,11 @@ namespace sdLitica.WebAPI.Services
     {
         Task<InfluxResult> CreateUser(string username, string password);
         Task<List<MeasurementRow>> ReadAllMeasurements();
+
+        Task<string> AddRandomTimeseries();
+        
+        Task<InfluxResult<DynamicInfluxRow>> ReadMeasurementById(string measurementId);
+        Task<InfluxResult> DeleteMeasurementById(string measurementId);
+
     }
 }
