@@ -1,0 +1,11 @@
+﻿using sdLitica.Entities.Abstractions;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace sdLitica.Entities.Management.Repositories
+{
+    public interface IUserTokenRepository : IRepositoryBase<UserToken>
+    {
+    }
+}

@@ -39,7 +39,7 @@ namespace sdLitica.WebAPI.Controllers.v1
             
 
             
-            ProfileToken profileToken = new ProfileToken();
+            UserToken profileToken = new UserToken();
             TokenJsonEntity tokenJson = new TokenJsonEntity()
             {
                 Token = "fake-token-value",

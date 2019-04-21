@@ -10,15 +10,15 @@ namespace sdLitica.WebAPI.Models.Management
     /// <summary>
     /// 
     /// </summary>
-    public class ProfileJsonEntity : Profile, BaseApiModel
+    public class UserJsonEntity : User, BaseApiModel
     {
         /// <summary>
         /// Default costructor from actual model entity
         /// </summary>
         /// <param name="profile"></param>
-        public ProfileJsonEntity(Profile profile)
+        public UserJsonEntity(User profile)
         {
-            var props = typeof(Profile)
+            var props = typeof(User)
                             .GetProperties()
                             .Where(p => !p.GetIndexParameters().Any())
                             .Where(p => p.Name != GetPropertyName(() => profile.Id))
