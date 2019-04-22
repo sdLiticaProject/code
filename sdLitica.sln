@@ -9,8 +9,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{C6
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Persistance", "Persistance", "{B2AA3986-F9BE-4A5A-A512-363D01E980FB}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utils", "Utils", "{5653ED61-C879-4A5F-A716-91FEC98C1EE4}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Apps", "Apps", "{8FE086CE-F36E-4C43-9FC9-AEDADB0DD7A6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebAPI", "WebAPI", "{82CFE2EB-7391-4F8A-96D4-7778E84FA08A}"
@@ -24,6 +22,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sdLitica.Services", "Services\sdLitica.Services\sdLitica.Services.csproj", "{0C93F7B0-23DF-43FA-B82A-89A9BD042D95}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sdLitica.Services.Test", "Services\sdLitica.Services.Test\sdLitica.Services.Test.csproj", "{03DB472C-E786-4C2D-A086-871C67C3306E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sdLitica.Bootstrap", "Infrastructure\sdLitica.Bootstrap\sdLitica.Bootstrap.csproj", "{60A022BD-7489-49F6-9D72-1D0B678E1C21}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{9B609C1B-1B53-43E6-AF5D-1F574B03736C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sdLitica.Utils", "Infrastructure\sdLitica.Utils\sdLitica.Utils.csproj", "{66E5D613-7247-4D33-A953-A93680D0EB9C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +55,14 @@ Global
 		{03DB472C-E786-4C2D-A086-871C67C3306E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{03DB472C-E786-4C2D-A086-871C67C3306E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{03DB472C-E786-4C2D-A086-871C67C3306E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60A022BD-7489-49F6-9D72-1D0B678E1C21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60A022BD-7489-49F6-9D72-1D0B678E1C21}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60A022BD-7489-49F6-9D72-1D0B678E1C21}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60A022BD-7489-49F6-9D72-1D0B678E1C21}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66E5D613-7247-4D33-A953-A93680D0EB9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66E5D613-7247-4D33-A953-A93680D0EB9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66E5D613-7247-4D33-A953-A93680D0EB9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66E5D613-7247-4D33-A953-A93680D0EB9C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -62,6 +74,8 @@ Global
 		{EF6A643B-B694-4B91-B0FE-23B06E3228FE} = {B2AA3986-F9BE-4A5A-A512-363D01E980FB}
 		{0C93F7B0-23DF-43FA-B82A-89A9BD042D95} = {C6232015-7650-4111-A276-BB1B947124F9}
 		{03DB472C-E786-4C2D-A086-871C67C3306E} = {C6232015-7650-4111-A276-BB1B947124F9}
+		{60A022BD-7489-49F6-9D72-1D0B678E1C21} = {9B609C1B-1B53-43E6-AF5D-1F574B03736C}
+		{66E5D613-7247-4D33-A953-A93680D0EB9C} = {9B609C1B-1B53-43E6-AF5D-1F574B03736C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B97E3785-982A-4BAD-B1D6-A450D7313BFC}

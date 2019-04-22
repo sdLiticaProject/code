@@ -22,12 +22,12 @@ namespace sdLitica.WebAPI.Security
         /// <summary>
         /// Default constructor
         /// </summary>
-        /// <param name="profileId"></param>
-        public UserPrincipal(String profileId)
+        /// <param name="userId"></param>
+        public UserPrincipal(Guid userId)
         {
             Identity = new ClaimsIdentity(
                 new List<Claim> {
-                    new Claim(ClaimTypes.NameIdentifier, profileId)
+                    new Claim(ClaimTypes.NameIdentifier, userId.ToString())
                 });
         }
 

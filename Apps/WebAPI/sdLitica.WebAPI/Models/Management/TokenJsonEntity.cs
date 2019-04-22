@@ -35,7 +35,7 @@ namespace sdLitica.WebAPI.Models.Management
         /// entity in REST API
         /// </summary>
         /// <returns>enity refernce id for REST API</returns>
-        public string getApiUrlPrefix()
+        public string GetApiUrlPrefix()
         {
             return Token.ToString();
         }

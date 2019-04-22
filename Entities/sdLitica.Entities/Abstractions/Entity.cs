@@ -12,14 +12,14 @@ namespace sdLitica.Entities.Abstractions
         /// <summary>
         /// Entity unique Id
         /// </summary>
-        public Guid Id { get; private set; }
+        public Guid Id { get; protected set; }
 
         /// <summary>
         /// Creates an Entity with new guid id
         /// </summary>
         protected Entity()
         {
-            Id = Guid.NewGuid();
+            
         }
 
         /// <summary>

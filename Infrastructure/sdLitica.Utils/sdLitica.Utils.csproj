@@ -4,8 +4,4 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\Entities\sdLitica.Entities\sdLitica.Entities.csproj" />
-  </ItemGroup>
-
 </Project>

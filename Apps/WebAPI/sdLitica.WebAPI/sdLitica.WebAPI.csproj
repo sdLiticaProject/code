@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Entities\sdLitica.Entities\sdLitica.Entities.csproj" />
+    <ProjectReference Include="..\..\..\Infrastructure\sdLitica.Bootstrap\sdLitica.Bootstrap.csproj" />
     <ProjectReference Include="..\..\..\Services\sdLitica.Services\sdLitica.Services.csproj" />
   </ItemGroup>
 
