@@ -6,8 +6,16 @@ using System.Linq;
 
 namespace sdLitica.Utils.Helpers
 {
+    /// <summary>
+    /// Helper class to any Hash processing
+    /// </summary>
     public static class HashHelper
     {
+        /// <summary>
+        /// This method computes a SHA256 hash (in Hex) for the data parameterized
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
         public static string GetSha256(string data)
         {
             var sha256 = SHA256.Create();

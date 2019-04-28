@@ -19,15 +19,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sdLitica.WebAPI", "Apps\Web
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sdLitica.Relational", "Persistance\sdLitica.Relational\sdLitica.Relational.csproj", "{EF6A643B-B694-4B91-B0FE-23B06E3228FE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sdLitica.Services", "Services\sdLitica.Services\sdLitica.Services.csproj", "{0C93F7B0-23DF-43FA-B82A-89A9BD042D95}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sdLitica.Services", "Services\sdLitica.Services\sdLitica.Services.csproj", "{0C93F7B0-23DF-43FA-B82A-89A9BD042D95}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sdLitica.Services.Test", "Services\sdLitica.Services.Test\sdLitica.Services.Test.csproj", "{03DB472C-E786-4C2D-A086-871C67C3306E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sdLitica.Services.Test", "Services\sdLitica.Services.Test\sdLitica.Services.Test.csproj", "{03DB472C-E786-4C2D-A086-871C67C3306E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sdLitica.Bootstrap", "Infrastructure\sdLitica.Bootstrap\sdLitica.Bootstrap.csproj", "{60A022BD-7489-49F6-9D72-1D0B678E1C21}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sdLitica.Bootstrap", "Infrastructure\sdLitica.Bootstrap\sdLitica.Bootstrap.csproj", "{60A022BD-7489-49F6-9D72-1D0B678E1C21}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{9B609C1B-1B53-43E6-AF5D-1F574B03736C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sdLitica.Utils", "Infrastructure\sdLitica.Utils\sdLitica.Utils.csproj", "{66E5D613-7247-4D33-A953-A93680D0EB9C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sdLitica.Utils", "Infrastructure\sdLitica.Utils\sdLitica.Utils.csproj", "{66E5D613-7247-4D33-A953-A93680D0EB9C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sdLitica.Exceptions", "Infrastructure\sdLitica.Exceptions\sdLitica.Exceptions.csproj", "{2EAE031B-B5DE-4F7C-9220-C67254C40B0F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +65,10 @@ Global
 		{66E5D613-7247-4D33-A953-A93680D0EB9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{66E5D613-7247-4D33-A953-A93680D0EB9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{66E5D613-7247-4D33-A953-A93680D0EB9C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2EAE031B-B5DE-4F7C-9220-C67254C40B0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2EAE031B-B5DE-4F7C-9220-C67254C40B0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2EAE031B-B5DE-4F7C-9220-C67254C40B0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2EAE031B-B5DE-4F7C-9220-C67254C40B0F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -76,6 +82,7 @@ Global
 		{03DB472C-E786-4C2D-A086-871C67C3306E} = {C6232015-7650-4111-A276-BB1B947124F9}
 		{60A022BD-7489-49F6-9D72-1D0B678E1C21} = {9B609C1B-1B53-43E6-AF5D-1F574B03736C}
 		{66E5D613-7247-4D33-A953-A93680D0EB9C} = {9B609C1B-1B53-43E6-AF5D-1F574B03736C}
+		{2EAE031B-B5DE-4F7C-9220-C67254C40B0F} = {9B609C1B-1B53-43E6-AF5D-1F574B03736C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B97E3785-982A-4BAD-B1D6-A450D7313BFC}

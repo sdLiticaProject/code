@@ -1,6 +1,6 @@
 ﻿using sdLitica.Entities.Management;
 using sdLitica.Entities.Management.Repositories;
-using sdLitica.Services.Management.Exceptions;
+using sdLitica.Exceptions.Managements;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -22,7 +22,7 @@ namespace sdLitica.Services.Management
         public void CreateUser(string firstName, string lastName, string email, string plainPassword)
         {
             if (_userRepository.Exists(email))
-                throw new EmailUsedException(email);
+                throw new PropertyDuplicationException("Email", email);
             
             var user = User.Create(firstName, lastName, email, plainPassword);            
             _userRepository.Add(user);

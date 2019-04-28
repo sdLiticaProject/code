@@ -1,8 +1,9 @@
-﻿using System;
+﻿using sdLitica.Exceptions.Abstractions;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Exceptions.Helpers
+namespace sdLitica.Exceptions.Helpers
 {
     /// <summary>
     /// Helper that added to objects like sticky interfaces

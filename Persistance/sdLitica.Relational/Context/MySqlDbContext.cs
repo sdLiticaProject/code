@@ -6,14 +6,25 @@ using System.Text;
 
 namespace sdLitica.Relational.Context
 {
+    /// <summary>
+    /// This class is used to configure MySql entities
+    /// </summary>
     public class MySqlDbContext : DbContext
     {
+        /// <summary>
+        /// Creates an MySqlDbContext class with predefined options
+        /// </summary>
+        /// <param name="contextOptions"></param>
         public MySqlDbContext(DbContextOptions<MySqlDbContext> contextOptions)
             : base(contextOptions)
         {
 
         }
 
+        /// <summary>
+        /// This method builds a mysql database model
+        /// </summary>
+        /// <param name="modelBuilder"></param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>();

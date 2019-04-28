@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using sdLitica.Entities.Management;
+using sdLitica.Exceptions.Http;
 using sdLitica.Services.Management;
 using sdLitica.WebAPI.Entities.Common.Pages;
 using sdLitica.WebAPI.Models.Management;
@@ -40,10 +40,10 @@ namespace sdLitica.WebAPI.Controllers.v1
             // Here should be proper auth via DB with clreation of token if auth succeeds
 
             var user = _userService.GetUser(credentials.Email);
-            if (user == null) throw new Exceptions.NotFoundException("User not found");
+            if (user == null) throw new NotFoundException("User not found");
 
             if (!user.MatchPassword(credentials.Password))
-                throw new Exceptions.UnauthorizedException("Incorrect password");
+                throw new UnauthorizedException("Incorrect password");
 
             var userToken = await _userService.GetNewTokenAsync(user);
 

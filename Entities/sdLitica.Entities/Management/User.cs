@@ -29,16 +29,28 @@ namespace sdLitica.Entities.Management
         /// </summary>
         public string Password { get; protected set; }
 
+        /// <summary>
+        /// Creates an user with no parameters
+        /// </summary>
         protected User()
         {
 
         }
 
+        /// <summary>
+        /// Change user password
+        /// </summary>
+        /// <param name="plainPassword">Raw and plain password</param>
         public void ChangePassword(string plainPassword)
         {
             Password = Encrypt(plainPassword);
         }
 
+        /// <summary>
+        /// This method verifies if plain password matches with User password
+        /// </summary>
+        /// <param name="plainPassword"></param>
+        /// <returns>True if it matches successfully</returns>
         public bool MatchPassword(string plainPassword)
         {
             return Password.Equals(Encrypt(plainPassword));
@@ -49,6 +61,14 @@ namespace sdLitica.Entities.Management
             return HashHelper.GetSha256(plainPassword);
         }
 
+        /// <summary>
+        /// This factory method creates an user with required parameters
+        /// </summary>
+        /// <param name="firstName"></param>
+        /// <param name="lastName"></param>
+        /// <param name="email"></param>
+        /// <param name="plainPassword"></param>
+        /// <returns>Returns an user with already encrypted password</returns>
         public static User Create(string firstName, string lastName, string email, string plainPassword)
         {
             var user = new User()
