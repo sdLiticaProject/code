@@ -57,7 +57,7 @@ namespace sdLitica.Entities.Management
         /// This method creates a Token
         /// </summary>
         /// <param name="expiration">Expiration in hours</param>
-        public void CreateToken(int expiration = 3)
+        public void CreateToken(int expiration)
         {
             var now = DateTime.UtcNow;
             Token = HashHelper.GetSha256(Convert.ToString(now.Ticks));
@@ -68,7 +68,7 @@ namespace sdLitica.Entities.Management
         /// This method shifts current token expiration
         /// </summary>
         /// <param name="expiration">Expiration in hours</param>
-        public void ShiftCurrentToken(int expiration = 3)
+        public void ShiftCurrentToken(int expiration)
         {
             var now = DateTime.UtcNow;            
             TokenExpirationDate = now.AddHours(expiration);
@@ -79,7 +79,7 @@ namespace sdLitica.Entities.Management
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        public static UserToken Create(User user)
+        public static UserToken Create(User user, int expiration)
         {
             var userToken = new UserToken()
             {
@@ -88,7 +88,7 @@ namespace sdLitica.Entities.Management
                 UserId = user.Id,                
             };
 
-            userToken.CreateToken();
+            userToken.CreateToken(expiration);
             return userToken;
         }
     }

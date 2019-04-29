@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using sdLitica.Bootstrap.Persistance;
 using sdLitica.Bootstrap.Services;
+using sdLitica.Utils.Abstractions;
+using sdLitica.Utils.Settings;
 
 namespace sdLitica.Bootstrap.Extensions
 {
@@ -15,6 +17,7 @@ namespace sdLitica.Bootstrap.Extensions
         /// <param name="services"></param>
         public static void AddServices(this IServiceCollection services)
         {
+            services.AddScoped<IAppSettings, AppSettings>();
             services.AddManagementServices();                       
         }
 
