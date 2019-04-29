@@ -24,13 +24,18 @@ namespace sdLitica.WebAPI.Security
         {
             
         }
-
+        
         /// <summary>
         /// Handler for Auth async ovveride
         /// </summary>
         /// <returns></returns>
         protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
-        {
+        {            
+            if (Request.Path.HasValue && Request.Path.Value.ToLower().Equals(Options.LoginPath))
+            {
+                return AuthenticateResult.NoResult();
+            }
+
             if (!Request.Headers.TryGetValue(HeaderNames.Authorization, out var authorization))
             {
                 return AuthenticateResult.Fail("Auth failed :(");
