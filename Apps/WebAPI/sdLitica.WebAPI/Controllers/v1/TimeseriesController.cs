@@ -1,10 +1,17 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using sdLitica.WebAPI.Entities.Common;
+using sdLitica.WebAPI.Entities.Common.Pages;
+using sdLitica.WebAPI.Models.Management;
 using sdLitica.WebAPI.Services;
+using Vibrant.InfluxDB.Client;
+using Vibrant.InfluxDB.Client.Rows;
 
 namespace sdLitica.WebAPI.Controllers.v1
 {
@@ -24,9 +31,12 @@ namespace sdLitica.WebAPI.Controllers.v1
         }
 
         /// <summary>
-        /// This REST API handler returns timeseries id
+        /// This REST API handler creates a new time-series object for current user
         /// </summary>
-        /// <returns>Timeseries id</returns>
+        /// <returns>
+        ///    200 - Time-series was successfully created. Response payload will contain object with assigned id
+        ///    400 - There were issues with passed data, i.e. required fields missing or length constraints violated
+        /// </returns>
         [HttpPost]
         public IActionResult AddTimeseries()
         {
@@ -35,22 +45,60 @@ namespace sdLitica.WebAPI.Controllers.v1
         }
 
         /// <summary>
-        /// This REST API handler returns timeseries by id
+        /// This REST API handler replace metadata for timeseries identified by ts-id
         /// </summary>
-        /// <returns>Timeseries, instead - 404</returns>
+        /// <returns>
+        ///    200 - Time-series was successfully updated. Response payload will contain updated time-series entry
+        ///    400 - There were issues with passed data, i.e. required fields missing or length constraints violated
+        ///    404 - If time series doesn't exists or it is not accessible by current user
+        /// </returns>
+        [HttpPost]
+        [Route("{timeseriesId}")]
+        //TODO: add content
+        public IActionResult UpdateTimeseriesMetadata(string timeseriesId)
+        {
+            return Ok("ok");
+        }
+
+        /// <summary>
+        /// This REST API handler returns timeseries metadata by id
+        /// </summary>
+        /// <returns>Timeseries metadata, instead - 404</returns>
         [HttpGet]
         [Route("{timeseriesId}")]
-        public IActionResult GetTimeseriesById(string timeseriesId)
+        public IActionResult GetTimeseriesMetadataById(string timeseriesId, int pageSize, int offset, int count)
         {
             var measurementsResult = _influxDb.ReadMeasurementById(timeseriesId).Result;
             {
                 var series = measurementsResult.Series;
                 if (series.Count != 0)
                 {
-                    var json = JsonConvert.SerializeObject(
-                        series[0].Rows.Select(ll => new {ll.Timestamp, ll.Fields, ll.Tags})
-                        , Formatting.Indented);
-                    return Ok(json);
+                    var timeseriesJsonEntities = new List<TimeseriesJsonEntity>();
+                    foreach (var t in series)
+                    {
+                        var rows = t.Rows;
+                        foreach (var t1 in rows)
+                        {
+                            timeseriesJsonEntities.Add(new TimeseriesJsonEntity()
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Name = "",
+                                Description = "",
+                                Tags = t1.Tags
+                            });
+                        }
+                    }
+
+                    var listOfResults =
+                        new ApiEntityListPage<TimeseriesJsonEntity>(timeseriesJsonEntities,
+                            HttpContext.Request.Path.ToString(), new PaginationProperties()
+                            {
+                                PageSize = pageSize,
+                                Offset = offset,
+                                Count = count
+                            });
+
+                    return Ok(listOfResults);
                 }
                 else
                 {
@@ -60,9 +108,78 @@ namespace sdLitica.WebAPI.Controllers.v1
         }
 
         /// <summary>
-        /// This REST API handler drops timeseries by id
+        /// This REST API handler returns timeseries data by id
         /// </summary>
-        /// <returns>204 if succeed, instead - 404</returns>
+        /// <returns>Timeseries data, instead - 404</returns>
+        [HttpGet]
+        [Route("{timeseriesId}/data")]
+        public IActionResult GetTimeseriesDataById(string timeseriesId, int pageSize, int offset)
+        {
+            var measurementsResult = _influxDb.ReadMeasurementById(timeseriesId).Result;
+            {
+                var series = measurementsResult.Series;
+                if (series.Count != 0)
+                {
+                    List<TimeseriesDataJsonEntity> timeseriesDataJsonEntities = new List<TimeseriesDataJsonEntity>();
+                    foreach (var t in series)
+                    {
+                        var rows = t.Rows;
+                        foreach (var t1 in rows)
+                        {
+                            timeseriesDataJsonEntities.Add(new TimeseriesDataJsonEntity()
+                            {
+                                Timestamp = t1.Timestamp.ToString(),
+                                Tags = t1.Tags,
+                                Fields = t1.Fields
+                            });
+                        }
+                    }
+
+                    var listOfResults =
+                        new ApiEntityListPage<TimeseriesDataJsonEntity>(timeseriesDataJsonEntities,
+                            HttpContext.Request.Path.ToString(), new PaginationProperties()
+                            {
+                                PageSize = pageSize,
+                                Offset = offset
+                            });
+
+                    return Ok(listOfResults);
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+        }
+
+        /// <summary>
+        /// This REST API handler returns list of all timeseries
+        /// </summary>
+        /// <returns>List of timeseries</returns>
+        [HttpGet]
+        public IActionResult GetAllTimeseries()
+        {
+            var measurementsResult = _influxDb.ReadAllMeasurements().Result;
+            {
+                var ms = measurementsResult.ToArray();
+                var mt = ms.Select(t => t.Name).ToList();
+                var measurementJsonEntities = mt.Select(t => new MeasurementJsonEntity() {Guid = t}).ToList();
+
+                var listOfResults =
+                    new ApiEntityListPage<MeasurementJsonEntity>(measurementJsonEntities,
+                        HttpContext.Request.Path.ToString());
+
+                return Ok(listOfResults);
+            }
+        }
+
+        /// <summary>
+        /// This REST API handler delete metadata for timeseries identified by ts-id with all its assigned/uploaded data.
+        /// </summary>
+        /// <returns>
+        ///    204 - Time-series was successfully deleted. No response expected from server
+        ///    404 - If time series doesn't exists or it is not accessible by current user
+        /// </returns>
         [HttpDelete]
         [Route("{timeseriesId}")]
         public IActionResult DeleteTimeseriesById(string timeseriesId)
@@ -75,20 +192,6 @@ namespace sdLitica.WebAPI.Controllers.v1
             else
             {
                 return NotFound();
-            }
-        }
-
-        /// <summary>
-        /// This REST API handler returns the list of all timeseries
-        /// </summary>
-        /// <returns>List of timeseries</returns>
-        [HttpGet]
-        public IActionResult GetAllTimeseries()
-        {
-            var measurementsResult = _influxDb.ReadAllMeasurements().Result;
-            {
-                var ms = measurementsResult.ToArray();
-                return Ok(ms.Select(t => t.Name).ToList());
             }
         }
     }
