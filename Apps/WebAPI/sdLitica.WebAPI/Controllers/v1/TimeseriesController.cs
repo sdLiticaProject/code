@@ -66,7 +66,7 @@ namespace sdLitica.WebAPI.Controllers.v1
         /// <returns>Timeseries metadata, instead - 404</returns>
         [HttpGet]
         [Route("{timeseriesId}")]
-        public IActionResult GetTimeseriesMetadataById(string timeseriesId, int pageSize, int offset, int count)
+        public IActionResult GetTimeseriesMetadataById(string timeseriesId, int pageSize = 20, int offset = 0)
         {
             var measurementsResult = _influxDb.ReadMeasurementById(timeseriesId).Result;
             {
@@ -89,13 +89,16 @@ namespace sdLitica.WebAPI.Controllers.v1
                         }
                     }
 
+                    var page = timeseriesJsonEntities.Skip(offset).Take(pageSize).ToList();
+                    
                     var listOfResults =
-                        new ApiEntityListPage<TimeseriesJsonEntity>(timeseriesJsonEntities,
+                        new ApiEntityListPage<TimeseriesJsonEntity>(page,
                             HttpContext.Request.Path.ToString(), new PaginationProperties()
                             {
                                 PageSize = pageSize,
                                 Offset = offset,
-                                Count = count
+                                Count = page.Count,
+                                HasMore = timeseriesJsonEntities.Count > page.Count
                             });
 
                     return Ok(listOfResults);
@@ -113,7 +116,7 @@ namespace sdLitica.WebAPI.Controllers.v1
         /// <returns>Timeseries data, instead - 404</returns>
         [HttpGet]
         [Route("{timeseriesId}/data")]
-        public IActionResult GetTimeseriesDataById(string timeseriesId, int pageSize, int offset)
+        public IActionResult GetTimeseriesDataById(string timeseriesId, int pageSize = 20, int offset = 0)
         {
             var measurementsResult = _influxDb.ReadMeasurementById(timeseriesId).Result;
             {
@@ -135,12 +138,16 @@ namespace sdLitica.WebAPI.Controllers.v1
                         }
                     }
 
+                    var page = timeseriesDataJsonEntities.Skip(offset).Take(pageSize).ToList();
+           
                     var listOfResults =
-                        new ApiEntityListPage<TimeseriesDataJsonEntity>(timeseriesDataJsonEntities,
+                        new ApiEntityListPage<TimeseriesDataJsonEntity>(page,
                             HttpContext.Request.Path.ToString(), new PaginationProperties()
                             {
                                 PageSize = pageSize,
-                                Offset = offset
+                                Offset = offset,
+                                Count = page.Count,
+                                HasMore = timeseriesDataJsonEntities.Count > page.Count
                             });
 
                     return Ok(listOfResults);
@@ -157,7 +164,7 @@ namespace sdLitica.WebAPI.Controllers.v1
         /// </summary>
         /// <returns>List of timeseries</returns>
         [HttpGet]
-        public IActionResult GetAllTimeseries()
+        public IActionResult GetAllTimeseries(int pageSize = 20, int offset = 0)
         {
             var measurementsResult = _influxDb.ReadAllMeasurements().Result;
             {
@@ -165,9 +172,17 @@ namespace sdLitica.WebAPI.Controllers.v1
                 var mt = ms.Select(t => t.Name).ToList();
                 var measurementJsonEntities = mt.Select(t => new MeasurementJsonEntity() {Guid = t}).ToList();
 
+                var page = measurementJsonEntities.Skip(offset).Take(pageSize).ToList();
+
                 var listOfResults =
-                    new ApiEntityListPage<MeasurementJsonEntity>(measurementJsonEntities,
-                        HttpContext.Request.Path.ToString());
+                    new ApiEntityListPage<MeasurementJsonEntity>(page,
+                        HttpContext.Request.Path.ToString(), new PaginationProperties()
+                        {
+                            PageSize = pageSize,
+                            Offset = offset,
+                            Count = page.Count,
+                            HasMore = measurementJsonEntities.Count > page.Count
+                        });
 
                 return Ok(listOfResults);
             }
