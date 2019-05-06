@@ -1,9 +1,10 @@
-﻿using System;
+﻿using sdLitica.Exceptions.Abstractions;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Text;
 
-namespace Exceptions
+namespace sdLitica.Exceptions.Http
 {
     public class ForbiddenException : BaseExceptionModel 
     {

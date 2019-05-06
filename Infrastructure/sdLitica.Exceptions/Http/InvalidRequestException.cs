@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Text;
+using sdLitica.Exceptions.Abstractions;
 
-namespace Exceptions
+namespace sdLitica.Exceptions.Http
 {
     public class InvalidRequestException : BaseExceptionModel
     {

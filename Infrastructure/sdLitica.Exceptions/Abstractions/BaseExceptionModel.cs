@@ -1,10 +1,8 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
 using System.Net;
-using System.Text;
 
-namespace Exceptions
+namespace sdLitica.Exceptions.Abstractions
 {
     /// <summary>
     /// model that represent api exception

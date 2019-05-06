@@ -31,7 +31,7 @@ namespace sdLitica.WebAPI.Entities.Common
         /// Get the API prefix to access current entity from the REST API.
         /// </summary>
         /// <returns></returns>
-        string getApiUrlPrefix();
+        string GetApiUrlPrefix();
 
         /// <summary>
         /// Entity links

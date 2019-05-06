@@ -59,9 +59,9 @@ namespace sdLitica.WebAPI.Entities.Common.Pages
                 pageBasePath.TrimEnd('/');
 
             result.Add(new EntityLinkModel(EntityLinkModel.LinkType.Self,
-                currentContextPath + "/" + entity.getApiUrlPrefix()));
+                currentContextPath + "/" + entity.GetApiUrlPrefix()));
             result.Add(new EntityLinkModel(EntityLinkModel.LinkType.Canonical,
-                currentContextPath + "/" + entity.getApiUrlPrefix()));
+                currentContextPath + "/" + entity.GetApiUrlPrefix()));
 
             return result;
         }

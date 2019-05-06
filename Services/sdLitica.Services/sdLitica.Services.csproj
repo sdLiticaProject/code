@@ -1,12 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Entities\IPEntities\IPEntities.csproj" />
-    <ProjectReference Include="..\..\Utils\UnixUtils\UnixUtils.csproj" />
+    <ProjectReference Include="..\..\Entities\sdLitica.Entities\sdLitica.Entities.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\sdLitica.Exceptions\sdLitica.Exceptions.csproj" />
   </ItemGroup>
 
 </Project>
