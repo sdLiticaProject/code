@@ -3,7 +3,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using sdLitica.Entities.Management;
+using sdLitica.Exceptions.Http;
+using sdLitica.Services.Management;
 using sdLitica.WebAPI.Entities.Common.Pages;
 using sdLitica.WebAPI.Models.Management;
 
@@ -17,14 +18,15 @@ namespace sdLitica.WebAPI.Controllers.v1
     [Authorize]
     public class ProfileController : BaseApiController
     {
-        /*private readonly IMySQLPersistaenceService _mysqlProfileService;*/
+        private readonly UserService _userService;
+        
         /// <summary>
         /// This controller is used to work with user
         /// </summary>
         /// <param name="mysqlProfileService"></param>
-        public ProfileController(/*IMySQLPersistaenceService mysqlProfileService*/)
+        public ProfileController(UserService userService)
         {
-            //_mysqlProfileService = mysqlProfileService;
+            _userService = userService;                  
         }
 
         /// <summary>
@@ -36,21 +38,21 @@ namespace sdLitica.WebAPI.Controllers.v1
         public async Task<ApiEntityPage<TokenJsonEntity>> Login([FromBody] LoginModel credentials)
         {
             // Here should be proper auth via DB with clreation of token if auth succeeds
-            
 
-            
-            ProfileToken profileToken = new ProfileToken();
-            TokenJsonEntity tokenJson = new TokenJsonEntity()
+            var user = _userService.GetUser(credentials.Email);
+            if (user == null) throw new NotFoundException("User not found");
+
+            if (!user.MatchPassword(credentials.Password))
+                throw new UnauthorizedException("Incorrect password");
+
+            var userToken = await _userService.GetNewTokenAsync(user);
+
+            var tokenJson = new TokenJsonEntity()
             {
-                Token = "fake-token-value",
-                Expires = 0
+                Token = userToken.Token,
+                Expires = userToken.TokenExpirationDate.Ticks
             };
-
-            if (credentials.Name != "testUser" || credentials.Password != "password")
-            {
-                throw new Exceptions.UnauthorizedException("User is not authorized");
-            }
-
+            
             ApiEntityPage<TokenJsonEntity> result =
                                 new ApiEntityPage<TokenJsonEntity>(tokenJson,
                                                                     HttpContext.Request.Path.ToString());
@@ -65,8 +67,10 @@ namespace sdLitica.WebAPI.Controllers.v1
         [HttpPost("logout")]
         public async Task<NoContentResult> Logout()
         {
+            var user = _userService.GetUser(UserId);
+            await _userService.ExpiresTokenAsync(user);
+
             return NoContent();
-        }
-        
+        }        
     }
 }

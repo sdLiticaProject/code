@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using System;
+﻿using System;
+using Microsoft.AspNetCore.Authentication;
 
-namespace sdLitica.WebAPI.Security
+namespace sdLitica.WebAPI.Models.Security
 {
     public static class AuthenticationBuilderExtensions
     {

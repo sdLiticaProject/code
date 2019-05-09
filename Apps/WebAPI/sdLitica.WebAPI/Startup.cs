@@ -14,7 +14,6 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
  * *************************************************************************/
-
 using sdLitica.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -24,8 +23,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using sdLitica.Helpers;
 using Swashbuckle.AspNetCore.Swagger;
-using sdLitica.WebAPI.Security;
-using sdLitica.WebAPI.Services;
+using sdLitica.Bootstrap.Extensions;
+using sdLitica.WebAPI.Models.Security;
 
 namespace sdLitica
 {
@@ -41,6 +40,15 @@ namespace sdLitica
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Add appsettings file configuration to bootstrap
+            Configuration.AddSettings();
+            
+            // Add any type of services available
+            services.AddServices();
+
+            // Add relational database support
+            services.AddRelationalDatabase();
+            
             // Add authentication 
             services.AddAuthentication(options =>
                 {
@@ -55,8 +63,6 @@ namespace sdLitica
                     options.AuthKey = "cloudToken";
                 });
 
-            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
-            services.AddSingleton<IInfluxDB, InfluxDbService>();
             
             services.AddMvc(
                 config =>
@@ -67,12 +73,11 @@ namespace sdLitica
                         new AuthorizeFilter(new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build()));
                 }
             );
-
-
+            
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Info {Title = "sdLitica Project REST API", Version = "v1"});
-            });
+                c.SwaggerDoc("v1", new Info { Title = "sdLitica Project REST API", Version = "v1" });
+            });            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -86,8 +91,11 @@ namespace sdLitica
             app.UseAuthentication();
             app.UseMvc();
             app.UseSwagger();
-
-            app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "Insight Project REST API V1"); });
+       
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Insight Project REST API V1");
+            });
         }
     }
 }

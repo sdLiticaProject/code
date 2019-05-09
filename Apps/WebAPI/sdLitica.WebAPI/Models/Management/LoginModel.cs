@@ -15,8 +15,8 @@ namespace sdLitica.WebAPI.Models.Management
         /// 
         /// </summary>
         [Required]
-        [Display(Name = nameof(Name))]
-        public string Name { get; set; }
+        [Display(Name = nameof(Email))]
+        public string Email { get; set; }
 
         /// <summary>
         /// 
