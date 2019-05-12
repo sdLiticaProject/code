@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using sdLitica.Bootstrap.Settings;
 using sdLitica.Relational.Context;
 
-namespace sdLitica.Bootstrap.Persistance
+namespace sdLitica.Bootstrap.Data
 {
     internal static class ServiceCollectionExtensions
     {

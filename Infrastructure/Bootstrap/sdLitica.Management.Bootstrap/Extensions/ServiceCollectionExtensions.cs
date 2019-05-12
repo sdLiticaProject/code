@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using sdLitica.Bootstrap.Persistance;
+using sdLitica.Bootstrap.Data;
 using sdLitica.Bootstrap.Services;
 using sdLitica.Utils.Abstractions;
 using sdLitica.Utils.Settings;

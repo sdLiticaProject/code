@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace sdLitica.Services.Management
+namespace sdLitica.PlatformCore
 {
     /// <summary>
     /// This class provides services for User and UserToken management. These services can access the database.

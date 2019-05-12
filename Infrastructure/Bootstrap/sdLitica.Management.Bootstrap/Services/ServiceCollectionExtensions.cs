@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using sdLitica.Entities.Management.Repositories;
+using sdLitica.PlatformCore;
 using sdLitica.Relational.Repositories;
-using sdLitica.Services.Management;
 using System;
 using System.Collections.Generic;
 using System.Text;

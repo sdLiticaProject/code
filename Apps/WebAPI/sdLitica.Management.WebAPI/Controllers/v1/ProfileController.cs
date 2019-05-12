@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using sdLitica.Exceptions.Http;
-using sdLitica.Services.Management;
+using sdLitica.PlatformCore;
 using sdLitica.WebAPI.Entities.Common.Pages;
 using sdLitica.WebAPI.Models.Management;
 
