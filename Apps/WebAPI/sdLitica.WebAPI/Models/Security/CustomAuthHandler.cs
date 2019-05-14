@@ -1,18 +1,16 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using System;
+using System.Collections.Generic;
+using System.Security.Claims;
+using System.Text.Encodings.Web;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
 using sdLitica.Services.Management;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Security.Principal;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
 
-namespace sdLitica.WebAPI.Security
+namespace sdLitica.WebAPI.Models.Security
 {
     public class CustomAuthHandler : AuthenticationHandler<CustomAuthOptions>
     {

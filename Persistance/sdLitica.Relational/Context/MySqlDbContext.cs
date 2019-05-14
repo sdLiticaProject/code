@@ -1,8 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using sdLitica.Entities.Management;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace sdLitica.Relational.Context
 {
