@@ -6,11 +6,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using System.Security.Principal;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using sdLitica.PlatformCore;
+using sdLitica.WebAPI.Models.Security;
 
 namespace sdLitica.WebAPI.Security
 {

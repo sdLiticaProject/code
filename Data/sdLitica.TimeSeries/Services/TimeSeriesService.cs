@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using sdLitica.Utils.Helpers;
-using Microsoft.Extensions.Options;
 using Vibrant.InfluxDB.Client;
 using Vibrant.InfluxDB.Client.Rows;
+using sdLitica.Utils.Settings;
+using sdLitica.Utils.Abstractions;
 
 namespace sdLitica.TimeSeries.Services
 {
@@ -13,11 +13,13 @@ namespace sdLitica.TimeSeries.Services
         private TimeSeriesSettings TimeSeriesSettings { set; get; }
 
         private readonly InfluxClient _influxClient;
+        private readonly IAppSettings _settings;
 
-        public TimeSeriesService(IOptions<TimeSeriesSettings> settings)
+        public TimeSeriesService(IAppSettings settings)
         {
-            TimeSeriesSettings = settings.Value;
+            TimeSeriesSettings = settings.TimeSeriesSettings;
             _influxClient = new InfluxClient(new Uri(TimeSeriesSettings.InfluxHostName));
+            _settings = settings;
         }
 
         public async Task<InfluxResult> CreateUser(string username, string password)

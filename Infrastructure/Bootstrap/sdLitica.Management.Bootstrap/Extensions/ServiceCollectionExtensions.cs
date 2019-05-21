@@ -29,5 +29,14 @@ namespace sdLitica.Bootstrap.Extensions
         {
             services.AddMySql();
         }
+
+        /// <summary>
+        /// This method adds time series database
+        /// </summary>
+        /// <param name="services"></param>
+        public static void AddTimeSeriesDatabase(this IServiceCollection services)
+        {
+            services.AddTimeSeries();
+        }
     }
 }

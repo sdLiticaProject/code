@@ -1,4 +1,4 @@
-namespace sdLitica.Utils.Helpers
+namespace sdLitica.Utils.Settings
 {
     public class TimeSeriesSettings
     {

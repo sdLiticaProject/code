@@ -48,7 +48,10 @@ namespace sdLitica
 
             // Add relational database support
             services.AddRelationalDatabase();
-            
+
+            // Add time series support
+            services.AddTimeSeriesDatabase();
+
             // Add authentication 
             services.AddAuthentication(options =>
                 {

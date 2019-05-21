@@ -33,6 +33,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Bootstrap", "Bootstrap", "{
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sdLitica.Management.Bootstrap", "Infrastructure\Bootstrap\sdLitica.Management.Bootstrap\sdLitica.Management.Bootstrap.csproj", "{68CC8F01-EF93-4BE9-8E66-D5F4B9BE93E6}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sdLitica.TimeSeries", "Data\sdLitica.TimeSeries\sdLitica.TimeSeries.csproj", "{C42187ED-E7F4-44F9-95D7-BEA846479AD0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -71,6 +73,10 @@ Global
 		{68CC8F01-EF93-4BE9-8E66-D5F4B9BE93E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{68CC8F01-EF93-4BE9-8E66-D5F4B9BE93E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{68CC8F01-EF93-4BE9-8E66-D5F4B9BE93E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C42187ED-E7F4-44F9-95D7-BEA846479AD0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C42187ED-E7F4-44F9-95D7-BEA846479AD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C42187ED-E7F4-44F9-95D7-BEA846479AD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C42187ED-E7F4-44F9-95D7-BEA846479AD0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -86,6 +92,7 @@ Global
 		{E2D7C763-B4A2-44C6-B4B8-DA815928C9E6} = {82CFE2EB-7391-4F8A-96D4-7778E84FA08A}
 		{43CCE94F-48AA-4818-8538-C085083E9D5E} = {9B609C1B-1B53-43E6-AF5D-1F574B03736C}
 		{68CC8F01-EF93-4BE9-8E66-D5F4B9BE93E6} = {43CCE94F-48AA-4818-8538-C085083E9D5E}
+		{C42187ED-E7F4-44F9-95D7-BEA846479AD0} = {B2AA3986-F9BE-4A5A-A512-363D01E980FB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B97E3785-982A-4BAD-B1D6-A450D7313BFC}

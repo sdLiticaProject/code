@@ -1,4 +1,5 @@
-﻿using System;
+﻿using sdLitica.Utils.Settings;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -13,5 +14,10 @@ namespace sdLitica.Utils.Abstractions
         /// Provides Token Expiration in Hours
         /// </summary>
         int TokenExpirationInHours { get; }
+
+        /// <summary>
+        /// Provides setting for TimeSeries (i.e. InfluxDB)
+        /// </summary>
+        TimeSeriesSettings TimeSeriesSettings { get; }
     }
 }

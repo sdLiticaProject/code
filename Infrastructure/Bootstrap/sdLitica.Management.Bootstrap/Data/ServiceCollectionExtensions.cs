@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using sdLitica.Bootstrap.Settings;
 using sdLitica.Relational.Context;
+using sdLitica.TimeSeries.Services;
 
 namespace sdLitica.Bootstrap.Data
 {
@@ -20,6 +21,11 @@ namespace sdLitica.Bootstrap.Data
                     //mysql.AnsiCharSet() etc
                 });
             });
+        }
+
+        internal static void AddTimeSeries(this IServiceCollection services)
+        {
+            services.AddScoped<ITimeSeriesService, TimeSeriesService>();
         }
     }
 }

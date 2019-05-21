@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.AspNetCore.Authentication;
+using sdLitica.WebAPI.Security;
 
 namespace sdLitica.WebAPI.Models.Security
 {
