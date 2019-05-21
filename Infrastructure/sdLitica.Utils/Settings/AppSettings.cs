@@ -1,8 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
 using sdLitica.Utils.Abstractions;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace sdLitica.Utils.Settings
 {

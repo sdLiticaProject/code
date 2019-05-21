@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
 
-namespace sdLitica.WebAPI.Security
+namespace sdLitica.WebAPI.Models.Security
 {
     public class CustomAuthOptions : AuthenticationSchemeOptions
     {

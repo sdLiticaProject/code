@@ -17,7 +17,6 @@
 
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using sdLitica.WebAPI.Entities.Common;
 using sdLitica.WebAPI.Entities.Common.Pages;
@@ -39,8 +38,8 @@ namespace sdLitica.WebAPI.Controllers
             ApiVersionModel v1 = new ApiVersionModel("v1", true, true);
 
             ApiEntityListPage<ApiVersionModel> result =
-                new ApiEntityListPage<ApiVersionModel>(new List<ApiVersionModel> { v1 },
-                                                        HttpContext.Request.Path.ToString());
+                new ApiEntityListPage<ApiVersionModel>(new List<ApiVersionModel> {v1},
+                    HttpContext.Request.Path.ToString());
 
             return result;
         }

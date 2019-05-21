@@ -21,9 +21,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using sdLitica.Helpers;
 using Swashbuckle.AspNetCore.Swagger;
-using sdLitica.WebAPI.Security;
 using sdLitica.Bootstrap.Extensions;
+using sdLitica.WebAPI.Models.Security;
 
 namespace sdLitica
 {
@@ -50,24 +51,26 @@ namespace sdLitica
             
             // Add authentication 
             services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = CustomAuthOptions.DefaultScheme;
-                options.DefaultChallengeScheme = CustomAuthOptions.DefaultScheme;
-            })
+                {
+                    options.DefaultAuthenticateScheme = CustomAuthOptions.DefaultScheme;
+                    options.DefaultChallengeScheme = CustomAuthOptions.DefaultScheme;
+                })
 
-            // Call custom authentication extension method
-            .AddCustomAuth(options =>
-            {
-                // Configure single or multiple passwords for authentication
-                options.AuthKey = "cloudToken";
-            });
+                // Call custom authentication extension method
+                .AddCustomAuth(options =>
+                {
+                    // Configure single or multiple passwords for authentication
+                    options.AuthKey = "cloudToken";
+                });
 
             
             services.AddMvc(
-                config => {
+                config =>
+                {
                     config.Filters.Add(typeof(ErrorResponseFilter));
                     config.Filters.Add(typeof(ActionValidationFilter));
-                    config.Filters.Add(new AuthorizeFilter(new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build()));
+                    config.Filters.Add(
+                        new AuthorizeFilter(new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build()));
                 }
             );
             
@@ -76,7 +79,7 @@ namespace sdLitica
                 c.SwaggerDoc("v1", new Info { Title = "sdLitica Project REST API", Version = "v1" });
             });            
         }
-        
+
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
