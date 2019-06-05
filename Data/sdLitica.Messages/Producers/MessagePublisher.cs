@@ -1,4 +1,5 @@
-﻿using sdLitica.Messages.Abstractions;
+﻿using RabbitMQ.Client;
+using sdLitica.Messages.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -6,10 +7,20 @@ using System.Text;
 namespace sdLitica.Messages.Producers
 {
     public class MessagePublisher : IPublisher
-    {        
-        public void Publish(string queue, IMessage message)
+    {
+        private readonly IModel _channel;
+
+        public MessagePublisher(BrokerConnection brokerConnection)
         {
-            throw new NotImplementedException();
+            _channel = brokerConnection?.CreateChannel() 
+                ?? throw new ArgumentNullException(nameof(brokerConnection));
+        }
+
+        public void Publish(string exchange, IMessage message)
+        {
+            var message = JsonConvert.SerializeObject(message);
+            var body = Encoding.UTF8.GetBytes(message);
+            _channel.BasicPublish(exchange, "", body = body)
         }
     }
 }
