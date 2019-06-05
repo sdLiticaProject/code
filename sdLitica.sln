@@ -35,6 +35,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sdLitica.Management.Bootstr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sdLitica.TimeSeries", "Data\sdLitica.TimeSeries\sdLitica.TimeSeries.csproj", "{C42187ED-E7F4-44F9-95D7-BEA846479AD0}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sdLitica.Messages", "Data\sdLitica.Messages\sdLitica.Messages.csproj", "{BDBDA307-30F1-4861-BF36-E9A7DC1D578C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sdLitica.Events", "Domain\sdLitica.Events\sdLitica.Events.csproj", "{F4410068-D75B-4355-9AB0-2D2BF3390CA0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -77,6 +81,14 @@ Global
 		{C42187ED-E7F4-44F9-95D7-BEA846479AD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C42187ED-E7F4-44F9-95D7-BEA846479AD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C42187ED-E7F4-44F9-95D7-BEA846479AD0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BDBDA307-30F1-4861-BF36-E9A7DC1D578C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BDBDA307-30F1-4861-BF36-E9A7DC1D578C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BDBDA307-30F1-4861-BF36-E9A7DC1D578C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BDBDA307-30F1-4861-BF36-E9A7DC1D578C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4410068-D75B-4355-9AB0-2D2BF3390CA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4410068-D75B-4355-9AB0-2D2BF3390CA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4410068-D75B-4355-9AB0-2D2BF3390CA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4410068-D75B-4355-9AB0-2D2BF3390CA0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -93,6 +105,8 @@ Global
 		{43CCE94F-48AA-4818-8538-C085083E9D5E} = {9B609C1B-1B53-43E6-AF5D-1F574B03736C}
 		{68CC8F01-EF93-4BE9-8E66-D5F4B9BE93E6} = {43CCE94F-48AA-4818-8538-C085083E9D5E}
 		{C42187ED-E7F4-44F9-95D7-BEA846479AD0} = {B2AA3986-F9BE-4A5A-A512-363D01E980FB}
+		{BDBDA307-30F1-4861-BF36-E9A7DC1D578C} = {B2AA3986-F9BE-4A5A-A512-363D01E980FB}
+		{F4410068-D75B-4355-9AB0-2D2BF3390CA0} = {E905C8FC-65C2-4200-9B71-594B5EA83BD4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B97E3785-982A-4BAD-B1D6-A450D7313BFC}
