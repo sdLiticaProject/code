@@ -7,6 +7,6 @@ namespace sdLitica.Messages.Abstractions
     public interface IConsumer
     {
         void Read(string queue);
-        void Subscribe(string queue);
+        void Subscribe(string exchange, Action<object> action);
     }
 }

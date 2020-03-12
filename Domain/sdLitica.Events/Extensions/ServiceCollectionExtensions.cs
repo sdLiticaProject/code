@@ -20,6 +20,7 @@ namespace sdLitica.Events.Extensions
             serviceCollection.AddScoped<IPublisher, MessagePublisher>();
             serviceCollection.AddScoped<IConsumer, MessageConsumer>();
             serviceCollection.AddScoped<IEventBus, EventBus>();            
+
         }
     }
 }

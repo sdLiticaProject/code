@@ -29,6 +29,11 @@ namespace sdLitica.Events.Bus
             _eventRegistry.Add(new KeyValuePair<Type, IList<string>>(eventType, new List<string>() { exchange }));
         }
 
+        public IList<string> GetExchangesForEvent<T>(T @event) where T : IEvent
+        {
+            return GetExchangesForEvent<T>();
+        }
+
         public IList<string> GetExchangesForEvent<T>() where T : IEvent
         {
             var eventType = typeof(T);

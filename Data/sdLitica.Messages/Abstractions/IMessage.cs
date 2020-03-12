@@ -6,7 +6,7 @@ namespace sdLitica.Messages.Abstractions
 {
     public interface IMessage
     {
-        Type Type { get; }        
-        object Body { get; }
+        string Type { get; }        
+        string Body { get; }
     }
 }

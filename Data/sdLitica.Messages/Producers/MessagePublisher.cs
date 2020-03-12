@@ -1,4 +1,5 @@
-﻿using RabbitMQ.Client;
+﻿using Newtonsoft.Json;
+using RabbitMQ.Client;
 using sdLitica.Messages.Abstractions;
 using System;
 using System.Collections.Generic;
@@ -18,9 +19,11 @@ namespace sdLitica.Messages.Producers
 
         public void Publish(string exchange, IMessage message)
         {
-            var message = JsonConvert.SerializeObject(message);
-            var body = Encoding.UTF8.GetBytes(message);
-            _channel.BasicPublish(exchange, "", body = body)
+            var serialized = JsonConvert.SerializeObject(message);
+            var body = Encoding.UTF8.GetBytes(serialized);
+            var properties = _channel.CreateBasicProperties();
+            
+            _channel.BasicPublish(exchange, "", properties, body);
         }
     }
 }
