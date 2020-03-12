@@ -5,9 +5,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\..\Data\sdLitica.Relational\sdLitica.Relational.csproj" />
     <ProjectReference Include="..\..\..\Data\sdLitica.TimeSeries\sdLitica.TimeSeries.csproj" />
     <ProjectReference Include="..\..\..\Domain\sdLitica.Entities\sdLitica.Entities.csproj" />
+    <ProjectReference Include="..\..\..\Domain\sdLitica.Events\sdLitica.Events.csproj" />
     <ProjectReference Include="..\..\..\Services\sdLitica.PlatformCore\sdLitica.PlatformCore.csproj" />
   </ItemGroup>
 

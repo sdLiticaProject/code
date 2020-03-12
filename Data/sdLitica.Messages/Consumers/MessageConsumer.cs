@@ -4,6 +4,7 @@ using RabbitMQ.Client.Events;
 using sdLitica.Messages.Abstractions;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 
 namespace sdLitica.Messages.Consumers
@@ -33,8 +34,9 @@ namespace sdLitica.Messages.Consumers
 
                 var message = JsonConvert.DeserializeObject<Message>(strMessage);
                 if (message == null) throw new Exception("Could not deserialize message object");
-                
-                var type = Type.GetType(message.Type);
+
+                var eventAssembly = Assembly.Load("sdLitica.Events");
+                var type = eventAssembly.GetType(message.Type);
                 var instance = Activator.CreateInstance(type);
 
                 var @event = JsonConvert.DeserializeObject(message.Body, type);

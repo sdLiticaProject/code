@@ -17,13 +17,16 @@ namespace sdLitica.Messages.Producers
                 ?? throw new ArgumentNullException(nameof(brokerConnection));
         }
 
-        public void Publish(string exchange, IMessage message)
+        public void Publish(string queue, IMessage message)
         {
             var serialized = JsonConvert.SerializeObject(message);
             var body = Encoding.UTF8.GetBytes(serialized);
             var properties = _channel.CreateBasicProperties();
             
-            _channel.BasicPublish(exchange, "", properties, body);
+            //if RabbitMQ restarts, the message will persist
+            properties.Persistent = true;
+            
+            _channel.BasicPublish("", queue, properties, body);
         }
     }
 }

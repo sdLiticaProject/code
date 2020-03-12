@@ -28,14 +28,15 @@ namespace sdLitica.Events.Bus
                 _publisher.Publish(exchange, message);
         }
 
-        public void Read<T>(string eventName, Action<T> action) where T : IEvent
+        public void Read<T>(Action<T> action) where T : IEvent
         {
             throw new NotImplementedException();
         }
 
-        public void Subscribe<T>(string eventName, Action<T> action) where T : IEvent
+        public void Subscribe<T>(Action<T> action) where T : IEvent
         {
-            var exchanges = _eventRegistry.GetExchangesForEvent<T>();
+            var type = Activator.CreateInstance<T>();
+            var exchanges = _eventRegistry.GetExchangesForEvent(type);
 
             foreach (var exchange in exchanges)
                 _consumer.Subscribe(exchange, (obj) => 

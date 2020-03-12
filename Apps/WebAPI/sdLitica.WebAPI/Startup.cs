@@ -25,6 +25,8 @@ using sdLitica.Helpers;
 using Swashbuckle.AspNetCore.Swagger;
 using sdLitica.Bootstrap.Extensions;
 using sdLitica.WebAPI.Models.Security;
+using sdLitica.Events.Extensions;
+using sdLitica.Bootstrap.Events;
 
 namespace sdLitica
 {
@@ -52,6 +54,9 @@ namespace sdLitica
             // Add time series support
             services.AddTimeSeriesDatabase();
 
+            // Add event and messages support
+            services.AddEventsAndMessages();
+
             // Add authentication 
             services.AddAuthentication(options =>
                 {
@@ -72,8 +77,8 @@ namespace sdLitica
                 {
                     config.Filters.Add(typeof(ErrorResponseFilter));
                     config.Filters.Add(typeof(ActionValidationFilter));
-                    config.Filters.Add(
-                        new AuthorizeFilter(new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build()));
+                    //config.Filters.Add(
+                      //  new AuthorizeFilter(new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build()));
                 }
             );
             
@@ -99,6 +104,9 @@ namespace sdLitica
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Insight Project REST API V1");
             });
+
+            //sample subscribe for RabbitMQ
+            app.SubscribeEvents();
         }
     }
 }

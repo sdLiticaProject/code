@@ -7,7 +7,7 @@ namespace sdLitica.Events.Abstractions
     public interface IEventBus
     {
         void Publish(IEvent @event);
-        void Subscribe<T>(string eventName, Action<T> action) where T : IEvent;
-        void Read<T>(string eventName, Action<T> action) where T : IEvent;
+        void Subscribe<T>(Action<T> action) where T : IEvent;
+        void Read<T>(Action<T> action) where T : IEvent;
     }
 }

@@ -10,8 +10,8 @@ namespace sdLitica.Messages.Abstractions
     {
         private readonly IBrokerSettings _settings;
         private IConnection _connection;
-        private IModel _model;        
-        
+        private IModel _model;
+        private object _lock = new object();
         public BrokerConnection(IBrokerSettings settings)
         {
             _settings = settings;
@@ -27,31 +27,36 @@ namespace sdLitica.Messages.Abstractions
                 UserName = _settings.UserName,
                 Password = _settings.Password,
                 HostName = _settings.HostName,
-                VirtualHost = _settings.VirtualHost
+                VirtualHost = _settings.VirtualHost,
+                Port = _settings.Port
             };
 
             _connection = factory.CreateConnection();               
         }
 
-        public void CreateQueue()
+        public void CreateQueue(string queue, bool durable = true, bool exclusive = false, bool autoDelete = false, IDictionary<string, object> arguments = null)
         {
             EnsureModelCreate();
 
-            _model.QueueDeclare("FakeQueue", true, true, false);            
+            _model.QueueDeclare(queue, durable, exclusive, autoDelete, arguments);
         }
      
 
-        public void CreateExchange()
+        public void CreateExchange(string exchange, string type, bool durable = true, bool autoDelete = false, IDictionary<string, object> arguments = null)
         {
             EnsureModelCreate();
-
-            _model.ExchangeDeclare("FakeExchange", ExchangeType.Direct, true, true);            
+            
+            _model.ExchangeDeclare(exchange, type, durable, autoDelete, arguments);            
         }
 
+       
         private void EnsureModelCreate()
         {
-            if (_model == null)
-                _model = CreateChannel();
+            lock (_lock)
+            {
+                if (_model == null)
+                    _model = CreateChannel();
+            }
         }
 
         public IModel CreateChannel()

@@ -12,15 +12,19 @@ namespace sdLitica.Events.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static void ConfigureEvents(this IServiceCollection serviceCollection)
+        public static void AddEvents(this IServiceCollection serviceCollection)
         {
             // Registries must have a singleton
             serviceCollection.AddSingleton<IEventRegistry, EventRegistry>();
-
+            
+            serviceCollection.AddSingleton<BrokerConnection>();
+            serviceCollection.AddSingleton<IBrokerManager, BrokerManager>();
+            serviceCollection.AddTransient<IBrokerSettings, BrokerSettings>();
+            
             serviceCollection.AddScoped<IPublisher, MessagePublisher>();
             serviceCollection.AddScoped<IConsumer, MessageConsumer>();
             serviceCollection.AddScoped<IEventBus, EventBus>();            
-
+            
         }
     }
 }
