@@ -77,8 +77,8 @@ namespace sdLitica
                 {
                     config.Filters.Add(typeof(ErrorResponseFilter));
                     config.Filters.Add(typeof(ActionValidationFilter));
-                    //config.Filters.Add(
-                      //  new AuthorizeFilter(new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build()));
+                    config.Filters.Add(
+                        new AuthorizeFilter(new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build()));
                 }
             );
             

@@ -11,6 +11,10 @@ namespace sdLitica.Bootstrap.Events
 {
     public static class ApplicationBuilderExtensions
     {
+        /// <summary>
+        /// Sample event subsribe: Register + Subscribe
+        /// </summary>
+        /// <param name="app"></param>
         public static void SubscribeEvents(this IApplicationBuilder app)
         {
             var registry = app.ApplicationServices.GetRequiredService<IEventRegistry>();

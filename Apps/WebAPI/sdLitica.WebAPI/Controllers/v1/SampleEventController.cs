@@ -29,6 +29,7 @@ namespace sdLitica.WebAPI.Controllers.v1
         public async Task<NoContentResult> Get([FromQuery] PaginationProperties pagination)
         {
             _eventBus.Publish(new TimeSeriesAnalysisEvent());
+
             await Task.CompletedTask;
             return new NoContentResult();
         }
