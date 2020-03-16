@@ -13,6 +13,7 @@
     <ProjectReference Include="..\..\..\Data\sdLitica.TimeSeries\sdLitica.TimeSeries.csproj" />
     <ProjectReference Include="..\..\..\Domain\sdLitica.Entities\sdLitica.Entities.csproj" />
     <ProjectReference Include="..\..\..\Domain\sdLitica.Events\sdLitica.Events.csproj" />
+    <ProjectReference Include="..\..\..\Services\Analysis\Analysis.fsproj" />
     <ProjectReference Include="..\..\..\Services\sdLitica.PlatformCore\sdLitica.PlatformCore.csproj" />
   </ItemGroup>
 

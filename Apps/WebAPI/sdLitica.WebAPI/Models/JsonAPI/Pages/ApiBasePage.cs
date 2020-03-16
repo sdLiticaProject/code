@@ -26,7 +26,7 @@ namespace sdLitica.WebAPI.Entities.Common.Pages
     public class ApiBasePage<T> where T : BaseApiModel
     {
         /// <summary>
-        /// List of lins to orchestrate current response page
+        /// List of links to orchestrate current response page
         /// </summary>
         public List<EntityLinkModel> Links { get; }
 

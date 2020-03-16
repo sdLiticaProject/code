@@ -6,13 +6,15 @@ namespace sdLitica.Events.Bus
 {
     public static class Exchanges
     {
-        public static readonly string TimeSeries = "TimeSeriesQueue"; 
+        public static readonly string TimeSeries = "TimeSeriesQueue";
+        public static readonly string FSharpTimeSeries = "FSharpTimeSeriesQueue";
 
         public static IEnumerable<string> GetExchanges()
         {
             return new List<string>()
             {
-                TimeSeries
+                TimeSeries,
+                FSharpTimeSeries
             };
         }
     }

@@ -42,12 +42,12 @@ namespace sdLitica.WebAPI.Models.TimeSeries
 
         public string GetApiUrlPrefix()
         {
-            throw new System.NotImplementedException();
+            return "data";// throw new System.NotImplementedException(); TODO: ask Rodrigo
         }
 
         /// <summary>
         /// List of API required links
-        /// </summary>
+        /// </summary> 
         public List<EntityLinkModel> Links { get; set; }
     }
 }
