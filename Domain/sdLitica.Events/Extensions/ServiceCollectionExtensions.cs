@@ -10,8 +10,15 @@ using System.Text;
 
 namespace sdLitica.Events.Extensions
 {
+    /// <summary>
+    /// Extensions for events
+    /// </summary>
     public static class ServiceCollectionExtensions
     {
+        /// <summary>
+        /// Add events module and the whole classes used in Events and Messages
+        /// </summary>
+        /// <param name="serviceCollection"></param>
         public static void AddEvents(this IServiceCollection serviceCollection)
         {
             // Registries must have a singleton

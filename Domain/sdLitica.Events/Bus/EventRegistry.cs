@@ -7,17 +7,25 @@ using sdLitica.Messages.Abstractions;
 
 namespace sdLitica.Events.Bus
 {
-    public class EventRegistry : IEventRegistry
+    /// <summary>
+    /// This class enables to link an event to a queue or exchange
+    /// </summary>
+    internal class EventRegistry : IEventRegistry
     {
         private readonly IDictionary<Type, IList<string>> _eventRegistry;
         private readonly IBrokerManager _brokerManager;
-
-        public EventRegistry(IBrokerManager brokerManager)
+       
+        internal EventRegistry(IBrokerManager brokerManager)
         {
             _eventRegistry = new Dictionary<Type, IList<string>>();
             _brokerManager = brokerManager;
         }
 
+        /// <summary>
+        /// Register an event to a queue or exchange
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="exchange"></param>
         public void Register<T>(string queue) where T : IEvent
         {
             var eventType = typeof(T);
@@ -35,7 +43,13 @@ namespace sdLitica.Events.Bus
             _brokerManager.CreateQueue(queue);
         }
 
-        public IList<string> GetExchangesForEvent<T>(T @event) where T : IEvent
+        /// <summary>
+        /// Get publishing queue or exchange
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="event"></param>
+        /// <returns></returns>
+        public IList<string> GetPublishingTarget<T>(T @event) where T : IEvent
         {
             var eventType = @event.GetType();
 

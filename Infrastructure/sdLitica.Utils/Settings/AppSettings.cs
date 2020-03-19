@@ -8,7 +8,7 @@ namespace sdLitica.Utils.Settings
         private readonly IConfiguration _configuration;
         private readonly string _securitySection = "Security";
         private readonly string _timeSeriesSection = "TimeSeries";
-        private readonly string _messagesSection = "Messages";
+        private readonly string _messagesSection = "RabbitMQ";
 
         private readonly TimeSeriesSettings _timeSeriesSettings;
         private readonly MessageSettings _messageSettings;

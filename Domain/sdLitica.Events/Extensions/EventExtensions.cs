@@ -7,8 +7,16 @@ using System.Text;
 
 namespace sdLitica.Events.Extensions
 {
+    /// <summary>
+    /// Event extensions
+    /// </summary>
     public static class EventExtensions
     {
+        /// <summary>
+        /// Convert from event to message
+        /// </summary>
+        /// <param name="event"></param>
+        /// <returns></returns>
         public static IMessage ToMessage(this IEvent @event)
         {
 

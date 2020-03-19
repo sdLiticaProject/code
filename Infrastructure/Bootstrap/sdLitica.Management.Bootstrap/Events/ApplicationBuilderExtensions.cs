@@ -9,6 +9,9 @@ using sdLitica.Events.Bus;
 
 namespace sdLitica.Bootstrap.Events
 {
+    /// <summary>
+    /// Application Builder Extensions. Method here provides a sample
+    /// </summary>
     public static class ApplicationBuilderExtensions
     {
         /// <summary>

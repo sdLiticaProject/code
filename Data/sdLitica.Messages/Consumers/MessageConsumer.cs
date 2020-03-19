@@ -9,22 +9,38 @@ using System.Text;
 
 namespace sdLitica.Messages.Consumers
 {
-    public class MessageConsumer : IConsumer
+    /// <summary>
+    /// Background class to consume a message
+    /// </summary>
+    internal class MessageConsumer : IConsumer
     {        
         private readonly IModel _channel;
         
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="brokerConnection"></param>
         public MessageConsumer(BrokerConnection brokerConnection)
         {
             _channel = brokerConnection?.CreateChannel()
                    ?? throw new ArgumentNullException(nameof(brokerConnection));
         }
 
+        /// <summary>
+        /// Read a message received through the bus
+        /// </summary>
+        /// <param name="queue"></param>
         public void Read(string queue)
         {
             throw new NotImplementedException();
         }
 
-        public void Subscribe(string exchange, Action<object> action)
+        /// <summary>
+        /// Subscribe a message received through the bus
+        /// </summary>
+        /// <param name="queue"></param>
+        /// <param name="action"></param>
+        public void Subscribe(string queue, Action<object> action)
         {
             var consumer = new EventingBasicConsumer(_channel);
             consumer.Received += (object model, BasicDeliverEventArgs ea) =>
@@ -44,7 +60,7 @@ namespace sdLitica.Messages.Consumers
                 action(@event);
             };
 
-            _channel.BasicConsume(queue: exchange,
+            _channel.BasicConsume(queue: queue,
                                  autoAck: true,
                                  consumer: consumer);
         }
