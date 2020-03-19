@@ -15,7 +15,7 @@ namespace sdLitica.Events.Bus
         private readonly IDictionary<Type, IList<string>> _eventRegistry;
         private readonly IBrokerManager _brokerManager;
        
-        internal EventRegistry(IBrokerManager brokerManager)
+        public EventRegistry(IBrokerManager brokerManager)
         {
             _eventRegistry = new Dictionary<Type, IList<string>>();
             _brokerManager = brokerManager;

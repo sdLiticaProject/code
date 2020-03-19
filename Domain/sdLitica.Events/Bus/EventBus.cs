@@ -16,7 +16,7 @@ namespace sdLitica.Events.Bus
         private readonly IConsumer _consumer;
         private readonly IEventRegistry _eventRegistry;
 
-        internal EventBus(IPublisher publisher, IConsumer consumer, IEventRegistry eventRegistry)
+        public EventBus(IPublisher publisher, IConsumer consumer, IEventRegistry eventRegistry)
         {
             _publisher = publisher;
             _consumer = consumer;
