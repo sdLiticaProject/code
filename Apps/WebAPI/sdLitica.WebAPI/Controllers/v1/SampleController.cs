@@ -24,7 +24,6 @@ namespace sdLitica.WebAPI.Controllers.v1
         {
             return NoContent();
         }
-
         
     }
 }

@@ -19,5 +19,10 @@ namespace sdLitica.Utils.Abstractions
         /// Provides setting for TimeSeries (i.e. InfluxDB)
         /// </summary>
         TimeSeriesSettings TimeSeriesSettings { get; }
+
+        /// <summary>
+        /// Provides setting for Messages (i.e. RabbitMQ)
+        /// </summary>
+        MessageSettings MessageSettings { get; }
     }
 }

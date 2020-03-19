@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using sdLitica.Bootstrap.Data;
 using sdLitica.Bootstrap.Services;
+using sdLitica.Events.Extensions;
 using sdLitica.Utils.Abstractions;
 using sdLitica.Utils.Settings;
 
@@ -17,8 +18,9 @@ namespace sdLitica.Bootstrap.Extensions
         /// <param name="services"></param>
         public static void AddServices(this IServiceCollection services)
         {
-            services.AddScoped<IAppSettings, AppSettings>();
-            services.AddManagementServices();                       
+            services.AddTransient<IAppSettings, AppSettings>();
+            
+            services.AddManagementServices();            
         }
 
         /// <summary>
@@ -37,6 +39,15 @@ namespace sdLitica.Bootstrap.Extensions
         public static void AddTimeSeriesDatabase(this IServiceCollection services)
         {
             services.AddTimeSeries();
+        }
+
+        /// <summary>
+        /// This method adds events and messages (eg. Rabbit MQ)
+        /// </summary>
+        /// <param name="services"></param>
+        public static void AddEventsAndMessages(this IServiceCollection services)
+        {
+            services.AddEvents();
         }
     }
 }
