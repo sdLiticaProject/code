@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using sdLitica.Analytics.Abstractions;
 using sdLitica.Events.Abstractions;
 using sdLitica.Events.Integration;
 using sdLitica.WebAPI.Entities.Common;
@@ -28,9 +29,10 @@ namespace sdLitica.WebAPI.Controllers.v1
         /// </summary>
         /// <returns>Result of {operation} over time-series</returns>
         [HttpPost]
-        [Route("mean/{timeseriesId}")] // todo: later expand to "{operation}/{timeseriesId}"
-        public async Task<NoContentResult> Calculation()
+        [Route("calculate")] 
+        public async Task<NoContentResult> Calculation([FromBody] AnalyticsOperation analyticsOperation)
         {
+            
             throw new System.NotImplementedException();
 
             return new NoContentResult();

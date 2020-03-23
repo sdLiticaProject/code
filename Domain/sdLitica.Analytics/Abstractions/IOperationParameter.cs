@@ -4,7 +4,9 @@ using System.Text;
 
 namespace sdLitica.Analytics.Abstractions
 {
-    public class AnalyticsOperation
+    public interface IOperationParameter
     {
+        string Name { get; }
+        string Value { get; }
     }
 }

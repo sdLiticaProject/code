@@ -9,5 +9,10 @@ namespace sdLitica.AnalyticsManagementCore
         {
             throw new NotImplementedException();
         }
+
+        public void ExecuteOperation()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

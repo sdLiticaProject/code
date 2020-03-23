@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Domain\sdLitica.AnalyticsOperations\sdLitica.Analytics.csproj" />
+    <ProjectReference Include="..\..\Domain\sdLitica.Analytics\sdLitica.Analytics.csproj" />
   </ItemGroup>
 
 </Project>

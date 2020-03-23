@@ -41,7 +41,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sdLitica.WebAPI", "Apps\Web
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sdLitica.AnalyticsManagementCore", "Services\sdLitica.AnalyticsManagementCore\sdLitica.AnalyticsManagementCore.csproj", "{E367A7CE-F025-42F3-9085-61832453CDF1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sdLitica.Analytics", "Domain\sdLitica.AnalyticsOperations\sdLitica.Analytics.csproj", "{6ABF5060-57DF-4FC0-9B38-9BB9640642A1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sdLitica.Analytics", "Domain\sdLitica.Analytics\sdLitica.Analytics.csproj", "{6ABF5060-57DF-4FC0-9B38-9BB9640642A1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
