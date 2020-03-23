@@ -1,18 +1,23 @@
 ﻿using System;
 using sdLitica.Analytics.Abstractions;
+using sdLitica.Events.Abstractions;
+using sdLitica.Messages.Abstractions;
 
 namespace sdLitica.AnalyticsManagementCore
 {
     public class AnalyticsService
     {
-        public AnalyticsOperation CreateOperation()
+        private readonly IEventBus _eventBus;
+
+        public AnalyticsService(IEventBus eventBus)
         {
-            throw new NotImplementedException();
+            _eventBus = eventBus;
         }
 
-        public void ExecuteOperation()
+        public void ExecuteOperation(IAnalyticsOperation operation)
         {
-            throw new NotImplementedException();
+            AnalyticsOperationEvent @event = new AnalyticsOperationEvent(operation);
+            _eventBus.Publish(@event);
         }
     }
 }

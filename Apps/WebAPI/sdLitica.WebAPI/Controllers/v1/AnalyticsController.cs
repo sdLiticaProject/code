@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using sdLitica.Analytics.Abstractions;
+using sdLitica.AnalyticsManagementCore;
 using sdLitica.Events.Abstractions;
 using sdLitica.Events.Integration;
 using sdLitica.WebAPI.Entities.Common;
@@ -16,11 +17,11 @@ namespace sdLitica.WebAPI.Controllers.v1
     //[Authorize]
     public class AnalyticsController : BaseApiController
     {
-        private readonly IEventBus _eventBus;
+        private readonly AnalyticsService _analyticsService;
 
-        public AnalyticsController(IEventBus eventBus)
+        public AnalyticsController(AnalyticsService analyticsService)
         {
-            _eventBus = eventBus;
+            _analyticsService = analyticsService;
         }
 
 
@@ -32,8 +33,7 @@ namespace sdLitica.WebAPI.Controllers.v1
         [Route("calculate")] 
         public async Task<NoContentResult> Calculation([FromBody] AnalyticsOperation analyticsOperation)
         {
-            
-            throw new System.NotImplementedException();
+            _analyticsService.ExecuteOperation(analyticsOperation);
 
             return new NoContentResult();
         }
