@@ -6,9 +6,11 @@ using System.Text;
 
 namespace sdLitica.AnalyticsManagementCore
 {
-    class AnalyticsOperationEvent: Event
+    public class AnalyticsOperationEvent: Event
     {
         IAnalyticsOperation Operation { get; set; }
+
+        public AnalyticsOperationEvent() { } // redundant?
 
         public AnalyticsOperationEvent(IAnalyticsOperation operation) : base()
         {

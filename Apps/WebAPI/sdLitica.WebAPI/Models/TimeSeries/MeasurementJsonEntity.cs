@@ -31,7 +31,7 @@ namespace sdLitica.WebAPI.Models.TimeSeries
 
         public string GetApiUrlPrefix()
         {
-            throw new System.NotImplementedException();
+            return Guid;// throw new System.NotImplementedException();
         }
 
         /// <summary>

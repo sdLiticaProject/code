@@ -53,6 +53,7 @@ namespace sdLitica.Messages.Consumers
 
                 var eventAssembly = Assembly.Load("sdLitica.Events");
                 var type = eventAssembly.GetType(message.Type);
+                System.Console.WriteLine(type);
                 var instance = Activator.CreateInstance(type);
 
                 var @event = JsonConvert.DeserializeObject(message.Body, type);

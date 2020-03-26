@@ -32,7 +32,9 @@ namespace sdLitica.Events.Bus
             var message = @event.ToMessage();
             var exchanges = _eventRegistry.GetPublishingTarget(@event);
             foreach (var exchange in exchanges)
+            {
                 _publisher.Publish(exchange, message);
+            }
         }
 
         /// <summary>

@@ -6,6 +6,7 @@ using sdLitica.AnalyticsManagementCore;
 using sdLitica.Events.Abstractions;
 using sdLitica.Events.Integration;
 using sdLitica.WebAPI.Entities.Common;
+using sdLitica.WebAPI.Models.Analytics;
 
 namespace sdLitica.WebAPI.Controllers.v1
 {
@@ -15,6 +16,7 @@ namespace sdLitica.WebAPI.Controllers.v1
     [Produces("application/json")]
     [Route("api/v1/analytics")]
     //[Authorize]
+    [AllowAnonymous]
     public class AnalyticsController : BaseApiController
     {
         private readonly AnalyticsService _analyticsService;

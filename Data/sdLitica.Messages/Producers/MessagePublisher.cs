@@ -34,7 +34,7 @@ namespace sdLitica.Messages.Producers
             var serialized = JsonConvert.SerializeObject(message);
             var body = Encoding.UTF8.GetBytes(serialized);
             var properties = _channel.CreateBasicProperties();
-            
+
             //if RabbitMQ restarts, the message will persist
             properties.Persistent = true;
             

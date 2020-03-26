@@ -6,9 +6,13 @@ namespace sdLitica.Analytics.Abstractions
 {
     public class AnalyticsOperation: IAnalyticsOperation
     {
+        public AnalyticsOperation()
+        {
+
+        }
         public string OpName { get; set; }
         public string TsId { get; set; }
-        public IOperationParameter[] Parameters { get; set; }
+        public List<OperationParameter> Parameters { get; set; }
 
     }
 }

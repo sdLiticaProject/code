@@ -1,6 +1,7 @@
 ﻿using System;
 using sdLitica.Analytics.Abstractions;
 using sdLitica.Events.Abstractions;
+using sdLitica.Events.Integration;
 using sdLitica.Messages.Abstractions;
 
 namespace sdLitica.AnalyticsManagementCore
@@ -16,8 +17,18 @@ namespace sdLitica.AnalyticsManagementCore
 
         public void ExecuteOperation(IAnalyticsOperation operation)
         {
-            AnalyticsOperationEvent @event = new AnalyticsOperationEvent(operation);
+            TimeSeriesAnalysisEvent @event = new TimeSeriesAnalysisEvent(operation);
             _eventBus.Publish(@event);
+        }
+
+        public void CheckResults(IAnalyticsOperation operation)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void FetchResults(IAnalyticsOperation operation)
+        {
+            throw new NotImplementedException();
         }
     }
 }

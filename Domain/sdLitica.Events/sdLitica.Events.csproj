@@ -5,11 +5,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Integration\AnalyticsOperationEvent.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.2.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Data\sdLitica.Messages\sdLitica.Messages.csproj" />
+    <ProjectReference Include="..\sdLitica.Analytics\sdLitica.Analytics.csproj" />
   </ItemGroup>
 
 </Project>
