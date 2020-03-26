@@ -5,10 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="AnalyticsOperationEvent.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\Data\sdLitica.Messages\sdLitica.Messages.csproj" />
     <ProjectReference Include="..\..\Domain\sdLitica.Analytics\sdLitica.Analytics.csproj" />
     <ProjectReference Include="..\..\Domain\sdLitica.Events\sdLitica.Events.csproj" />
