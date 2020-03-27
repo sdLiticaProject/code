@@ -39,9 +39,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sdLitica.Events", "Domain\s
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sdLitica.WebAPI", "Apps\WebAPI\sdLitica.WebAPI\sdLitica.WebAPI.csproj", "{FFB973B4-CA38-4DCC-9EC5-12805EF5AFC5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sdLitica.AnalyticsManagementCore", "Services\sdLitica.AnalyticsManagementCore\sdLitica.AnalyticsManagementCore.csproj", "{E367A7CE-F025-42F3-9085-61832453CDF1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sdLitica.AnalyticsManagementCore", "Services\sdLitica.AnalyticsManagementCore\sdLitica.AnalyticsManagementCore.csproj", "{E367A7CE-F025-42F3-9085-61832453CDF1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sdLitica.Analytics", "Domain\sdLitica.Analytics\sdLitica.Analytics.csproj", "{6ABF5060-57DF-4FC0-9B38-9BB9640642A1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sdLitica.Analytics", "Domain\sdLitica.Analytics\sdLitica.Analytics.csproj", "{6ABF5060-57DF-4FC0-9B38-9BB9640642A1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ExampleDaemon", "ExampleDaemon", "{A81CBFDA-9C7C-451A-93D2-54F42FA4F313}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sdLitica.ExampleDaemonManagement", "Apps\ExampleDaemon\sdLitica.ExampleDaemonManagement\sdLitica.ExampleDaemonManagement.csproj", "{0CC41606-0CB1-4161-9C9C-6626405C8E0A}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "sdLitica.ExampleDaemonAnalysis", "Apps\ExampleDaemon\sdLitica.ExampleDaemonAnalysis\sdLitica.ExampleDaemonAnalysis.fsproj", "{16C56E05-A221-4046-A067-CCAB447428EE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -101,6 +107,14 @@ Global
 		{6ABF5060-57DF-4FC0-9B38-9BB9640642A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6ABF5060-57DF-4FC0-9B38-9BB9640642A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6ABF5060-57DF-4FC0-9B38-9BB9640642A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0CC41606-0CB1-4161-9C9C-6626405C8E0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0CC41606-0CB1-4161-9C9C-6626405C8E0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0CC41606-0CB1-4161-9C9C-6626405C8E0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0CC41606-0CB1-4161-9C9C-6626405C8E0A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16C56E05-A221-4046-A067-CCAB447428EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16C56E05-A221-4046-A067-CCAB447428EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16C56E05-A221-4046-A067-CCAB447428EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16C56E05-A221-4046-A067-CCAB447428EE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -121,6 +135,9 @@ Global
 		{FFB973B4-CA38-4DCC-9EC5-12805EF5AFC5} = {82CFE2EB-7391-4F8A-96D4-7778E84FA08A}
 		{E367A7CE-F025-42F3-9085-61832453CDF1} = {C6232015-7650-4111-A276-BB1B947124F9}
 		{6ABF5060-57DF-4FC0-9B38-9BB9640642A1} = {E905C8FC-65C2-4200-9B71-594B5EA83BD4}
+		{A81CBFDA-9C7C-451A-93D2-54F42FA4F313} = {8FE086CE-F36E-4C43-9FC9-AEDADB0DD7A6}
+		{0CC41606-0CB1-4161-9C9C-6626405C8E0A} = {A81CBFDA-9C7C-451A-93D2-54F42FA4F313}
+		{16C56E05-A221-4046-A067-CCAB447428EE} = {A81CBFDA-9C7C-451A-93D2-54F42FA4F313}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B97E3785-982A-4BAD-B1D6-A450D7313BFC}
