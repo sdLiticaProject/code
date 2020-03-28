@@ -6,7 +6,6 @@ using sdLitica.AnalyticsManagementCore;
 using sdLitica.Events.Abstractions;
 using sdLitica.Events.Integration;
 using sdLitica.WebAPI.Entities.Common;
-using sdLitica.WebAPI.Models.Analytics;
 
 namespace sdLitica.WebAPI.Controllers.v1
 {

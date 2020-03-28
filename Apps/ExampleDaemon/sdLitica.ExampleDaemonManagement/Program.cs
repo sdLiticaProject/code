@@ -1,10 +1,17 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using sdLitica.Bootstrap.Extensions;
+using sdLitica.Events.Abstractions;
+using sdLitica.Events.Bus;
+using sdLitica.Events.Integration;
 using sdLitica.Messages.Abstractions;
 using sdLitica.TimeSeries.Services;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,34 +24,26 @@ namespace sdLitica.ExampleDaemonManagement
     {
         static void Main(string[] args)
         {
-            //influx client setup
-            TimeSeriesService _timeSeriesService = new TimeSeriesService();
+
+            var services = ConfigureServices();
+            var serviceProvider = services.BuildServiceProvider();
+            var _timeSeriesService = serviceProvider.GetRequiredService<ITimeSeriesService>();
 
 
 
-            //rabbitmq queue setup
-            var factory = new ConnectionFactory() { HostName = "localhost" };
-            var connection = factory.CreateConnection();
-            var channel = connection.CreateModel();
-            channel.QueueDeclare("example.request.queue", true, false, false, null);
-            channel.BasicQos(0, 1, false);
-            var consumer = new EventingBasicConsumer(channel);
-            channel.BasicConsume("example.request.queue", true, consumer);
+            var registry = serviceProvider.GetRequiredService<IEventRegistry>();
 
-            consumer.Received += (model, ea) =>
+            registry.Register<TimeSeriesAnalysisEvent>(Exchanges.TimeSeries);
+
+
+            using (var scope = serviceProvider.GetRequiredService<IServiceProvider>().CreateScope())
             {
-                var body = ea.Body;
+                var sampleBus = scope.ServiceProvider.GetRequiredService<IEventBus>();
 
-                try
+                
+                sampleBus.Subscribe<TimeSeriesAnalysisEvent>((TimeSeriesAnalysisEvent @event) =>
                 {
-                    var strMessage = Encoding.UTF8.GetString(body);
-                    Console.WriteLine(strMessage);
-                    var message = JsonConvert.DeserializeObject<Message>(strMessage);
-                    if (message == null) throw new Exception("Could not deserialize message object");
-
-
-                    var @event = (Models.TimeSeriesAnalysisEvent)JsonConvert.DeserializeObject(message.Body, typeof(Models.TimeSeriesAnalysisEvent));
-                    Console.WriteLine(@event);
+                    Console.WriteLine(@event.Name + " " + @event.Operation.OpName);
 
                     Task<InfluxResult<DynamicInfluxRow>> task = _timeSeriesService.ReadMeasurementById(@event.Operation.TsId);
                     task.Wait();
@@ -53,21 +52,55 @@ namespace sdLitica.ExampleDaemonManagement
                     for (int i = 0; i < rows.Count; i++)
                         series[i] = (double)rows[i].Fields["cpu"];
 
-                    Console.WriteLine(ExampleDaemonAnalysis.ExampleFunctions.Mean(series));
+                    Console.WriteLine(typeof(ExampleDaemonAnalysis.ExampleFunctions).GetMethod(@event.Operation.OpName).Invoke(null, new[] { series }));
+                });
+                
+            }
 
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(" [.] " + e.Message);
-                }
-                finally
-                {
-
-                }
-            };
+    
 
             Console.WriteLine("Press enter to exit");
             Console.ReadLine();
         }
+
+        public static IConfiguration LoadConfiguration()
+        {
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: true);
+
+            return builder.Build();
+        }
+
+        private static IServiceCollection ConfigureServices()
+        {
+            IServiceCollection services = new ServiceCollection();
+
+            var config = LoadConfiguration();
+            services.AddSingleton(config);
+
+            // required to run the application
+            services.AddTransient<Program>();
+
+
+
+            // Add appsettings file configuration to bootstrap
+            config.AddSettings();
+
+            // Add any type of services available
+            services.AddServices();
+
+            // Add relational database support
+            services.AddRelationalDatabase();
+
+            // Add time series support
+            services.AddTimeSeriesDatabase();
+
+            // Add event and messages support
+            services.AddEventsAndMessages();
+
+            return services;
+        }
+
     }
 }

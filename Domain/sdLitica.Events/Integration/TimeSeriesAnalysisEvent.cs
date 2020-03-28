@@ -13,14 +13,15 @@ namespace sdLitica.Events.Integration
     public class TimeSeriesAnalysisEvent : Event
     {
         [JsonProperty]
-        IAnalyticsOperation Operation { get; set; }
+        public AnalyticsOperation Operation { get; set; }
+        //IAnalyticsOperation Operation { get; set; }
 
         public TimeSeriesAnalysisEvent() : base()
         {
 
         }
 
-        public TimeSeriesAnalysisEvent(IAnalyticsOperation operation) : base()
+        public TimeSeriesAnalysisEvent(AnalyticsOperation operation) : base()
         {
             Operation = operation;
         }

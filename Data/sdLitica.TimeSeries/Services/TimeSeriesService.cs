@@ -22,15 +22,6 @@ namespace sdLitica.TimeSeries.Services
             _settings = settings;
         }
 
-        //temporary solution for referencing this .dll in analytic module without any dependency injection
-        public TimeSeriesService()
-        {
-            TimeSeriesSettings = new TimeSeriesSettings()
-            {
-                InfluxHostName = "http://localhost:8086", InfluxDatabase = "sdLitica"
-            };
-            _influxClient = new InfluxClient(new Uri(TimeSeriesSettings.InfluxHostName));
-        }
 
         public async Task<InfluxResult> CreateUser(string username, string password)
         {

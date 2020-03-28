@@ -15,7 +15,7 @@ namespace sdLitica.AnalyticsManagementCore
             _eventBus = eventBus;
         }
 
-        public void ExecuteOperation(IAnalyticsOperation operation)
+        public void ExecuteOperation(AnalyticsOperation operation)
         {
             TimeSeriesAnalysisEvent @event = new TimeSeriesAnalysisEvent(operation);
             _eventBus.Publish(@event);
