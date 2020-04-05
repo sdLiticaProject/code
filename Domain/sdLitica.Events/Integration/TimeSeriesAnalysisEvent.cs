@@ -5,7 +5,7 @@ using sdLitica.Events.Abstractions;
 namespace sdLitica.Events.Integration
 {
     /// <summary>
-    /// Sample event for 
+    /// This is sample event class used to illustrate for the team
     /// </summary>
     public class TimeSeriesAnalysisEvent : Event
     {

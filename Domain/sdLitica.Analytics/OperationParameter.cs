@@ -7,7 +7,8 @@
     /// Single parameter of AnalyticsOperation.
     /// </summary>
     public class OperationParameter
-    {        public OperationParameter()
+    {      
+        public OperationParameter()
         {
 
         }
