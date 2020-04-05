@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using sdLitica.Analytics.Abstractions;
+using sdLitica.Analytics;
 using sdLitica.Entities.Management;
 
 namespace sdLitica.Relational.Context

@@ -1,39 +1,35 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
-using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
-using sdLitica.Analytics.Abstractions;
+using sdLitica.Analytics;
 using sdLitica.Bootstrap.Extensions;
 using sdLitica.Events.Abstractions;
 using sdLitica.Events.Bus;
 using sdLitica.Events.Integration;
-using sdLitica.Messages.Abstractions;
 using sdLitica.TimeSeries.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 using Vibrant.InfluxDB.Client;
 using Vibrant.InfluxDB.Client.Rows;
 
 namespace sdLitica.ExampleDaemonManagement
 {
+    /// <summary>
+    /// Simple example of analytical module. 
+    /// </summary>
     class Program
     {
         static void Main(string[] args)
         {
-
+            // configure dependency injection
             var services = ConfigureServices();
             var serviceProvider = services.BuildServiceProvider();
+
             var _timeSeriesService = serviceProvider.GetRequiredService<ITimeSeriesService>();
-
-
-
             var registry = serviceProvider.GetRequiredService<IEventRegistry>();
 
+            // register events
             registry.Register<TimeSeriesAnalysisEvent>(Exchanges.TimeSeries);
             registry.Register<DiagnosticsEvent>(Exchanges.Diagnostics);
 
@@ -42,7 +38,7 @@ namespace sdLitica.ExampleDaemonManagement
             {
                 var sampleBus = scope.ServiceProvider.GetRequiredService<IEventBus>();
 
-                
+                // subscribe to analytical operations
                 sampleBus.Subscribe<TimeSeriesAnalysisEvent>((TimeSeriesAnalysisEvent @event) =>
                 {
                     Console.WriteLine(@event.Name + " " + @event.Operation.OpName);
@@ -51,6 +47,7 @@ namespace sdLitica.ExampleDaemonManagement
 
                     try
                     {
+                        // get time-series given by TsId and extract some data from it
                         Task<InfluxResult<DynamicInfluxRow>> task = _timeSeriesService.ReadMeasurementById(@event.Operation.TsId);
                         task.Wait();
                         List<DynamicInfluxRow> rows = task.Result.Series[0].Rows;
@@ -58,17 +55,21 @@ namespace sdLitica.ExampleDaemonManagement
                         for (int i = 0; i < rows.Count; i++)
                             series[i] = (double)rows[i].Fields["cpu"];
 
+                        // invoke method (from F-sharp lib) given by OpName.
                         Console.WriteLine(typeof(ExampleDaemonAnalysis.ExampleFunctions).GetMethod(@event.Operation.OpName).Invoke(null, new[] { series }));
 
+                        // if no errors, status is complete
                         operation.Status = 1;
 
                     }
                     catch (Exception e)
                     {
+                        // if any error, set status
                         operation.Status = -1;
                     }
                     finally
                     {
+                        // publish information about operation
                         sampleBus.Publish(new DiagnosticsEvent(operation));
                     }
                 });
@@ -82,6 +83,10 @@ namespace sdLitica.ExampleDaemonManagement
             Console.ReadLine();
         }
 
+        /// <summary>
+        /// Loads configuration for dependency injection.
+        /// </summary>
+        /// <returns></returns>
         public static IConfiguration LoadConfiguration()
         {
             var builder = new ConfigurationBuilder()
@@ -91,6 +96,10 @@ namespace sdLitica.ExampleDaemonManagement
             return builder.Build();
         }
 
+        /// <summary>
+        /// configure dependency injection
+        /// </summary>
+        /// <returns></returns>
         private static IServiceCollection ConfigureServices()
         {
             IServiceCollection services = new ServiceCollection();

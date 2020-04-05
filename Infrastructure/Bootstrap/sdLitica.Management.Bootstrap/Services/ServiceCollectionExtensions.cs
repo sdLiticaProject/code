@@ -18,11 +18,7 @@ namespace sdLitica.Bootstrap.Services
             services.AddScoped<IUserTokenRepository, UserTokenRepository>();
 
             services.AddScoped<OperationRepository>();
-            //services.AddScoped<DiagnosticsListener>();
             services.AddScoped<AnalyticsService>();
-
-            
-            //services.AddScoped<DiagnosticsListener>();
         }
     }
 }

@@ -21,15 +21,6 @@ namespace sdLitica.Bootstrap.Data
                     //mysql.AnsiCharSet() etc
                 });
             });
-            
-            /*
-            services.AddDbContext<MySqlDbContext>(options => {
-                options.UseMySql(connectionString, mysql =>
-                {
-                    //mysql.AnsiCharSet() etc
-                });
-            });// ServiceLifetime.Transient);
-            */
         }
 
         internal static void AddTimeSeries(this IServiceCollection services)

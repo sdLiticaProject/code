@@ -1,17 +1,14 @@
 ﻿using Newtonsoft.Json;
-using sdLitica.Analytics.Abstractions;
+using sdLitica.Analytics;
 using sdLitica.Events.Abstractions;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace sdLitica.Events.Integration
 {
+    /// <summary>
+    /// Event contains metadata for analytics operation. Used to send diagnostics info (status of operation, errors etc.)
+    /// </summary>
     public class DiagnosticsEvent : Event
     {
-        [JsonProperty]
-        public AnalyticsOperation Operation { get; set; }
-        //IAnalyticsOperation Operation { get; set; }
 
         public DiagnosticsEvent() : base()
         {
@@ -22,5 +19,9 @@ namespace sdLitica.Events.Integration
         {
             Operation = operation;
         }
+
+
+        [JsonProperty]
+        public AnalyticsOperation Operation { get; set; }
     }
 }

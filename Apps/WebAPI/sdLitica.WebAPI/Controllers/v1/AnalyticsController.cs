@@ -1,16 +1,13 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using sdLitica.Analytics.Abstractions;
+using sdLitica.Analytics;
 using sdLitica.AnalyticsManagementCore;
-using sdLitica.Events.Abstractions;
-using sdLitica.Events.Integration;
-using sdLitica.WebAPI.Entities.Common;
 
 namespace sdLitica.WebAPI.Controllers.v1
 {
     /// <summary>
-    /// This controller is a sample conmtroller that requires authentication
+    /// This controller is a sample conmtroller for analytics operations
     /// </summary>
     [Produces("application/json")]
     [Route("api/v1/analytics")]
@@ -35,7 +32,6 @@ namespace sdLitica.WebAPI.Controllers.v1
         public async Task<NoContentResult> Calculation([FromBody] AnalyticsOperation analyticsOperation)
         {
             _analyticsService.ExecuteOperation(analyticsOperation);
-            _analyticsService.CheckResults(analyticsOperation);
             return new NoContentResult();
         }
     }

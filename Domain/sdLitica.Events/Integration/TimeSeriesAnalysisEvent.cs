@@ -1,20 +1,14 @@
 ﻿using Newtonsoft.Json;
-using sdLitica.Analytics.Abstractions;
+using sdLitica.Analytics;
 using sdLitica.Events.Abstractions;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace sdLitica.Events.Integration
 {
     /// <summary>
-    /// This is sample event class used to illustrate for the team
+    /// Sample event for 
     /// </summary>
     public class TimeSeriesAnalysisEvent : Event
     {
-        [JsonProperty]
-        public AnalyticsOperation Operation { get; set; }
-        //IAnalyticsOperation Operation { get; set; }
 
         public TimeSeriesAnalysisEvent() : base()
         {
@@ -26,5 +20,7 @@ namespace sdLitica.Events.Integration
             Operation = operation;
         }
 
+        [JsonProperty]
+        public AnalyticsOperation Operation { get; set; }
     }
 }

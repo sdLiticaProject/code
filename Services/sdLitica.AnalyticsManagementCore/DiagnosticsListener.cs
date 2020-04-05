@@ -4,11 +4,12 @@ using sdLitica.Events.Bus;
 using sdLitica.Events.Integration;
 using sdLitica.Relational.Repositories;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace sdLitica.AnalyticsManagementCore
 {
+    /// <summary>
+    /// Listener for diagnostics info of analytical operations (status, errors etc.)
+    /// </summary>
     public static class DiagnosticsListener
     {
 
@@ -25,6 +26,9 @@ namespace sdLitica.AnalyticsManagementCore
             _operationRepository = operationRepository;
         }
 
+        /// <summary>
+        /// Subscribe to diagnostics info. Accesses repository to update metadata (status, errors etc.) of operations. 
+        /// </summary>
         public static void Listen()
         {
             _eventRegistry.Register<DiagnosticsEvent>(Exchanges.Diagnostics);
@@ -33,7 +37,8 @@ namespace sdLitica.AnalyticsManagementCore
                 using (var scope = _services.CreateScope())
                 {
                     _operationRepository = scope.ServiceProvider.GetRequiredService<OperationRepository>();
-                    _operationRepository.SetStatus(@event.Operation, @event.Operation.Status);
+                    _operationRepository.Update(@event.Operation);
+                    _operationRepository.SaveChanges();
                 }
             });
         }

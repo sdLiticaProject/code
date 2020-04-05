@@ -1,12 +1,14 @@
 ﻿using System;
-using sdLitica.Analytics.Abstractions;
+using sdLitica.Analytics;
 using sdLitica.Events.Abstractions;
 using sdLitica.Events.Integration;
-using sdLitica.Messages.Abstractions;
 using sdLitica.Relational.Repositories;
 
 namespace sdLitica.AnalyticsManagementCore
 {
+    /// <summary>
+    /// This class provides services for analytics operations.
+    /// </summary>
     public class AnalyticsService
     {
         private readonly IEventBus _eventBus;
@@ -18,21 +20,37 @@ namespace sdLitica.AnalyticsManagementCore
             _operationRepository = operationRepository;
         }
 
+        /// <summary>
+        /// Execute operation. Publishes event, that contains AnalyticsOperation for analytical modules.
+        /// </summary>
+        /// <param name="operation"></param>
         public void ExecuteOperation(AnalyticsOperation operation)
         {
-            operation.SetId();
+            operation.SetId(); // todo: separate model from entity and set id during creation of entity
+
             _operationRepository.Add(operation);     
+
             TimeSeriesAnalysisEvent @event = new TimeSeriesAnalysisEvent(operation);
             _eventBus.Publish(@event);
+
             _operationRepository.SaveChanges();
         }
 
+        /// <summary>
+        /// Check status of operation.
+        /// </summary>
+        /// <param name="operation"></param>
+        /// <returns></returns>
         public int CheckResults(AnalyticsOperation operation)
         {
             return _operationRepository.GetStatus(operation.Id);
         }
 
-        public void FetchResults(IAnalyticsOperation operation)
+        /// <summary>
+        /// Fetch results of operation.
+        /// </summary>
+        /// <param name="operation"></param>
+        public void FetchResults(AnalyticsOperation operation)
         {
             throw new NotImplementedException();
         }
