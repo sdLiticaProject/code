@@ -27,15 +27,15 @@ namespace sdLitica.WebAPI.Controllers.v1
 
 
         /// <summary>
-        /// This REST API handler returns result of some calculation over time-series given by timeseriesId
+        /// This REST API handler returns result of some calculation given by OpName over time-series given by TsId
         /// </summary>
-        /// <returns>Result of {operation} over time-series</returns>
+        /// <returns>Result of operation over time-series</returns>
         [HttpPost]
         [Route("calculate")] 
         public async Task<NoContentResult> Calculation([FromBody] AnalyticsOperation analyticsOperation)
         {
             _analyticsService.ExecuteOperation(analyticsOperation);
-
+            _analyticsService.CheckResults(analyticsOperation);
             return new NoContentResult();
         }
     }

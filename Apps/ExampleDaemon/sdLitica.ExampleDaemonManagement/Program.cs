@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using sdLitica.Analytics.Abstractions;
 using sdLitica.Bootstrap.Extensions;
 using sdLitica.Events.Abstractions;
 using sdLitica.Events.Bus;
@@ -34,6 +35,7 @@ namespace sdLitica.ExampleDaemonManagement
             var registry = serviceProvider.GetRequiredService<IEventRegistry>();
 
             registry.Register<TimeSeriesAnalysisEvent>(Exchanges.TimeSeries);
+            registry.Register<DiagnosticsEvent>(Exchanges.Diagnostics);
 
 
             using (var scope = serviceProvider.GetRequiredService<IServiceProvider>().CreateScope())
@@ -44,16 +46,33 @@ namespace sdLitica.ExampleDaemonManagement
                 sampleBus.Subscribe<TimeSeriesAnalysisEvent>((TimeSeriesAnalysisEvent @event) =>
                 {
                     Console.WriteLine(@event.Name + " " + @event.Operation.OpName);
+                    AnalyticsOperation operation = @event.Operation;
+                    Console.WriteLine(operation.Id);
 
-                    Task<InfluxResult<DynamicInfluxRow>> task = _timeSeriesService.ReadMeasurementById(@event.Operation.TsId);
-                    task.Wait();
-                    List<DynamicInfluxRow> rows = task.Result.Series[0].Rows;
-                    double[] series = new double[rows.Count];
-                    for (int i = 0; i < rows.Count; i++)
-                        series[i] = (double)rows[i].Fields["cpu"];
+                    try
+                    {
+                        Task<InfluxResult<DynamicInfluxRow>> task = _timeSeriesService.ReadMeasurementById(@event.Operation.TsId);
+                        task.Wait();
+                        List<DynamicInfluxRow> rows = task.Result.Series[0].Rows;
+                        double[] series = new double[rows.Count];
+                        for (int i = 0; i < rows.Count; i++)
+                            series[i] = (double)rows[i].Fields["cpu"];
 
-                    Console.WriteLine(typeof(ExampleDaemonAnalysis.ExampleFunctions).GetMethod(@event.Operation.OpName).Invoke(null, new[] { series }));
+                        Console.WriteLine(typeof(ExampleDaemonAnalysis.ExampleFunctions).GetMethod(@event.Operation.OpName).Invoke(null, new[] { series }));
+
+                        operation.Status = 1;
+
+                    }
+                    catch (Exception e)
+                    {
+                        operation.Status = -1;
+                    }
+                    finally
+                    {
+                        sampleBus.Publish(new DiagnosticsEvent(operation));
+                    }
                 });
+                
                 
             }
 

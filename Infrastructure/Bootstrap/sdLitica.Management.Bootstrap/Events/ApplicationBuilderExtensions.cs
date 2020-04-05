@@ -7,6 +7,8 @@ using sdLitica.Events.Abstractions;
 using sdLitica.Events.Integration;
 using sdLitica.Events.Bus;
 using sdLitica.AnalyticsManagementCore;
+using sdLitica.Relational.Repositories;
+
 namespace sdLitica.Bootstrap.Events
 {
     /// <summary>
@@ -23,18 +25,17 @@ namespace sdLitica.Bootstrap.Events
             var registry = app.ApplicationServices.GetRequiredService<IEventRegistry>();
             
             registry.Register<TimeSeriesAnalysisEvent>(Exchanges.TimeSeries);
+            registry.Register<DiagnosticsEvent>(Exchanges.Diagnostics);
 
-
+            DiagnosticsListener._services = app.ApplicationServices.GetRequiredService<IServiceProvider>();
+            
             using (var scope = app.ApplicationServices.GetRequiredService<IServiceProvider>().CreateScope())
             {
-                var sampleBus = scope.ServiceProvider.GetRequiredService<IEventBus>();
+                var eventBus = scope.ServiceProvider.GetRequiredService<IEventBus>();
+                var operationRepository = scope.ServiceProvider.GetRequiredService<OperationRepository>();
 
-                /*
-                sampleBus.Subscribe<TimeSeriesAnalysisEvent>((TimeSeriesAnalysisEvent @event) =>
-                {
-                    Console.WriteLine(@event.Id + " " + @event.Name);
-                });
-                */
+                DiagnosticsListener.Initialize(registry, eventBus, operationRepository);
+                DiagnosticsListener.Listen();
             }
         }
     }

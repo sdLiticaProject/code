@@ -13,6 +13,7 @@ namespace sdLitica.Events.Bus
         /// Time Series Exchange
         /// </summary>
         public static readonly string TimeSeries = "example.request.queue";//"TimeSeriesQueue";
+        public static readonly string Diagnostics = "example.response.diagnostics";
         //public static readonly string Analytics = "AnalyticsQueue";
 
         /// <summary>
@@ -23,7 +24,8 @@ namespace sdLitica.Events.Bus
         {
             return new List<string>()
             {
-                TimeSeries
+                TimeSeries,
+                Diagnostics
             };
         }
     }
