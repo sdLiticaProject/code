@@ -12,6 +12,9 @@ using System.IO;
 using System.Threading.Tasks;
 using Vibrant.InfluxDB.Client;
 using Vibrant.InfluxDB.Client.Rows;
+using log4net;
+using log4net.Config;
+using System.Reflection;
 
 namespace sdLitica.ExampleDaemonManagement
 {
@@ -20,8 +23,14 @@ namespace sdLitica.ExampleDaemonManagement
     /// </summary>
     class Program
     {
+        // define a logger
+        private static readonly ILog log = LogManager.GetLogger(typeof(Program));
+
         static void Main(string[] args)
         {
+            // setup a configuration for logs
+            BasicConfigurator.Configure(LogManager.GetRepository(Assembly.GetEntryAssembly()));
+
             // configure dependency injection
             var services = ConfigureServices();
             var serviceProvider = services.BuildServiceProvider();
@@ -41,9 +50,9 @@ namespace sdLitica.ExampleDaemonManagement
                 // subscribe to analytical operations
                 sampleBus.Subscribe<TimeSeriesAnalysisEvent>((TimeSeriesAnalysisEvent @event) =>
                 {
-                    Console.WriteLine(@event.Name + " " + @event.Operation.OpName);
+                    log.Info(@event.Name + " " + @event.Operation.OpName);
                     AnalyticsOperation operation = @event.Operation;
-                    Console.WriteLine(operation.Id);
+                    log.Info(operation.Id);
 
                     try
                     {
@@ -56,7 +65,7 @@ namespace sdLitica.ExampleDaemonManagement
                             series[i] = (double)rows[i].Fields["cpu"];
 
                         // invoke method (from F-sharp lib) given by OpName.
-                        Console.WriteLine(typeof(ExampleDaemonAnalysis.ExampleFunctions).GetMethod(@event.Operation.OpName).Invoke(null, new[] { series }));
+                        log.Info(typeof(ExampleDaemonAnalysis.ExampleFunctions).GetMethod(@event.Operation.OpName).Invoke(null, new[] { series }));
 
                         // if no errors, status is complete
                         operation.Status = 1;
