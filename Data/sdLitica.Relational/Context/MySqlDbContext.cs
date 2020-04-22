@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using sdLitica.Analytics;
 using sdLitica.Entities.Management;
 
 namespace sdLitica.Relational.Context
@@ -24,6 +25,8 @@ namespace sdLitica.Relational.Context
         /// <param name="modelBuilder"></param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<AnalyticsOperation>();
+
             modelBuilder.Entity<User>();
             modelBuilder.Entity<UserToken>(b =>
             {

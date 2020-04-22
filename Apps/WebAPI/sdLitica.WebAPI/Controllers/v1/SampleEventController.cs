@@ -13,6 +13,7 @@ namespace sdLitica.WebAPI.Controllers.v1
     [Produces("application/json")]
     [Route("api/v1/sampleevent")]
     //[Authorize]
+    [AllowAnonymous]
     public class SampleEventController : BaseApiController
     {
         private readonly IEventBus _eventBus;

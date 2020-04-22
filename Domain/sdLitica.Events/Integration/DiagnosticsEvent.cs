@@ -5,20 +5,21 @@ using sdLitica.Events.Abstractions;
 namespace sdLitica.Events.Integration
 {
     /// <summary>
-    /// This is sample event class used to illustrate for the team
+    /// Event contains metadata for analytics operation. Used to send diagnostics info (status of operation, errors etc.)
     /// </summary>
-    public class TimeSeriesAnalysisEvent : Event
+    public class DiagnosticsEvent : Event
     {
 
-        public TimeSeriesAnalysisEvent() : base()
+        public DiagnosticsEvent() : base()
         {
 
         }
 
-        public TimeSeriesAnalysisEvent(AnalyticsOperation operation) : base()
+        public DiagnosticsEvent(AnalyticsOperation operation) : base()
         {
             Operation = operation;
         }
+
 
         [JsonProperty]
         public AnalyticsOperation Operation { get; set; }

@@ -11,8 +11,10 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\Data\sdLitica.Relational\sdLitica.Relational.csproj" />
     <ProjectReference Include="..\..\..\Data\sdLitica.TimeSeries\sdLitica.TimeSeries.csproj" />
+    <ProjectReference Include="..\..\..\Domain\sdLitica.Analytics\sdLitica.Analytics.csproj" />
     <ProjectReference Include="..\..\..\Domain\sdLitica.Entities\sdLitica.Entities.csproj" />
     <ProjectReference Include="..\..\..\Domain\sdLitica.Events\sdLitica.Events.csproj" />
+    <ProjectReference Include="..\..\..\Services\sdLitica.AnalyticsManagementCore\sdLitica.AnalyticsManagementCore.csproj" />
     <ProjectReference Include="..\..\..\Services\sdLitica.PlatformCore\sdLitica.PlatformCore.csproj" />
   </ItemGroup>
 

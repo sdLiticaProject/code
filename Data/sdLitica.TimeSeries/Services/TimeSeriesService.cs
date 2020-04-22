@@ -22,6 +22,7 @@ namespace sdLitica.TimeSeries.Services
             _settings = settings;
         }
 
+
         public async Task<InfluxResult> CreateUser(string username, string password)
         {
             var result = await _influxClient.CreateUserAsync(username, password);

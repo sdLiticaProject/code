@@ -13,7 +13,7 @@ namespace sdLitica.Bootstrap.Data
         {
             var configuration = BootstrapSettings.AppSettings;
             var connectionString = configuration.GetConnectionString("MySql");
-
+            
             services.AddDbContextPool<MySqlDbContext>(options =>
             {
                 options.UseMySql(connectionString, mysql =>
