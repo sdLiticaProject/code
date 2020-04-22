@@ -16,7 +16,8 @@ namespace sdLitica.AnalyticsManagementCore
         static IEventRegistry _eventRegistry;
         static IEventBus _eventBus;
         static OperationRepository _operationRepository;
-        public static IServiceProvider _services;
+
+        public static IServiceProvider Services { get; set; }
 
 
         public static void Initialize(IEventRegistry eventRegistry, IEventBus eventBus, OperationRepository operationRepository)//, IServiceProvider services)
@@ -34,7 +35,7 @@ namespace sdLitica.AnalyticsManagementCore
             _eventRegistry.Register<DiagnosticsEvent>(Exchanges.Diagnostics);
             _eventBus.Subscribe((DiagnosticsEvent @event) =>
             {
-                using (var scope = _services.CreateScope())
+                using (var scope = Services.CreateScope())
                 {
                     _operationRepository = scope.ServiceProvider.GetRequiredService<OperationRepository>();
                     _operationRepository.Update(@event.Operation);

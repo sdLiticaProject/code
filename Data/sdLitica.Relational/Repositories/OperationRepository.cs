@@ -19,10 +19,15 @@ namespace sdLitica.Relational.Repositories
         /// Returns status of operation given by guid. -1 failed, 0 in progress, 1 complete
         /// </summary>
         /// <param name="guid"></param>
-        /// <returns>Status. -1 failed, 0 in progress, 1 complete</returns>
-        public int GetStatus(Guid guid)
+        /// <returns>Enum value for status of operation</returns>
+        public OperationStatus GetStatus(Guid guid)
         {
-            return Entity.Find(guid).Status;
+            AnalyticsOperation operation = Entity.Find(guid);
+            if (operation == null)
+            {
+                throw new ArgumentNullException("OperationRepository does not contain operation " + guid);
+            }
+            return operation.Status;
         }
     }
 }

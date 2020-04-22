@@ -41,7 +41,7 @@ namespace sdLitica.AnalyticsManagementCore
         /// </summary>
         /// <param name="operation"></param>
         /// <returns></returns>
-        public int CheckResults(AnalyticsOperation operation)
+        public OperationStatus CheckResults(AnalyticsOperation operation)
         {
             return _operationRepository.GetStatus(operation.Id);
         }

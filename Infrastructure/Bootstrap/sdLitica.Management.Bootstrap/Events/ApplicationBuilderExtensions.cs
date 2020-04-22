@@ -27,7 +27,7 @@ namespace sdLitica.Bootstrap.Events
             registry.Register<TimeSeriesAnalysisEvent>(Exchanges.TimeSeries);
             registry.Register<DiagnosticsEvent>(Exchanges.Diagnostics);
 
-            DiagnosticsListener._services = app.ApplicationServices.GetRequiredService<IServiceProvider>();
+            DiagnosticsListener.Services = app.ApplicationServices.GetRequiredService<IServiceProvider>();
             
             using (var scope = app.ApplicationServices.GetRequiredService<IServiceProvider>().CreateScope())
             {

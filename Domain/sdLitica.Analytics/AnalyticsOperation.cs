@@ -3,6 +3,17 @@ using System;
 
 namespace sdLitica.Analytics
 {
+    /// <summary>
+    /// enum for status of operation.
+    /// </summary>
+    public enum OperationStatus
+    {
+        InProcess = 0,
+        Complete = 1,
+        Error = -1
+    }
+
+
     //  At this moment, also used as its model in requests, messages. 
 
     /// <summary>
@@ -31,13 +42,13 @@ namespace sdLitica.Analytics
         /// <summary>
         /// Id of time-series on which operation is performed
         /// </summary>
-        public string TsId { get; set; }
+        public string TimeSeriesId { get; set; }
 
 
         /// <summary>
-        /// Current status of operation. 1 - complete, 0 - in process, -1 - error
+        /// Current status of operation
         /// </summary>
-        public int Status { get; set; }
+        public OperationStatus Status { get; set; }
 
 
         // TODO: add parameters of operation

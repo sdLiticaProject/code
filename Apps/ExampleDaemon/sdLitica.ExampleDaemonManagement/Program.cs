@@ -56,8 +56,8 @@ namespace sdLitica.ExampleDaemonManagement
 
                     try
                     {
-                        // get time-series given by TsId and extract some data from it
-                        Task<InfluxResult<DynamicInfluxRow>> task = _timeSeriesService.ReadMeasurementById(@event.Operation.TsId);
+                        // get time-series given by TimeSeriesId and extract some data from it
+                        Task<InfluxResult<DynamicInfluxRow>> task = _timeSeriesService.ReadMeasurementById(@event.Operation.TimeSeriesId);
                         task.Wait();
                         List<DynamicInfluxRow> rows = task.Result.Series[0].Rows;
                         double[] series = new double[rows.Count];
@@ -68,13 +68,13 @@ namespace sdLitica.ExampleDaemonManagement
                         log.Info(typeof(ExampleDaemonAnalysis.ExampleFunctions).GetMethod(@event.Operation.OpName).Invoke(null, new[] { series }));
 
                         // if no errors, status is complete
-                        operation.Status = 1;
+                        operation.Status = OperationStatus.Complete;
 
                     }
                     catch (Exception e)
                     {
                         // if any error, set status
-                        operation.Status = -1;
+                        operation.Status = OperationStatus.Error;
                     }
                     finally
                     {
