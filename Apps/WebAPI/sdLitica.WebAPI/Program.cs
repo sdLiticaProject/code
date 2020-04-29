@@ -16,6 +16,7 @@
  * *************************************************************************/
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 
 namespace sdLitica
 {
@@ -26,9 +27,24 @@ namespace sdLitica
             BuildWebHost(args).Run();
         }
 
-        public static IWebHost BuildWebHost(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
+        public static IWebHost BuildWebHost(string[] args) 
+        {
+            
+            IConfigurationRoot configuration = new ConfigurationBuilder()
+                                                    .AddCommandLine(args)
+                                                    .Build();
+            
+            string hostUrl = configuration["hostUrl"];
+            if (string.IsNullOrEmpty(hostUrl))
+            {
+                hostUrl = "http://0.0.0.0:5000";
+            }
+
+
+            return WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
+                .UseUrls(hostUrl)
                 .Build();
+        }
     }
 }
