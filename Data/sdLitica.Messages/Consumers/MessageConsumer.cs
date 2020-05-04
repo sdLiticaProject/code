@@ -40,8 +40,13 @@ namespace sdLitica.Messages.Consumers
         /// </summary>
         /// <param name="queue"></param>
         /// <param name="action"></param>
-        public void Subscribe(string queue, Action<object> action)
+        public void Subscribe(string exchange, string routingKey, Action<object> action)
         {
+            _channel.ExchangeDeclare(exchange: exchange, type: "topic", durable: true);
+
+            var queue = _channel.QueueDeclare().QueueName;
+            _channel.QueueBind(queue: queue, exchange: exchange, routingKey: routingKey);
+
             var consumer = new EventingBasicConsumer(_channel);
             consumer.Received += (object model, BasicDeliverEventArgs ea) =>
             {

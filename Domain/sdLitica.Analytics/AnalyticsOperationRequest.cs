@@ -19,10 +19,10 @@ namespace sdLitica.Analytics
     /// <summary>
     /// Entity for metadata of analytics operation.
     /// </summary>
-    public class AnalyticsOperation: Entity
+    public class AnalyticsOperationRequest: Entity
     {
 
-        public AnalyticsOperation()
+        public AnalyticsOperationRequest()
         {
         }
 

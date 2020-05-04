@@ -29,7 +29,7 @@ namespace sdLitica.Messages.Producers
         /// </summary>
         /// <param name="queue"></param>
         /// <param name="message"></param>
-        public void Publish(string queue, IMessage message)
+        public void Publish(string exchange, string routingKey, IMessage message)
         {
             var serialized = JsonConvert.SerializeObject(message);
             var body = Encoding.UTF8.GetBytes(serialized);
@@ -39,7 +39,7 @@ namespace sdLitica.Messages.Producers
             properties.Persistent = true;
             
             //TODO: support exchange publishing
-            _channel.BasicPublish("", queue, properties, body);
+            _channel.BasicPublish(exchange, routingKey, properties, body);
         }
     }
 }

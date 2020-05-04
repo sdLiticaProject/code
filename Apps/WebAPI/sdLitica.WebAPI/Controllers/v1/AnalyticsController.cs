@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using sdLitica.Analytics;
 using sdLitica.AnalyticsManagementCore;
+using sdLitica.WebAPI.Models.Analytics;
 
 namespace sdLitica.WebAPI.Controllers.v1
 {
@@ -29,8 +30,14 @@ namespace sdLitica.WebAPI.Controllers.v1
         /// <returns>Result of operation over time-series</returns>
         [HttpPost]
         [Route("calculate")] 
-        public async Task<NoContentResult> Calculation([FromBody] AnalyticsOperation analyticsOperation)
+        public async Task<NoContentResult> Calculation ([FromBody] AnalyticsRequestModel analyticsRequestModel) //([FromBody] AnalyticsOperation analyticsOperation)
         {
+            AnalyticsOperationRequest analyticsOperation = new AnalyticsOperationRequest()
+            {
+                OpName = analyticsRequestModel.OperationName,
+                TimeSeriesId = analyticsRequestModel.TimeSeriesId
+            };
+
             _analyticsService.ExecuteOperation(analyticsOperation);
             return new NoContentResult();
         }

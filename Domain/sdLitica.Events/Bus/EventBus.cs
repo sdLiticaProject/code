@@ -27,13 +27,13 @@ namespace sdLitica.Events.Bus
         /// To publish an event to a queue or exchange
         /// </summary>
         /// <param name="event"></param>
-        public void Publish(IEvent @event)
+        public void Publish(IEvent @event, string routingKey)
         {
             var message = @event.ToMessage();
             var exchanges = _eventRegistry.GetPublishingTarget(@event);
             foreach (var exchange in exchanges)
             {
-                _publisher.Publish(exchange, message);
+                _publisher.Publish(exchange, routingKey, message);
             }
         }
 
@@ -52,13 +52,13 @@ namespace sdLitica.Events.Bus
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="action"></param>
-        public void Subscribe<T>(Action<T> action) where T : IEvent
+        public void Subscribe<T>(string routingKey, Action<T> action) where T : IEvent
         {
             var type = Activator.CreateInstance<T>();
             var exchanges = _eventRegistry.GetPublishingTarget(type);
 
             foreach (var exchange in exchanges)
-                _consumer.Subscribe(exchange, (obj) => 
+                _consumer.Subscribe(exchange, routingKey, (obj) => 
                 {
                     var @event = (T) obj;
                     action(@event);

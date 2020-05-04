@@ -32,8 +32,8 @@ namespace sdLitica.AnalyticsManagementCore
         /// </summary>
         public static void Listen()
         {
-            _eventRegistry.Register<DiagnosticsEvent>(Exchanges.Diagnostics);
-            _eventBus.Subscribe((DiagnosticsEvent @event) =>
+            _eventRegistry.Register<DiagnosticsResponse>(Exchanges.Diagnostics);
+            _eventBus.Subscribe("basic", (DiagnosticsResponse @event) =>
             {
                 using (var scope = Services.CreateScope())
                 {

@@ -39,19 +39,18 @@ namespace sdLitica.ExampleDaemonManagement
             var registry = serviceProvider.GetRequiredService<IEventRegistry>();
 
             // register events
-            registry.Register<TimeSeriesAnalysisEvent>(Exchanges.TimeSeries);
-            registry.Register<DiagnosticsEvent>(Exchanges.Diagnostics);
-
+            registry.Register<TimeSeriesAnalysisRequest>(Exchanges.TimeSeries);
+            registry.Register<DiagnosticsResponse>(Exchanges.Diagnostics);
 
             using (var scope = serviceProvider.GetRequiredService<IServiceProvider>().CreateScope())
             {
                 var sampleBus = scope.ServiceProvider.GetRequiredService<IEventBus>();
 
                 // subscribe to analytical operations
-                sampleBus.Subscribe<TimeSeriesAnalysisEvent>((TimeSeriesAnalysisEvent @event) =>
+                sampleBus.Subscribe<TimeSeriesAnalysisRequest>("basic", (TimeSeriesAnalysisRequest @event) =>
                 {
                     log.Info(@event.Name + " " + @event.Operation.OpName);
-                    AnalyticsOperation operation = @event.Operation;
+                    AnalyticsOperationRequest operation = @event.Operation;
                     log.Info(operation.Id);
 
                     try
@@ -79,7 +78,7 @@ namespace sdLitica.ExampleDaemonManagement
                     finally
                     {
                         // publish information about operation
-                        sampleBus.Publish(new DiagnosticsEvent(operation));
+                        sampleBus.Publish(new DiagnosticsResponse(operation), "basic");
                     }
                 });
                 

@@ -25,7 +25,7 @@ namespace sdLitica.Relational.Context
         /// <param name="modelBuilder"></param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<AnalyticsOperation>();
+            modelBuilder.Entity<AnalyticsOperationRequest>();
 
             modelBuilder.Entity<User>();
             modelBuilder.Entity<UserToken>(b =>

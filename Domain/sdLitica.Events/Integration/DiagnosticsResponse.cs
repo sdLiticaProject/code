@@ -7,21 +7,21 @@ namespace sdLitica.Events.Integration
     /// <summary>
     /// Event contains metadata for analytics operation. Used to send diagnostics info (status of operation, errors etc.)
     /// </summary>
-    public class DiagnosticsEvent : Event
+    public class DiagnosticsResponse : Event
     {
 
-        public DiagnosticsEvent() : base()
+        public DiagnosticsResponse() : base()
         {
 
         }
 
-        public DiagnosticsEvent(AnalyticsOperation operation) : base()
+        public DiagnosticsResponse(AnalyticsOperationRequest operation) : base()
         {
             Operation = operation;
         }
 
 
         [JsonProperty]
-        public AnalyticsOperation Operation { get; set; }
+        public AnalyticsOperationRequest Operation { get; set; }
     }
 }

@@ -27,7 +27,7 @@ namespace sdLitica.Messages.Abstractions
         /// <param name="name"></param>
         public void CreateExchange(string name)
         {
-            _brokerConnection.CreateExchange(name, ExchangeType.Direct);
+            _brokerConnection.CreateExchange(name, ExchangeType.Topic);
         }
 
         /// <summary>

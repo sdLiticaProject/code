@@ -26,21 +26,22 @@ namespace sdLitica.Events.Bus
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="exchange"></param>
-        public void Register<T>(string queue) where T : IEvent
+        public void Register<T>(string exchange) where T : IEvent
         {
             var eventType = typeof(T);
 
             if (_eventRegistry.ContainsKey(eventType))
             {
-                if (!_eventRegistry[eventType].Contains(queue))
-                    _eventRegistry[eventType].Add(queue);
+                if (!_eventRegistry[eventType].Contains(exchange))
+                    _eventRegistry[eventType].Add(exchange);
                 return;
             }
 
-            _eventRegistry.Add(new KeyValuePair<Type, IList<string>>(eventType, new List<string>() { queue }));
+            _eventRegistry.Add(new KeyValuePair<Type, IList<string>>(eventType, new List<string>() { exchange }));
             
             //TODO needs: create queue OR exchanges
-            _brokerManager.CreateQueue(queue);
+            //_brokerManager.CreateQueue(exchange);
+            _brokerManager.CreateExchange(exchange);
         }
 
         /// <summary>

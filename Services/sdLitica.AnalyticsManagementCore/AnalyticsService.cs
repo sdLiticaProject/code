@@ -24,14 +24,14 @@ namespace sdLitica.AnalyticsManagementCore
         /// Execute operation. Publishes event, that contains AnalyticsOperation for analytical modules.
         /// </summary>
         /// <param name="operation"></param>
-        public void ExecuteOperation(AnalyticsOperation operation)
+        public void ExecuteOperation(AnalyticsOperationRequest operation)
         {
             operation.SetId(); // todo: separate json-model from entity and set id during creation of entity
 
             _operationRepository.Add(operation);     
 
-            TimeSeriesAnalysisEvent @event = new TimeSeriesAnalysisEvent(operation);
-            _eventBus.Publish(@event);
+            TimeSeriesAnalysisRequest @event = new TimeSeriesAnalysisRequest(operation);
+            _eventBus.Publish(@event, "basic");
 
             _operationRepository.SaveChanges();
         }
@@ -41,7 +41,7 @@ namespace sdLitica.AnalyticsManagementCore
         /// </summary>
         /// <param name="operation"></param>
         /// <returns></returns>
-        public OperationStatus CheckResults(AnalyticsOperation operation)
+        public OperationStatus CheckResults(AnalyticsOperationRequest operation)
         {
             return _operationRepository.GetStatus(operation.Id);
         }
@@ -50,7 +50,7 @@ namespace sdLitica.AnalyticsManagementCore
         /// Fetch results of operation.
         /// </summary>
         /// <param name="operation"></param>
-        public void FetchResults(AnalyticsOperation operation)
+        public void FetchResults(AnalyticsOperationRequest operation)
         {
             throw new NotImplementedException();
         }

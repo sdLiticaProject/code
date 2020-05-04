@@ -13,13 +13,15 @@ namespace sdLitica.Events.Abstractions
         /// To publish an event to a queue or exchange
         /// </summary>
         /// <param name="event"></param>
-        void Publish(IEvent @event);
+        /// <param name="routingKey"></param>
+        void Publish(IEvent @event, string routingKey);
         /// <summary>
         /// Subcribe to an event and run the action after receive it
         /// </summary>
         /// <typeparam name="T"></typeparam>
+        /// <param name="routingKey"></param>
         /// <param name="action"></param>
-        void Subscribe<T>(Action<T> action) where T : IEvent;
+        void Subscribe<T>(string routingKey, Action<T> action) where T : IEvent;
         /// <summary>
         /// Read to an event and run the action after receive it
         /// </summary>
