@@ -4,7 +4,7 @@ using System.Text;
 
 namespace sdLitica.Utils.Models
 {
-    class AnalyticsModuleRegistrationModel
+    public class AnalyticsModuleRegistrationModel
     {
         public AnalyticsModuleRegistrationModel() { }
         public Guid ModuleGuid { get; set; }

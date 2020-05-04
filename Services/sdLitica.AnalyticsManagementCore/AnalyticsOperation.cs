@@ -13,6 +13,7 @@ namespace sdLitica.AnalyticsManagementCore
         public string Name { get; set; }
         public Guid ModuleGuid { get; set; }
         public string QueueName { get; set; }
+        public IList<string> QueueNames { get; set; } // decide what to keep
         public string Description { get; set; }
     }
 }

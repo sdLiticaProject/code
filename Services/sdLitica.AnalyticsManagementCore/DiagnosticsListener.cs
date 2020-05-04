@@ -16,15 +16,17 @@ namespace sdLitica.AnalyticsManagementCore
         static IEventRegistry _eventRegistry;
         static IEventBus _eventBus;
         static OperationRepository _operationRepository;
+        static AnalyticsRegistry _analyticsRegistry;
 
         public static IServiceProvider Services { get; set; }
 
 
-        public static void Initialize(IEventRegistry eventRegistry, IEventBus eventBus, OperationRepository operationRepository)//, IServiceProvider services)
+        public static void Initialize(IEventRegistry eventRegistry, IEventBus eventBus, OperationRepository operationRepository, AnalyticsRegistry analyticsRegistry)//, IServiceProvider services)
         {
             _eventRegistry = eventRegistry;
             _eventBus = eventBus;
             _operationRepository = operationRepository;
+            _analyticsRegistry = analyticsRegistry;
         }
 
         /// <summary>
@@ -33,7 +35,7 @@ namespace sdLitica.AnalyticsManagementCore
         public static void Listen()
         {
             _eventRegistry.Register<DiagnosticsResponse>(Exchanges.Diagnostics);
-            _eventBus.Subscribe("basic", (DiagnosticsResponse @event) =>
+            _eventBus.Subscribe((DiagnosticsResponse @event) =>
             {
                 using (var scope = Services.CreateScope())
                 {
@@ -41,6 +43,15 @@ namespace sdLitica.AnalyticsManagementCore
                     _operationRepository.Update(@event.Operation);
                     _operationRepository.SaveChanges();
                 }
+            });
+        }
+
+        public static void ListenNewModules()
+        {
+            _eventRegistry.Register<AnalyticModuleRegistrationRequest>(Exchanges.ModuleRegistration);
+            _eventBus.Subscribe((AnalyticModuleRegistrationRequest @event) =>
+            {
+                _analyticsRegistry.Register(@event.Module);
             });
         }
     }

@@ -15,6 +15,8 @@ using Vibrant.InfluxDB.Client.Rows;
 using log4net;
 using log4net.Config;
 using System.Reflection;
+using sdLitica.Utils.Models;
+using System.Threading;
 
 namespace sdLitica.ExampleDaemonManagement
 {
@@ -41,13 +43,26 @@ namespace sdLitica.ExampleDaemonManagement
             // register events
             registry.Register<TimeSeriesAnalysisRequest>(Exchanges.TimeSeries);
             registry.Register<DiagnosticsResponse>(Exchanges.Diagnostics);
+            registry.Register<AnalyticModuleRegistrationRequest>(Exchanges.ModuleRegistration);
 
             using (var scope = serviceProvider.GetRequiredService<IServiceProvider>().CreateScope())
             {
                 var sampleBus = scope.ServiceProvider.GetRequiredService<IEventBus>();
 
+                var opArr = new List<AnalyticsOperationModel>();
+                opArr.Add(new AnalyticsOperationModel() { Name = "Mean", Description = "Average" });
+                AnalyticsModuleRegistrationModel moduleModel = new AnalyticsModuleRegistrationModel()
+                {
+                    ModuleGuid = new Guid(),
+                    QueueName = "mean_module",
+                    Operations = opArr
+                };
+                Thread.Sleep(10000);
+                sampleBus.Publish(new AnalyticModuleRegistrationRequest(moduleModel));
+
+
                 // subscribe to analytical operations
-                sampleBus.Subscribe<TimeSeriesAnalysisRequest>("basic", (TimeSeriesAnalysisRequest @event) =>
+                sampleBus.Subscribe<TimeSeriesAnalysisRequest>((TimeSeriesAnalysisRequest @event) =>
                 {
                     log.Info(@event.Name + " " + @event.Operation.OpName);
                     AnalyticsOperationRequest operation = @event.Operation;
@@ -78,9 +93,10 @@ namespace sdLitica.ExampleDaemonManagement
                     finally
                     {
                         // publish information about operation
-                        sampleBus.Publish(new DiagnosticsResponse(operation), "basic");
+                        sampleBus.Publish(new DiagnosticsResponse(operation));
+                        sampleBus.Publish(new AnalyticModuleRegistrationRequest(moduleModel));
                     }
-                });
+                }, "mean_module");
                 
                 
             }

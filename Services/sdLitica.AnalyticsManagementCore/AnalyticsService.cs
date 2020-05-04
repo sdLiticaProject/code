@@ -2,6 +2,7 @@
 using sdLitica.Analytics;
 using sdLitica.Events.Abstractions;
 using sdLitica.Events.Integration;
+using sdLitica.Exceptions.Http;
 using sdLitica.Relational.Repositories;
 
 namespace sdLitica.AnalyticsManagementCore
@@ -13,11 +14,13 @@ namespace sdLitica.AnalyticsManagementCore
     {
         private readonly IEventBus _eventBus;
         private readonly OperationRepository _operationRepository;
+        private readonly AnalyticsRegistry _analyticsRegistry;
 
-        public AnalyticsService(IEventBus eventBus, OperationRepository operationRepository)
+        public AnalyticsService(IEventBus eventBus, OperationRepository operationRepository, AnalyticsRegistry analyticsRegistry)
         {
             _eventBus = eventBus;
             _operationRepository = operationRepository;
+            _analyticsRegistry = analyticsRegistry;
         }
 
         /// <summary>
@@ -31,9 +34,17 @@ namespace sdLitica.AnalyticsManagementCore
             _operationRepository.Add(operation);     
 
             TimeSeriesAnalysisRequest @event = new TimeSeriesAnalysisRequest(operation);
-            _eventBus.Publish(@event, "basic");
+            string routingKey = _analyticsRegistry.GetQueue(operation.OpName);
+            if (routingKey != null)
+            {
+                _eventBus.Publish(@event, routingKey);
+            }
+            else
+            {
+                throw new InvalidRequestException("no such operation"); // not sure if it is right exception
+            }
 
-            _operationRepository.SaveChanges();
+            _operationRepository.SaveChanges(); // TODO: sometimes doesn't work, hard to reproduce. maybe because of manual guid setting
         }
 
         /// <summary>

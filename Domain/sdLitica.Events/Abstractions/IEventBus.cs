@@ -14,14 +14,14 @@ namespace sdLitica.Events.Abstractions
         /// </summary>
         /// <param name="event"></param>
         /// <param name="routingKey"></param>
-        void Publish(IEvent @event, string routingKey);
+        void Publish(IEvent @event, string routingKey="basic");
         /// <summary>
         /// Subcribe to an event and run the action after receive it
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="routingKey"></param>
         /// <param name="action"></param>
-        void Subscribe<T>(string routingKey, Action<T> action) where T : IEvent;
+        void Subscribe<T>(Action<T> action, string routingKey="basic") where T : IEvent;
         /// <summary>
         /// Read to an event and run the action after receive it
         /// </summary>

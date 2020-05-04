@@ -42,7 +42,7 @@ namespace sdLitica.Messages.Consumers
         /// <param name="action"></param>
         public void Subscribe(string exchange, string routingKey, Action<object> action)
         {
-            _channel.ExchangeDeclare(exchange: exchange, type: "topic", durable: true);
+            //_channel.ExchangeDeclare(exchange: exchange, type: "topic", durable: true);
 
             var queue = _channel.QueueDeclare().QueueName;
             _channel.QueueBind(queue: queue, exchange: exchange, routingKey: routingKey);

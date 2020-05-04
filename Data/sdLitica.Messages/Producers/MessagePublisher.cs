@@ -37,8 +37,7 @@ namespace sdLitica.Messages.Producers
 
             //if RabbitMQ restarts, the message will persist
             properties.Persistent = true;
-            
-            //TODO: support exchange publishing
+
             _channel.BasicPublish(exchange, routingKey, properties, body);
         }
     }

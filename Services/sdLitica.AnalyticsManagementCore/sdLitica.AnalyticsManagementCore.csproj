@@ -9,6 +9,8 @@
     <ProjectReference Include="..\..\Data\sdLitica.Relational\sdLitica.Relational.csproj" />
     <ProjectReference Include="..\..\Domain\sdLitica.Analytics\sdLitica.Analytics.csproj" />
     <ProjectReference Include="..\..\Domain\sdLitica.Events\sdLitica.Events.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\sdLitica.Exceptions\sdLitica.Exceptions.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\sdLitica.Utils\sdLitica.Utils.csproj" />
   </ItemGroup>
 
 </Project>
