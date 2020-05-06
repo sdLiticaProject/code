@@ -49,16 +49,7 @@ namespace sdLitica.ExampleDaemonManagement
             {
                 var sampleBus = scope.ServiceProvider.GetRequiredService<IEventBus>();
 
-                var opArr = new List<AnalyticsOperationModel>();
-                opArr.Add(new AnalyticsOperationModel() { Name = "Mean", Description = "Average" });
-                AnalyticsModuleRegistrationModel moduleModel = new AnalyticsModuleRegistrationModel()
-                {
-                    ModuleGuid = new Guid(),
-                    QueueName = "mean_module",
-                    Operations = opArr
-                };
-                Thread.Sleep(10000);
-                sampleBus.Publish(new AnalyticModuleRegistrationRequest(moduleModel));
+                var peepTimer = new Timer(SendPeep, sampleBus, 5000, 5000); // todo: remove hardcoded values
 
 
                 // subscribe to analytical operations
@@ -94,7 +85,6 @@ namespace sdLitica.ExampleDaemonManagement
                     {
                         // publish information about operation
                         sampleBus.Publish(new DiagnosticsResponse(operation));
-                        sampleBus.Publish(new AnalyticModuleRegistrationRequest(moduleModel));
                     }
                 }, "mean_module");
                 
@@ -105,6 +95,21 @@ namespace sdLitica.ExampleDaemonManagement
 
             Console.WriteLine("Press enter to exit");
             Console.ReadLine();
+        }
+
+        public static void SendPeep(object stateInfo)
+        {
+            var opArr = new List<AnalyticsOperationModel>();
+            var sampleBus = (IEventBus)stateInfo;
+            opArr.Add(new AnalyticsOperationModel() { Name = "Mean", Description = "Average" });
+            AnalyticsModuleRegistrationModel moduleModel = new AnalyticsModuleRegistrationModel()
+            {
+                ModuleGuid = new Guid(),
+                QueueName = "mean_module",
+                Operations = opArr
+            };
+            Thread.Sleep(10000);
+            sampleBus.Publish(new AnalyticModuleRegistrationRequest(moduleModel));
         }
 
         /// <summary>

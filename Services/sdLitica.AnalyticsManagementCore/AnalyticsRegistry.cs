@@ -4,6 +4,7 @@ using sdLitica.Events.Integration;
 using sdLitica.Utils.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace sdLitica.AnalyticsManagementCore
@@ -20,6 +21,16 @@ namespace sdLitica.AnalyticsManagementCore
 
         public void Register(AnalyticsModuleRegistrationModel module)
         {
+            if (_moduleLastHeardTime.ContainsKey(module.ModuleGuid))
+            {
+                _moduleLastHeardTime[module.ModuleGuid] = DateTime.Now;
+            }
+            else
+            {
+                _moduleLastHeardTime.Add(module.ModuleGuid, DateTime.Now);
+            }
+            
+
             foreach (AnalyticsOperationModel operationModel in module.Operations) {
                 if (_analyticsRegistry.ContainsKey(operationModel.Name))
                 {
@@ -47,12 +58,41 @@ namespace sdLitica.AnalyticsManagementCore
 
         public string GetQueue(string name)
         {
+            var modulesToRemove = new List<Guid>();
+            foreach (var moduleGuid in _moduleLastHeardTime.Keys)
+            {
+                if (DateTime.Now - _moduleLastHeardTime[moduleGuid] > new TimeSpan(0, 0, 15))
+                {
+                    System.Console.WriteLine(DateTime.Now);
+                    System.Console.WriteLine(_moduleLastHeardTime[moduleGuid]);
+                    var registryToRemove = _analyticsRegistry.Where(pair => pair.Value.ModuleGuid.Equals(moduleGuid)).Select(pair => pair.Key).ToList();
+                    foreach (var key in registryToRemove) _analyticsRegistry.Remove(key);
+
+                    modulesToRemove.Add(moduleGuid);
+                }
+            }
+            foreach (var key in modulesToRemove) _moduleLastHeardTime.Remove(key);
+
             if (!_analyticsRegistry.ContainsKey(name)) return null;
             return _analyticsRegistry[name].QueueName;
         }
 
         public IList<string> GetQueues(string name)
         {
+            var modulesToRemove = new List<Guid>();
+            foreach (var moduleGuid in _moduleLastHeardTime.Keys)
+            {
+                if (DateTime.Now - _moduleLastHeardTime[moduleGuid] > new TimeSpan(0, 0, 15))
+                {
+                    var registryToRemove = _analyticsRegistry.Where(pair => pair.Value.ModuleGuid.Equals(moduleGuid)).Select(pair => pair.Key).ToList();
+                    foreach (var key in registryToRemove) _analyticsRegistry.Remove(key);
+
+                    modulesToRemove.Add(moduleGuid);
+                }
+            }
+            foreach (var key in modulesToRemove) _moduleLastHeardTime.Remove(key);
+
+
             if (!_analyticsRegistry.ContainsKey(name)) return null;
             return _analyticsRegistry[name].QueueNames;
         }
