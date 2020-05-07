@@ -51,7 +51,6 @@ namespace sdLitica.AnalyticsManagementCore
             _eventRegistry.Register<AnalyticModuleRegistrationRequest>(Exchanges.ModuleRegistration);
             _eventBus.Subscribe((AnalyticModuleRegistrationRequest @event) =>
             {
-                System.Console.WriteLine("message");
                 _analyticsRegistry.Register(@event.Module);
             });
         }

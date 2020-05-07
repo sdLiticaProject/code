@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using sdLitica.Analytics;
@@ -34,6 +35,7 @@ namespace sdLitica.WebAPI.Controllers.v1
         {
             AnalyticsOperationRequest analyticsOperation = new AnalyticsOperationRequest()
             {
+                Id = Guid.NewGuid(),
                 OpName = analyticsRequestModel.OperationName,
                 TimeSeriesId = analyticsRequestModel.TimeSeriesId
             };

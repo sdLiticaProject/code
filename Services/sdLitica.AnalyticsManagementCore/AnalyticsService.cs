@@ -29,9 +29,10 @@ namespace sdLitica.AnalyticsManagementCore
         /// <param name="operation"></param>
         public void ExecuteOperation(AnalyticsOperationRequest operation)
         {
-            operation.SetId(); // todo: separate json-model from entity and set id during creation of entity
+            // todo: separate json-model from entity and set id during creation of entity
 
-            _operationRepository.Add(operation);     
+            _operationRepository.Add(operation);
+            _operationRepository.SaveChanges();
 
             TimeSeriesAnalysisRequest @event = new TimeSeriesAnalysisRequest(operation);
             string routingKey = _analyticsRegistry.GetQueue(operation.OpName);
@@ -43,8 +44,6 @@ namespace sdLitica.AnalyticsManagementCore
             {
                 throw new InvalidRequestException("no such operation"); // not sure if it is right exception
             }
-
-            _operationRepository.SaveChanges(); // TODO: sometimes doesn't work, hard to reproduce. maybe because of manual guid setting
         }
 
         /// <summary>

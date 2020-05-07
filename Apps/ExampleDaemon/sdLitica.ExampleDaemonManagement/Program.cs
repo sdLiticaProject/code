@@ -45,12 +45,22 @@ namespace sdLitica.ExampleDaemonManagement
             registry.Register<DiagnosticsResponse>(Exchanges.Diagnostics);
             registry.Register<AnalyticModuleRegistrationRequest>(Exchanges.ModuleRegistration);
 
+            // creating module's model
+            var opArr = new List<AnalyticsOperationModel>();
+            opArr.Add(new AnalyticsOperationModel() { Name = "Mean", Description = "Average" });
+            AnalyticsModuleRegistrationModel moduleModel = new AnalyticsModuleRegistrationModel()
+            {
+                ModuleGuid = Guid.NewGuid(),
+                QueueName = "mean_module",
+                Operations = opArr
+            };
+
             using (var scope = serviceProvider.GetRequiredService<IServiceProvider>().CreateScope())
             {
                 var sampleBus = scope.ServiceProvider.GetRequiredService<IEventBus>();
 
-                var peepTimer = new Timer(SendPeep, sampleBus, 5000, 5000); // todo: remove hardcoded values
-
+                var peepTimer = new Timer((e) => { SendPeep(sampleBus, moduleModel); }, null, 5000, 5000); // todo: remove hardcoded values
+                
 
                 // subscribe to analytical operations
                 sampleBus.Subscribe<TimeSeriesAnalysisRequest>((TimeSeriesAnalysisRequest @event) =>
@@ -97,18 +107,8 @@ namespace sdLitica.ExampleDaemonManagement
             Console.ReadLine();
         }
 
-        public static void SendPeep(object stateInfo)
+        public static void SendPeep(IEventBus sampleBus, AnalyticsModuleRegistrationModel moduleModel)
         {
-            var opArr = new List<AnalyticsOperationModel>();
-            var sampleBus = (IEventBus)stateInfo;
-            opArr.Add(new AnalyticsOperationModel() { Name = "Mean", Description = "Average" });
-            AnalyticsModuleRegistrationModel moduleModel = new AnalyticsModuleRegistrationModel()
-            {
-                ModuleGuid = new Guid(),
-                QueueName = "mean_module",
-                Operations = opArr
-            };
-            Thread.Sleep(10000);
             sampleBus.Publish(new AnalyticModuleRegistrationRequest(moduleModel));
         }
 
