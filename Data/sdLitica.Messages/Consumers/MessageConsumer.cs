@@ -36,11 +36,11 @@ namespace sdLitica.Messages.Consumers
         }
 
         /// <summary>
-        /// Subscribe a message received through the bus
+        /// Subscribe (topic) a message received through the bus
         /// </summary>
         /// <param name="queue"></param>
         /// <param name="action"></param>
-        public void Subscribe(string exchange, string routingKey, Action<object> action)
+        public void SubscribeToTopic(string exchange, string routingKey, Action<object> action)
         {
             //_channel.ExchangeDeclare(exchange: exchange, type: "topic", durable: true);
 
@@ -69,5 +69,36 @@ namespace sdLitica.Messages.Consumers
                                  autoAck: true,
                                  consumer: consumer);
         }
+
+        /// <summary>
+        /// Subscribe (direct) a message received through the bus
+        /// </summary>
+        /// <param name="queue"></param>
+        /// <param name="action"></param>
+        public void Subscribe(string queue, Action<object> action)
+        {
+            var consumer = new EventingBasicConsumer(_channel);
+            consumer.Received += (object model, BasicDeliverEventArgs ea) =>
+            {
+                var body = ea.Body;
+                var strMessage = Encoding.UTF8.GetString(body);
+
+                var message = JsonConvert.DeserializeObject<Message>(strMessage);
+                if (message == null) throw new Exception("Could not deserialize message object");
+
+                var eventAssembly = Assembly.Load("sdLitica.Events");
+                var type = eventAssembly.GetType(message.Type);
+                var instance = Activator.CreateInstance(type);
+
+                var @event = JsonConvert.DeserializeObject(message.Body, type);
+
+                action(@event);
+            };
+
+            _channel.BasicConsume(queue: queue,
+                                 autoAck: true,
+                                 consumer: consumer);
+        }
+
     }
 }

@@ -27,13 +27,27 @@ namespace sdLitica.Events.Bus
         /// To publish an event to a queue or exchange
         /// </summary>
         /// <param name="event"></param>
-        public void Publish(IEvent @event, string routingKey="basic")
+        public void Publish(IEvent @event)
         {
             var message = @event.ToMessage();
             var exchanges = _eventRegistry.GetPublishingTarget(@event);
             foreach (var exchange in exchanges)
             {
-                _publisher.Publish(exchange, routingKey, message);
+                _publisher.Publish(exchange, message);
+            }
+        }
+
+        /// <summary>
+        /// To publish (topic) an event to a queue or exchange
+        /// </summary>
+        /// <param name="event"></param>
+        public void PublishToTopic(IEvent @event, string routingKey="basic")
+        {
+            var message = @event.ToMessage();
+            var exchanges = _eventRegistry.GetPublishingTarget(@event);
+            foreach (var exchange in exchanges)
+            {
+                _publisher.PublishToTopic(exchange, routingKey, message);
             }
         }
 
@@ -48,22 +62,41 @@ namespace sdLitica.Events.Bus
         }
 
         /// <summary>
-        /// Subcribe to an event and run the action after receive it
+        /// Subcribe (topic) to an event and run the action after receive it
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="action"></param>
-        public void Subscribe<T>(Action<T> action, string routingKey="basic") where T : IEvent
+        public void SubscribeToTopic<T>(Action<T> action, string routingKey="basic") where T : IEvent
         {
             var type = Activator.CreateInstance<T>();
             var exchanges = _eventRegistry.GetPublishingTarget(type);
 
             foreach (var exchange in exchanges)
-                _consumer.Subscribe(exchange, routingKey, (obj) => 
+                _consumer.SubscribeToTopic(exchange, routingKey, (obj) => 
                 {
                     var @event = (T) obj;
                     action(@event);
                 });
             
+        }
+
+        /// <summary>
+        /// Subcribe to an event and run the action after receive it
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="action"></param>
+        public void Subscribe<T>(Action<T> action) where T : IEvent
+        {
+            var type = Activator.CreateInstance<T>();
+            var exchanges = _eventRegistry.GetPublishingTarget(type);
+
+            foreach (var exchange in exchanges)
+                _consumer.Subscribe(exchange, (obj) =>
+                {
+                    var @event = (T)obj;
+                    action(@event);
+                });
+
         }
     }
 }

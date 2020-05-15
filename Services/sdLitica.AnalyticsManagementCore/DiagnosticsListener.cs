@@ -35,7 +35,7 @@ namespace sdLitica.AnalyticsManagementCore
         public static void Listen()
         {
             _eventRegistry.Register<DiagnosticsResponse>(Exchanges.Diagnostics);
-            _eventBus.Subscribe((DiagnosticsResponse @event) =>
+            _eventBus.SubscribeToTopic((DiagnosticsResponse @event) =>
             {
                 using (var scope = Services.CreateScope())
                 {
@@ -49,7 +49,7 @@ namespace sdLitica.AnalyticsManagementCore
         public static void ListenNewModules()
         {
             _eventRegistry.Register<AnalyticModuleRegistrationRequest>(Exchanges.ModuleRegistration);
-            _eventBus.Subscribe((AnalyticModuleRegistrationRequest @event) =>
+            _eventBus.SubscribeToTopic((AnalyticModuleRegistrationRequest @event) =>
             {
                 _analyticsRegistry.Register(@event.Module);
             });

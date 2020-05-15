@@ -13,8 +13,14 @@ namespace sdLitica.Messages.Abstractions
         /// Publish this message to a queue or exchange
         /// </summary>
         /// <param name="exchange"></param>
+        /// <param name="message"></param>
+        void Publish(string exchange, IMessage message);
+        /// <summary>
+        /// Publish (topic) this message to a queue or exchange
+        /// </summary>
+        /// <param name="exchange"></param>
         /// <param name="routingKey"></param>
         /// <param name="message"></param>
-        void Publish(string exchange, string routingKey, IMessage message);
+        void PublishToTopic(string exchange, string routingKey, IMessage message);
     }
 }

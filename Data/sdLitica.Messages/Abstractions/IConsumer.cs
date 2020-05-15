@@ -15,10 +15,16 @@ namespace sdLitica.Messages.Abstractions
         /// <param name="queue"></param>
         void Read(string queue);
         /// <summary>
+        /// Subscribe (topic) a queue
+        /// </summary>
+        /// <param name="queue"></param>
+        /// <param name="action"></param>
+        void SubscribeToTopic(string queue, string routingKey, Action<object> action);
+        /// <summary>
         /// Subscribe a queue
         /// </summary>
         /// <param name="queue"></param>
         /// <param name="action"></param>
-        void Subscribe(string queue, string routingKey, Action<object> action);
+        void Subscribe(string queue, Action<object> action);
     }
 }

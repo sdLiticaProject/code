@@ -63,7 +63,7 @@ namespace sdLitica.ExampleDaemonManagement
                 
 
                 // subscribe to analytical operations
-                sampleBus.Subscribe<TimeSeriesAnalysisRequest>((TimeSeriesAnalysisRequest @event) =>
+                sampleBus.SubscribeToTopic<TimeSeriesAnalysisRequest>((TimeSeriesAnalysisRequest @event) =>
                 {
                     log.Info(@event.Name + " " + @event.Operation.OpName);
                     AnalyticsOperationRequest operation = @event.Operation;
