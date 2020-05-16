@@ -58,20 +58,7 @@ namespace sdLitica.AnalyticsManagementCore
 
         public string GetQueue(string name)
         {
-            List<Guid> modulesToRemove = new List<Guid>();
-            foreach (var moduleGuid in _moduleLastHeardTime.Keys)
-            {
-                if (DateTime.Now - _moduleLastHeardTime[moduleGuid] > new TimeSpan(0, 0, 15))
-                {
-                    System.Console.WriteLine(DateTime.Now);
-                    System.Console.WriteLine(_moduleLastHeardTime[moduleGuid]);
-                    List<string> registryToRemove = _analyticsRegistry.Where(pair => pair.Value.ModuleGuid.Equals(moduleGuid)).Select(pair => pair.Key).ToList();
-                    foreach (var key in registryToRemove) _analyticsRegistry.Remove(key);
-
-                    modulesToRemove.Add(moduleGuid);
-                }
-            }
-            foreach (var key in modulesToRemove) _moduleLastHeardTime.Remove(key);
+            CheckAvailable();
 
             if (!_analyticsRegistry.ContainsKey(name)) return null;
             return _analyticsRegistry[name].QueueName;
@@ -79,25 +66,43 @@ namespace sdLitica.AnalyticsManagementCore
 
         public IList<string> GetQueues(string name)
         {
-            List<Guid> modulesToRemove = new List<Guid>();
-            foreach (var moduleGuid in _moduleLastHeardTime.Keys)
-            {
-                if (DateTime.Now - _moduleLastHeardTime[moduleGuid] > new TimeSpan(0, 0, 15))
-                {
-                    List<string> registryToRemove = _analyticsRegistry.Where(pair => pair.Value.ModuleGuid.Equals(moduleGuid)).Select(pair => pair.Key).ToList();
-                    foreach (var key in registryToRemove) _analyticsRegistry.Remove(key);
-
-                    modulesToRemove.Add(moduleGuid);
-                }
-            }
-            foreach (var key in modulesToRemove) _moduleLastHeardTime.Remove(key);
-
+            CheckAvailable();
 
             if (!_analyticsRegistry.ContainsKey(name)) return null;
             return _analyticsRegistry[name].QueueNames;
         }
 
+        public IList<AnalyticsOperationModel> GetAvailableOperations()
+        {
+            CheckAvailable();
 
+            IList<AnalyticsOperationModel> operations = new List<AnalyticsOperationModel>();
+            foreach (AnalyticsOperation operation in _analyticsRegistry.Values)
+            {
+                operations.Add(new AnalyticsOperationModel()
+                {
+                    Name = operation.Name,
+                    Description = operation.Description
+                });
+            }
+            return operations;
+        }
+
+        public void CheckAvailable()
+        {
+            List<Guid> modulesToRemove = new List<Guid>();
+            foreach (Guid moduleGuid in _moduleLastHeardTime.Keys)
+            {
+                if (DateTime.Now - _moduleLastHeardTime[moduleGuid] > new TimeSpan(0, 0, 15))
+                {
+                    List<string> registryToRemove = _analyticsRegistry.Where(pair => pair.Value.ModuleGuid.Equals(moduleGuid)).Select(pair => pair.Key).ToList();
+                    foreach (string key in registryToRemove) _analyticsRegistry.Remove(key);
+
+                    modulesToRemove.Add(moduleGuid);
+                }
+            }
+            foreach (Guid key in modulesToRemove) _moduleLastHeardTime.Remove(key);
+        }
         
     }
 }

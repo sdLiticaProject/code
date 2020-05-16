@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using sdLitica.Analytics;
 using sdLitica.Events.Abstractions;
 using sdLitica.Events.Integration;
 using sdLitica.Exceptions.Http;
 using sdLitica.Relational.Repositories;
+using sdLitica.Utils.Models;
 
 namespace sdLitica.AnalyticsManagementCore
 {
@@ -43,6 +46,15 @@ namespace sdLitica.AnalyticsManagementCore
             {
                 throw new InvalidRequestException("no such operation"); // not sure if it is right exception
             }
+        }
+
+        /// <summary>
+        /// Get list of available operations
+        /// </summary>
+        /// <returns></returns>
+        public IList<AnalyticsOperationModel> GetAvailableOperations()
+        {
+            return _analyticsRegistry.GetAvailableOperations();
         }
 
         /// <summary>

@@ -76,10 +76,10 @@ namespace sdLitica.WebAPI.Controllers.v1
                 if (series.Count != 0)
                 {
                     List<TimeSeriesJsonEntity> timeseriesJsonEntities = new List<TimeSeriesJsonEntity>();
-                    foreach (var t in series)
+                    foreach (InfluxSeries<DynamicInfluxRow> t in series)
                     {
                         List<DynamicInfluxRow> rows = t.Rows;
-                        foreach (var t1 in rows)
+                        foreach (DynamicInfluxRow t1 in rows)
                         {
                             timeseriesJsonEntities.Add(new TimeSeriesJsonEntity()
                             {
@@ -126,10 +126,10 @@ namespace sdLitica.WebAPI.Controllers.v1
                 if (series.Count != 0)
                 {
                     List<TimeSeriesDataJsonEntity> timeseriesDataJsonEntities = new List<TimeSeriesDataJsonEntity>();
-                    foreach (var t in series)
+                    foreach (InfluxSeries<DynamicInfluxRow> t in series)
                     {
                         List<DynamicInfluxRow> rows = t.Rows;
-                        foreach (var t1 in rows)
+                        foreach (DynamicInfluxRow t1 in rows)
                         {
                             timeseriesDataJsonEntities.Add(new TimeSeriesDataJsonEntity()
                             {

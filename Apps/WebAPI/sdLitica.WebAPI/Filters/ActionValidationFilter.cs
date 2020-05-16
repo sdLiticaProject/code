@@ -35,9 +35,9 @@ namespace sdLitica.Filters
             if (!modelState.IsValid)
             {
                 List<string> errors = new List<string>();
-                foreach (var state in modelState)
+                foreach (KeyValuePair<string, ModelStateEntry> state in modelState)
                 {
-                    foreach (var error in state.Value.Errors)
+                    foreach (ModelError error in state.Value.Errors)
                     {
                         errors.Add(error.ErrorMessage);
                     }

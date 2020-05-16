@@ -23,7 +23,7 @@ namespace sdLitica.WebAPI.Models.Management
                             .Where(p => !p.GetIndexParameters().Any())
                             .Where(p => p.Name != GetPropertyName(() => profile.Id))
                             .Where(p => p.Name != GetPropertyName(() => profile.Password));
-            foreach (var prop in props)
+            foreach (System.Reflection.PropertyInfo prop in props)
             {
                 prop.SetValue(this, prop.GetValue(profile));
             }

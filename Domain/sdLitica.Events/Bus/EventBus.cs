@@ -31,7 +31,7 @@ namespace sdLitica.Events.Bus
         {
             IMessage message = @event.ToMessage();
             IList<string> exchanges = _eventRegistry.GetPublishingTarget(@event);
-            foreach (var exchange in exchanges)
+            foreach (string exchange in exchanges)
             {
                 _publisher.Publish(exchange, message);
             }
@@ -45,7 +45,7 @@ namespace sdLitica.Events.Bus
         {
             IMessage message = @event.ToMessage();
             IList<string> exchanges = _eventRegistry.GetPublishingTarget(@event);
-            foreach (var exchange in exchanges)
+            foreach (string exchange in exchanges)
             {
                 _publisher.PublishToTopic(exchange, routingKey, message);
             }
@@ -71,7 +71,7 @@ namespace sdLitica.Events.Bus
             T type = Activator.CreateInstance<T>();
             IList<string> exchanges = _eventRegistry.GetPublishingTarget(type);
 
-            foreach (var exchange in exchanges)
+            foreach (string exchange in exchanges)
                 _consumer.SubscribeToTopic(exchange, routingKey, (obj) => 
                 {
                     T @event = (T) obj;
@@ -90,7 +90,7 @@ namespace sdLitica.Events.Bus
             T type = Activator.CreateInstance<T>();
             IList<string> exchanges = _eventRegistry.GetPublishingTarget(type);
 
-            foreach (var exchange in exchanges)
+            foreach (string exchange in exchanges)
                 _consumer.Subscribe(exchange, (obj) =>
                 {
                     T @event = (T)obj;

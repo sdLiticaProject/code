@@ -43,5 +43,15 @@ namespace sdLitica.WebAPI.Controllers.v1
             _analyticsService.ExecuteOperation(analyticsOperation);
             return new NoContentResult();
         }
+
+        /// <summary>
+        /// Returns operations available to be executed by analytics modules
+        /// </summary>
+        /// <returns>list of operations</returns>
+        [HttpGet]
+        public IActionResult GetAvailableOperations()
+        {
+            return Ok(_analyticsService.GetAvailableOperations());
+        }
     }
 }

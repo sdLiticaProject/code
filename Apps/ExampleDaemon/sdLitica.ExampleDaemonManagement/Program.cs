@@ -109,7 +109,7 @@ namespace sdLitica.ExampleDaemonManagement
 
         public static void SendPeep(IEventBus sampleBus, AnalyticsModuleRegistrationModel moduleModel)
         {
-            sampleBus.Publish(new AnalyticModuleRegistrationRequest(moduleModel));
+            sampleBus.PublishToTopic(new AnalyticModuleRegistrationRequest(moduleModel));
         }
 
         /// <summary>

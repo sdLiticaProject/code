@@ -24,7 +24,7 @@ namespace sdLitica.Utils.Helpers
             sha256.Dispose();
 
             StringBuilder builder = new StringBuilder();
-            foreach(var b in hash) builder.Append(b.ToString("x2"));
+            foreach(byte b in hash) builder.Append(b.ToString("x2"));
             return builder.ToString();
         }
     }
