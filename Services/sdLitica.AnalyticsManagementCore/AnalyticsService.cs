@@ -29,7 +29,6 @@ namespace sdLitica.AnalyticsManagementCore
         /// <param name="operation"></param>
         public void ExecuteOperation(AnalyticsOperationRequest operation)
         {
-            // todo: separate json-model from entity and set id during creation of entity
 
             _operationRepository.Add(operation);
             _operationRepository.SaveChanges();

@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using sdLitica.PlatformCore;
 using sdLitica.WebAPI.Models.Security;
+using sdLitica.Entities.Management;
 
 namespace sdLitica.WebAPI.Security
 {
@@ -47,13 +48,13 @@ namespace sdLitica.WebAPI.Security
                 return AuthenticateResult.Fail("Auth failed :(");
             }
 
-            var serviceProvider = Request.HttpContext.RequestServices;
-            var userService = serviceProvider.GetService<UserService>();
-            var userId = default(Guid);
+            IServiceProvider serviceProvider = Request.HttpContext.RequestServices;
+            UserService userService = serviceProvider.GetService<UserService>();
+            Guid userId = default(Guid);
             try
             {
-                string token = ((string)authorization)?.Split(' ', 2)[1];                
-                var userToken = await userService.GetByTokenAsync(token);
+                string token = ((string)authorization)?.Split(' ', 2)[1];
+                UserToken userToken = await userService.GetByTokenAsync(token);
                 if (userToken == null || userToken.IsTokenExpired())
                     throw new UnauthorizedAccessException();
 
@@ -65,9 +66,9 @@ namespace sdLitica.WebAPI.Security
                 return AuthenticateResult.Fail($"Auth failed: {ex.Message}");
             }
 
-            var claims = new List<Claim> { new Claim(ClaimTypes.NameIdentifier, userId.ToString()) };
-            var identities = new List<ClaimsIdentity> { new ClaimsIdentity(claims, Options.Scheme)};
-            var ticket = new AuthenticationTicket(new ClaimsPrincipal(identities), Options.Scheme);
+            List<Claim> claims = new List<Claim> { new Claim(ClaimTypes.NameIdentifier, userId.ToString()) };
+            List<ClaimsIdentity> identities = new List<ClaimsIdentity> { new ClaimsIdentity(claims, Options.Scheme)};
+            AuthenticationTicket ticket = new AuthenticationTicket(new ClaimsPrincipal(identities), Options.Scheme);
 
             return AuthenticateResult.Success(ticket);
         }

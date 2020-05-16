@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using sdLitica.Entities.Management;
 using sdLitica.Exceptions.Http;
 using sdLitica.PlatformCore;
 using sdLitica.WebAPI.Entities.Common.Pages;
@@ -39,15 +40,15 @@ namespace sdLitica.WebAPI.Controllers.v1
         {
             // Here should be proper auth via DB with clreation of token if auth succeeds
 
-            var user = _userService.GetUser(credentials.Email);
+            User user = _userService.GetUser(credentials.Email);
             if (user == null) throw new NotFoundException("User not found");
 
             if (!user.MatchPassword(credentials.Password))
                 throw new UnauthorizedException("Incorrect password");
 
-            var userToken = await _userService.GetNewTokenAsync(user);
+            UserToken userToken = await _userService.GetNewTokenAsync(user);
 
-            var tokenJson = new TokenJsonEntity()
+            TokenJsonEntity tokenJson = new TokenJsonEntity()
             {
                 Token = userToken.Token,
                 Expires = userToken.TokenExpirationDate.Ticks
@@ -67,7 +68,7 @@ namespace sdLitica.WebAPI.Controllers.v1
         [HttpPost("logout")]
         public async Task<NoContentResult> Logout()
         {
-            var user = _userService.GetUser(UserId);
+            User user = _userService.GetUser(UserId);
             await _userService.ExpiresTokenAsync(user);
 
             return NoContent();

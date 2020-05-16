@@ -20,8 +20,8 @@ namespace sdLitica.Events.Extensions
         public static IMessage ToMessage(this IEvent @event)
         {
 
-            var type = @event?.GetType().FullName ?? throw new ArgumentNullException($"The event cannot be null");
-            var body = JsonConvert.SerializeObject(@event);
+            string type = @event?.GetType().FullName ?? throw new ArgumentNullException($"The event cannot be null");
+            string body = JsonConvert.SerializeObject(@event);
 
             return new Message(type, body);
         }

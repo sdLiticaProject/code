@@ -58,14 +58,14 @@ namespace sdLitica.AnalyticsManagementCore
 
         public string GetQueue(string name)
         {
-            var modulesToRemove = new List<Guid>();
+            List<Guid> modulesToRemove = new List<Guid>();
             foreach (var moduleGuid in _moduleLastHeardTime.Keys)
             {
                 if (DateTime.Now - _moduleLastHeardTime[moduleGuid] > new TimeSpan(0, 0, 15))
                 {
                     System.Console.WriteLine(DateTime.Now);
                     System.Console.WriteLine(_moduleLastHeardTime[moduleGuid]);
-                    var registryToRemove = _analyticsRegistry.Where(pair => pair.Value.ModuleGuid.Equals(moduleGuid)).Select(pair => pair.Key).ToList();
+                    List<string> registryToRemove = _analyticsRegistry.Where(pair => pair.Value.ModuleGuid.Equals(moduleGuid)).Select(pair => pair.Key).ToList();
                     foreach (var key in registryToRemove) _analyticsRegistry.Remove(key);
 
                     modulesToRemove.Add(moduleGuid);
@@ -79,12 +79,12 @@ namespace sdLitica.AnalyticsManagementCore
 
         public IList<string> GetQueues(string name)
         {
-            var modulesToRemove = new List<Guid>();
+            List<Guid> modulesToRemove = new List<Guid>();
             foreach (var moduleGuid in _moduleLastHeardTime.Keys)
             {
                 if (DateTime.Now - _moduleLastHeardTime[moduleGuid] > new TimeSpan(0, 0, 15))
                 {
-                    var registryToRemove = _analyticsRegistry.Where(pair => pair.Value.ModuleGuid.Equals(moduleGuid)).Select(pair => pair.Key).ToList();
+                    List<string> registryToRemove = _analyticsRegistry.Where(pair => pair.Value.ModuleGuid.Equals(moduleGuid)).Select(pair => pair.Key).ToList();
                     foreach (var key in registryToRemove) _analyticsRegistry.Remove(key);
 
                     modulesToRemove.Add(moduleGuid);

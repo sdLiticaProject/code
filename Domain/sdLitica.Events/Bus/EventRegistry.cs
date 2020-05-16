@@ -28,7 +28,7 @@ namespace sdLitica.Events.Bus
         /// <param name="exchange"></param>
         public void Register<T>(string exchange, string exchangeType="topic") where T : IEvent
         {
-            var eventType = typeof(T);
+            Type eventType = typeof(T);
 
             if (_eventRegistry.ContainsKey(eventType))
             {
@@ -50,7 +50,7 @@ namespace sdLitica.Events.Bus
         /// <returns></returns>
         public IList<string> GetPublishingTarget<T>(T @event) where T : IEvent
         {
-            var eventType = @event.GetType();
+            Type eventType = @event.GetType();
 
             if (!_eventRegistry.ContainsKey(eventType)) return null;
 

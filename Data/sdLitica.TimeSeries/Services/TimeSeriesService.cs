@@ -25,13 +25,13 @@ namespace sdLitica.TimeSeries.Services
 
         public async Task<InfluxResult> CreateUser(string username, string password)
         {
-            var result = await _influxClient.CreateUserAsync(username, password);
+            InfluxResult result = await _influxClient.CreateUserAsync(username, password);
             return result;
         }
 
         public async Task<string> AddRandomTimeSeries()
         {
-            var rows = CreateDynamicRowsStartingAt(new DateTime(2010, 1, 1, 1, 1, 1, DateTimeKind.Utc), 500,
+            NamedDynamicInfluxRow[] rows = CreateDynamicRowsStartingAt(new DateTime(2010, 1, 1, 1, 1, 1, DateTimeKind.Utc), 500,
                 out var measurementName);
             await _influxClient.WriteAsync(TimeSeriesSettings.InfluxDatabase, rows);
             return measurementName;
@@ -39,39 +39,39 @@ namespace sdLitica.TimeSeries.Services
 
         public async Task<InfluxResult<DynamicInfluxRow>> ReadMeasurementById(string measurementId)
         {
-            var resultSet = await _influxClient.ReadAsync<DynamicInfluxRow>(TimeSeriesSettings.InfluxDatabase,
+            InfluxResultSet<DynamicInfluxRow> resultSet = await _influxClient.ReadAsync<DynamicInfluxRow>(TimeSeriesSettings.InfluxDatabase,
                 "SELECT * FROM " + "\"" + measurementId + "\"");
 
             // resultSet will contain 1 result in the Results collection (or multiple if you execute multiple queries at once)
-            var result = resultSet.Results[0];
+            InfluxResult<DynamicInfluxRow> result = resultSet.Results[0];
 
             return result;
         }
 
         public async Task<InfluxResult> DeleteMeasurementById(string measurementId)
         {
-            var result = await _influxClient.DropSeries(TimeSeriesSettings.InfluxDatabase, measurementId);
+            InfluxResult result = await _influxClient.DropSeries(TimeSeriesSettings.InfluxDatabase, measurementId);
             return result;
         }
 
         private NamedDynamicInfluxRow[] CreateDynamicRowsStartingAt(DateTime start, int rows,
             out string measurementName)
         {
-            var rng = new Random();
-            var regions = new[] {"west-eu", "north-eu", "west-us", "east-us", "asia"};
-            var hosts = new[] {"some-host", "some-other-host"};
+            Random rng = new Random();
+            string[] regions = new[] {"west-eu", "north-eu", "west-us", "east-us", "asia"};
+            string[] hosts = new[] {"some-host", "some-other-host"};
 
-            var timestamp = start;
-            var infos = new NamedDynamicInfluxRow[rows];
+            DateTime timestamp = start;
+            NamedDynamicInfluxRow[] infos = new NamedDynamicInfluxRow[rows];
             measurementName = Guid.NewGuid().ToString();
-            for (var i = 0; i < rows; i++)
+            for (int i = 0; i < rows; i++)
             {
                 long ram = rng.Next(int.MaxValue);
                 double cpu = rng.NextDouble();
                 string region = regions[rng.Next(regions.Length)];
                 string host = hosts[rng.Next(hosts.Length)];
 
-                var info = new NamedDynamicInfluxRow();
+                NamedDynamicInfluxRow info = new NamedDynamicInfluxRow();
                 info.Fields.Add("cpu", cpu);
                 info.Fields.Add("ram", ram);
                 info.Tags.Add("host", host);
@@ -88,10 +88,10 @@ namespace sdLitica.TimeSeries.Services
 
         public async Task<List<MeasurementRow>> ReadAllMeasurements()
         {
-            var resultSet = await _influxClient.ShowMeasurementsAsync(TimeSeriesSettings.InfluxDatabase);
+            InfluxResult<MeasurementRow> resultSet = await _influxClient.ShowMeasurementsAsync(TimeSeriesSettings.InfluxDatabase);
             if (resultSet.Series.Count > 0)
             {
-                var result = resultSet.Series[0];
+                InfluxSeries<MeasurementRow> result = resultSet.Series[0];
                 return result.Rows;
             }
             else

@@ -31,9 +31,9 @@ namespace sdLitica.Messages.Producers
         /// <param name="message"></param>
         public void Publish(string queue, IMessage message)
         {
-            var serialized = JsonConvert.SerializeObject(message);
-            var body = Encoding.UTF8.GetBytes(serialized);
-            var properties = _channel.CreateBasicProperties();
+            string serialized = JsonConvert.SerializeObject(message);
+            byte[] body = Encoding.UTF8.GetBytes(serialized);
+            IBasicProperties properties = _channel.CreateBasicProperties();
 
             //if RabbitMQ restarts, the message will persist
             properties.Persistent = true;
@@ -49,9 +49,9 @@ namespace sdLitica.Messages.Producers
         /// <param name="message"></param>
         public void PublishToTopic(string exchange, string routingKey, IMessage message)
         {
-            var serialized = JsonConvert.SerializeObject(message);
-            var body = Encoding.UTF8.GetBytes(serialized);
-            var properties = _channel.CreateBasicProperties();
+            string serialized = JsonConvert.SerializeObject(message);
+            byte[] body = Encoding.UTF8.GetBytes(serialized);
+            IBasicProperties properties = _channel.CreateBasicProperties();
 
             //if RabbitMQ restarts, the message will persist
             properties.Persistent = true;

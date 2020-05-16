@@ -22,8 +22,8 @@ namespace sdLitica.Bootstrap.Events
         /// <param name="app"></param>
         public static void SubscribeEvents(this IApplicationBuilder app)
         {
-            var registry = app.ApplicationServices.GetRequiredService<IEventRegistry>();
-            var analyticsRegistry = app.ApplicationServices.GetRequiredService<AnalyticsRegistry>();
+            IEventRegistry registry = app.ApplicationServices.GetRequiredService<IEventRegistry>();
+            AnalyticsRegistry analyticsRegistry = app.ApplicationServices.GetRequiredService<AnalyticsRegistry>();
             
             registry.Register<TimeSeriesAnalysisRequest>(Exchanges.TimeSeries);
             registry.Register<DiagnosticsResponse>(Exchanges.Diagnostics);
@@ -31,10 +31,10 @@ namespace sdLitica.Bootstrap.Events
 
             DiagnosticsListener.Services = app.ApplicationServices.GetRequiredService<IServiceProvider>();
             
-            using (var scope = app.ApplicationServices.GetRequiredService<IServiceProvider>().CreateScope())
+            using (IServiceScope scope = app.ApplicationServices.GetRequiredService<IServiceProvider>().CreateScope())
             {
-                var eventBus = scope.ServiceProvider.GetRequiredService<IEventBus>();
-                var operationRepository = scope.ServiceProvider.GetRequiredService<OperationRepository>();
+                IEventBus eventBus = scope.ServiceProvider.GetRequiredService<IEventBus>();
+                OperationRepository operationRepository = scope.ServiceProvider.GetRequiredService<OperationRepository>();
 
                 DiagnosticsListener.Initialize(registry, eventBus, operationRepository, analyticsRegistry);
                 DiagnosticsListener.Listen();

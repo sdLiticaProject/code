@@ -37,7 +37,7 @@ namespace sdLitica.AnalyticsManagementCore
             _eventRegistry.Register<DiagnosticsResponse>(Exchanges.Diagnostics);
             _eventBus.SubscribeToTopic((DiagnosticsResponse @event) =>
             {
-                using (var scope = Services.CreateScope())
+                using (IServiceScope scope = Services.CreateScope())
                 {
                     _operationRepository = scope.ServiceProvider.GetRequiredService<OperationRepository>();
                     _operationRepository.Update(@event.Operation);

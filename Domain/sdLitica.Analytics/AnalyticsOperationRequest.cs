@@ -26,10 +26,6 @@ namespace sdLitica.Analytics
         {
         }
 
-        public void SetId()
-        {
-            Id = Guid.NewGuid();
-        }
 
 
         public Guid Id { get; set; } // should have 'protected set'

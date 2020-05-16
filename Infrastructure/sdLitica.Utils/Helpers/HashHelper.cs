@@ -18,12 +18,12 @@ namespace sdLitica.Utils.Helpers
         /// <returns></returns>
         public static string GetSha256(string data)
         {
-            var sha256 = SHA256.Create();
-            var bytes = Encoding.UTF8.GetBytes(data);
-            var hash = sha256.ComputeHash(bytes);
+            SHA256 sha256 = SHA256.Create();
+            byte[] bytes = Encoding.UTF8.GetBytes(data);
+            byte[] hash = sha256.ComputeHash(bytes);
             sha256.Dispose();
 
-            var builder = new StringBuilder();
+            StringBuilder builder = new StringBuilder();
             foreach(var b in hash) builder.Append(b.ToString("x2"));
             return builder.ToString();
         }

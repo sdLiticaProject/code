@@ -34,11 +34,11 @@ namespace sdLitica.ExampleDaemonManagement
             BasicConfigurator.Configure(LogManager.GetRepository(Assembly.GetEntryAssembly()));
 
             // configure dependency injection
-            var services = ConfigureServices();
-            var serviceProvider = services.BuildServiceProvider();
+            IServiceCollection services = ConfigureServices();
+            ServiceProvider serviceProvider = services.BuildServiceProvider();
 
-            var _timeSeriesService = serviceProvider.GetRequiredService<ITimeSeriesService>();
-            var registry = serviceProvider.GetRequiredService<IEventRegistry>();
+            ITimeSeriesService _timeSeriesService = serviceProvider.GetRequiredService<ITimeSeriesService>();
+            IEventRegistry registry = serviceProvider.GetRequiredService<IEventRegistry>();
 
             // register events
             registry.Register<TimeSeriesAnalysisRequest>(Exchanges.TimeSeries);
@@ -46,7 +46,7 @@ namespace sdLitica.ExampleDaemonManagement
             registry.Register<AnalyticModuleRegistrationRequest>(Exchanges.ModuleRegistration);
 
             // creating module's model
-            var opArr = new List<AnalyticsOperationModel>();
+            List<AnalyticsOperationModel> opArr = new List<AnalyticsOperationModel>();
             opArr.Add(new AnalyticsOperationModel() { Name = "Mean", Description = "Average" });
             AnalyticsModuleRegistrationModel moduleModel = new AnalyticsModuleRegistrationModel()
             {
@@ -55,11 +55,11 @@ namespace sdLitica.ExampleDaemonManagement
                 Operations = opArr
             };
 
-            using (var scope = serviceProvider.GetRequiredService<IServiceProvider>().CreateScope())
+            using (IServiceScope scope = serviceProvider.GetRequiredService<IServiceProvider>().CreateScope())
             {
-                var sampleBus = scope.ServiceProvider.GetRequiredService<IEventBus>();
+                IEventBus sampleBus = scope.ServiceProvider.GetRequiredService<IEventBus>();
 
-                var peepTimer = new Timer((e) => { SendPeep(sampleBus, moduleModel); }, null, 5000, 5000); // todo: remove hardcoded values
+                Timer peepTimer = new Timer((e) => { SendPeep(sampleBus, moduleModel); }, null, 5000, 5000); // todo: remove hardcoded values
                 
 
                 // subscribe to analytical operations
@@ -118,7 +118,7 @@ namespace sdLitica.ExampleDaemonManagement
         /// <returns></returns>
         public static IConfiguration LoadConfiguration()
         {
-            var builder = new ConfigurationBuilder()
+            IConfigurationBuilder builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: true);
 
@@ -133,7 +133,7 @@ namespace sdLitica.ExampleDaemonManagement
         {
             IServiceCollection services = new ServiceCollection();
 
-            var config = LoadConfiguration();
+            IConfiguration config = LoadConfiguration();
             services.AddSingleton(config);
 
             // required to run the application

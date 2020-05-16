@@ -44,7 +44,7 @@ namespace sdLitica.PlatformCore
             if (_userRepository.Exists(email))
                 throw new PropertyDuplicationException("Email", email);
             
-            var user = User.Create(firstName, lastName, email, plainPassword);            
+            User user = User.Create(firstName, lastName, email, plainPassword);            
             _userRepository.Add(user);
             _userRepository.SaveChanges();
         }
@@ -58,7 +58,7 @@ namespace sdLitica.PlatformCore
         {
             if (user == null) throw new ArgumentNullException(nameof(user));
 
-            var userToken = _userTokenRepository.GetByUser(user);
+            UserToken userToken = _userTokenRepository.GetByUser(user);
             if (userToken == null)
             {
                 userToken = UserToken.Create(user, _appSettings.TokenExpirationInHours);
@@ -98,7 +98,7 @@ namespace sdLitica.PlatformCore
         {
             if (user == null) throw new ArgumentNullException(nameof(user));
 
-            var userToken = _userTokenRepository.GetByUser(user);
+            UserToken userToken = _userTokenRepository.GetByUser(user);
             if (userToken == null) return;
 
             userToken.ExpiresToken();

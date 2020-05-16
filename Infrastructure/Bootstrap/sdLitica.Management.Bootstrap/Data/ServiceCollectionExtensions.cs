@@ -11,8 +11,8 @@ namespace sdLitica.Bootstrap.Data
     {
         internal static void AddMySql(this IServiceCollection services)
         {
-            var configuration = BootstrapSettings.AppSettings;
-            var connectionString = configuration.GetConnectionString("MySql");
+            IConfiguration configuration = BootstrapSettings.AppSettings;
+            string connectionString = configuration.GetConnectionString("MySql");
             
             services.AddDbContextPool<MySqlDbContext>(options =>
             {

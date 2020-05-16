@@ -29,8 +29,8 @@ namespace sdLitica.Events.Bus
         /// <param name="event"></param>
         public void Publish(IEvent @event)
         {
-            var message = @event.ToMessage();
-            var exchanges = _eventRegistry.GetPublishingTarget(@event);
+            IMessage message = @event.ToMessage();
+            IList<string> exchanges = _eventRegistry.GetPublishingTarget(@event);
             foreach (var exchange in exchanges)
             {
                 _publisher.Publish(exchange, message);
@@ -43,8 +43,8 @@ namespace sdLitica.Events.Bus
         /// <param name="event"></param>
         public void PublishToTopic(IEvent @event, string routingKey="basic")
         {
-            var message = @event.ToMessage();
-            var exchanges = _eventRegistry.GetPublishingTarget(@event);
+            IMessage message = @event.ToMessage();
+            IList<string> exchanges = _eventRegistry.GetPublishingTarget(@event);
             foreach (var exchange in exchanges)
             {
                 _publisher.PublishToTopic(exchange, routingKey, message);
@@ -68,13 +68,13 @@ namespace sdLitica.Events.Bus
         /// <param name="action"></param>
         public void SubscribeToTopic<T>(Action<T> action, string routingKey="basic") where T : IEvent
         {
-            var type = Activator.CreateInstance<T>();
-            var exchanges = _eventRegistry.GetPublishingTarget(type);
+            T type = Activator.CreateInstance<T>();
+            IList<string> exchanges = _eventRegistry.GetPublishingTarget(type);
 
             foreach (var exchange in exchanges)
                 _consumer.SubscribeToTopic(exchange, routingKey, (obj) => 
                 {
-                    var @event = (T) obj;
+                    T @event = (T) obj;
                     action(@event);
                 });
             
@@ -87,13 +87,13 @@ namespace sdLitica.Events.Bus
         /// <param name="action"></param>
         public void Subscribe<T>(Action<T> action) where T : IEvent
         {
-            var type = Activator.CreateInstance<T>();
-            var exchanges = _eventRegistry.GetPublishingTarget(type);
+            T type = Activator.CreateInstance<T>();
+            IList<string> exchanges = _eventRegistry.GetPublishingTarget(type);
 
             foreach (var exchange in exchanges)
                 _consumer.Subscribe(exchange, (obj) =>
                 {
-                    var @event = (T)obj;
+                    T @event = (T)obj;
                     action(@event);
                 });
 

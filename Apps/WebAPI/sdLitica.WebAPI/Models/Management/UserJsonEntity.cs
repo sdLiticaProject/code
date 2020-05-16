@@ -18,7 +18,7 @@ namespace sdLitica.WebAPI.Models.Management
         /// <param name="profile"></param>
         public UserJsonEntity(User profile)
         {
-            var props = typeof(User)
+            IEnumerable<System.Reflection.PropertyInfo> props = typeof(User)
                             .GetProperties()
                             .Where(p => !p.GetIndexParameters().Any())
                             .Where(p => p.Name != GetPropertyName(() => profile.Id))
