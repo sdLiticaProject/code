@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using sdLitica.Entities.Management;
 using sdLitica.Exceptions.Http;
 using sdLitica.PlatformCore;
 using sdLitica.WebAPI.Entities.Common.Pages;
@@ -27,6 +29,36 @@ namespace sdLitica.WebAPI.Controllers.v1
         public ProfileController(UserService userService)
         {
             _userService = userService;                  
+        }
+
+
+        /// <summary>
+        /// This API call will create a new user in the system
+        /// </summary>
+        /// <param name="newUser"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<String> RegisterNewUser([FromBody] CreateUserModel newUser) {
+            
+            User exitingUser = _userService.GetUser(newUser.Email);
+
+            
+            if (null == exitingUser)
+            {
+                _userService.CreateUser(newUser.FirstName,
+                                        newUser.LastName,
+                                        newUser.Email,
+                                        newUser.Password);
+
+                return "Created new user";
+            }
+            else
+            {
+                throw new UserExistsException("User with email address '" + 
+                                              newUser.Email + 
+                                              "' already registered in the system");
+            }
         }
 
         /// <summary>
