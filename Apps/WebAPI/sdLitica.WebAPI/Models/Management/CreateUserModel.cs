@@ -1,4 +1,6 @@
 
+using System.ComponentModel.DataAnnotations;
+
 namespace sdLitica.WebAPI.Models.Management
 {
     /// <summary>
@@ -17,10 +19,12 @@ namespace sdLitica.WebAPI.Models.Management
         /// <summary>
         /// User email
         /// </summary>
+        [Required]
         public string Email { get; set; }
         /// <summary>
         /// User password
         /// </summary>
+        [Required]
         public string Password { get; set; }
 
         /// <summary>
