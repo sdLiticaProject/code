@@ -24,7 +24,7 @@ namespace sdLitica.Events.Bus
         }
 
         /// <summary>
-        /// To publish an event to a queue or exchange
+        /// To publish (direct) an event to a queue or exchange
         /// </summary>
         /// <param name="event"></param>
         public void Publish(IEvent @event)
@@ -41,6 +41,7 @@ namespace sdLitica.Events.Bus
         /// To publish (topic) an event to a queue or exchange
         /// </summary>
         /// <param name="event"></param>
+        /// <param name="routingKey"></param>
         public void PublishToTopic(IEvent @event, string routingKey="basic")
         {
             IMessage message = @event.ToMessage();
@@ -66,6 +67,7 @@ namespace sdLitica.Events.Bus
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="action"></param>
+        /// <param name="routingKey"></param>
         public void SubscribeToTopic<T>(Action<T> action, string routingKey="basic") where T : IEvent
         {
             T type = Activator.CreateInstance<T>();
@@ -81,7 +83,7 @@ namespace sdLitica.Events.Bus
         }
 
         /// <summary>
-        /// Subcribe to an event and run the action after receive it
+        /// Subcribe (direct) to an event and run the action after receive it
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="action"></param>

@@ -15,17 +15,17 @@ namespace sdLitica.AnalyticsManagementCore
 
         static IEventRegistry _eventRegistry;
         static IEventBus _eventBus;
-        static OperationRepository _operationRepository;
+        static OperationRequestRepository _OperationRequestRepository;
         static AnalyticsRegistry _analyticsRegistry;
 
         public static IServiceProvider Services { get; set; }
 
 
-        public static void Initialize(IEventRegistry eventRegistry, IEventBus eventBus, OperationRepository operationRepository, AnalyticsRegistry analyticsRegistry)//, IServiceProvider services)
+        public static void Initialize(IEventRegistry eventRegistry, IEventBus eventBus, OperationRequestRepository OperationRequestRepository, AnalyticsRegistry analyticsRegistry)//, IServiceProvider services)
         {
             _eventRegistry = eventRegistry;
             _eventBus = eventBus;
-            _operationRepository = operationRepository;
+            _OperationRequestRepository = OperationRequestRepository;
             _analyticsRegistry = analyticsRegistry;
         }
 
@@ -39,19 +39,26 @@ namespace sdLitica.AnalyticsManagementCore
             {
                 using (IServiceScope scope = Services.CreateScope())
                 {
-                    _operationRepository = scope.ServiceProvider.GetRequiredService<OperationRepository>();
-                    _operationRepository.Update(@event.Operation);
-                    _operationRepository.SaveChanges();
+                    _OperationRequestRepository = scope.ServiceProvider.GetRequiredService<OperationRequestRepository>();
+                    _OperationRequestRepository.Update(@event.Operation);
+                    _OperationRequestRepository.SaveChanges();
                 }
             });
         }
 
+        /// <summary>
+        /// Subscribe to new analytical modules. Maybe it's not the best place for this method.
+        /// </summary>
         public static void ListenNewModules()
         {
             _eventRegistry.Register<AnalyticModuleRegistrationRequest>(Exchanges.ModuleRegistration);
             _eventBus.SubscribeToTopic((AnalyticModuleRegistrationRequest @event) =>
             {
-                _analyticsRegistry.Register(@event.Module);
+                using (IServiceScope scope = Services.CreateScope())
+                {
+                    _analyticsRegistry = scope.ServiceProvider.GetRequiredService<AnalyticsRegistry>();
+                    _analyticsRegistry.Register(@event.Module);
+                }
             });
         }
     }

@@ -26,6 +26,7 @@ namespace sdLitica.Events.Bus
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="exchange"></param>
+        /// <param name="exchangeType"></param>
         public void Register<T>(string exchange, string exchangeType="topic") where T : IEvent
         {
             Type eventType = typeof(T);

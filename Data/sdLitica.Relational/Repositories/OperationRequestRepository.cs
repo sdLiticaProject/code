@@ -7,9 +7,9 @@ namespace sdLitica.Relational.Repositories
     /// <summary>
     /// Repository for metadata of operations. 
     /// </summary>
-    public class OperationRepository: RepositoryBase<AnalyticsOperationRequest>
+    public class OperationRequestRepository: RepositoryBase<AnalyticsOperationRequest>
     {
-        public OperationRepository(MySqlDbContext context)
+        public OperationRequestRepository(MySqlDbContext context)
             : base(context)
         {
         }
@@ -25,7 +25,7 @@ namespace sdLitica.Relational.Repositories
             AnalyticsOperationRequest operation = Entity.Find(guid);
             if (operation == null)
             {
-                throw new ArgumentNullException("OperationRepository does not contain operation " + guid);
+                throw new ArgumentNullException("OperationRequestRepository does not contain operation " + guid);
             }
             return operation.Status;
         }

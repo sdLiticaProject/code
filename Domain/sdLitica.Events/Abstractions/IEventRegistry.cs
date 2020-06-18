@@ -14,6 +14,7 @@ namespace sdLitica.Events.Abstractions
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="exchange"></param>
+        /// <param name="exchangeType"></param>
         void Register<T>(string exchange, string exchangeType="topic") where T : IEvent;
         /// <summary>
         /// Get publishing queue or exchange

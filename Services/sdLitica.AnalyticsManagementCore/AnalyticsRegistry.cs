@@ -1,6 +1,8 @@
-﻿using sdLitica.Events.Abstractions;
+﻿using sdLitica.Analytics;
+using sdLitica.Events.Abstractions;
 using sdLitica.Events.Bus;
 using sdLitica.Events.Integration;
+using sdLitica.Relational.Repositories;
 using sdLitica.Utils.Models;
 using System;
 using System.Collections.Generic;
@@ -11,73 +13,73 @@ namespace sdLitica.AnalyticsManagementCore
 {
     public class AnalyticsRegistry
     {
-        private readonly IDictionary<string, AnalyticsOperation> _analyticsRegistry;
-        private readonly IDictionary<Guid, DateTime> _moduleLastHeardTime;
-        public AnalyticsRegistry()
+        private readonly AnalyticsOperationRepository _analyticsOperationRepository;
+        private readonly AnalyticsModuleRepository _analyticsModuleRepository;
+        public AnalyticsRegistry(AnalyticsOperationRepository analyticsOperationRepository, AnalyticsModuleRepository analyticsModuleRepository)
         {
-            _analyticsRegistry = new Dictionary<string, AnalyticsOperation>();
-            _moduleLastHeardTime = new Dictionary<Guid, DateTime>();
+            _analyticsOperationRepository = analyticsOperationRepository;
+            _analyticsModuleRepository = analyticsModuleRepository;
         }
 
         public void Register(AnalyticsModuleRegistrationModel module)
         {
-            if (_moduleLastHeardTime.ContainsKey(module.ModuleGuid))
+            if (_analyticsModuleRepository.Contains(module.ModuleGuid))
             {
-                _moduleLastHeardTime[module.ModuleGuid] = DateTime.Now;
+                _analyticsModuleRepository.Update(new AnalyticsModule()
+                {
+                    Id = module.ModuleGuid,
+                    LastHeardTime = DateTime.Now,
+                    QueueName = module.QueueName
+                });
             }
             else
             {
-                _moduleLastHeardTime.Add(module.ModuleGuid, DateTime.Now);
-            }
-            
-
-            foreach (AnalyticsOperationModel operationModel in module.Operations) {
-                if (_analyticsRegistry.ContainsKey(operationModel.Name))
+                _analyticsModuleRepository.Add(new AnalyticsModule()
                 {
-                    _analyticsRegistry[operationModel.Name].QueueName = module.QueueName;
-                    if (!_analyticsRegistry[operationModel.Name].QueueNames.Contains(module.QueueName))
-                    {
-                        _analyticsRegistry[operationModel.Name].QueueNames.Add(module.QueueName);
-                    }
+                    Id = module.ModuleGuid,
+                    LastHeardTime = DateTime.Now,
+                    QueueName = module.QueueName
+                });
+            }
+            AnalyticsModule analyticsModule = _analyticsModuleRepository.GetById(module.ModuleGuid);
+            foreach (AnalyticsOperationModel operationModel in module.Operations) {
+                if (_analyticsOperationRepository.ContainsName(operationModel.Name))
+                {
+                    AnalyticsOperation analyticsOperation = _analyticsOperationRepository.GetByName(operationModel.Name);
+                    analyticsOperation.Module = analyticsModule;
                 }
                 else
                 {
                     AnalyticsOperation operation = new AnalyticsOperation()
                     {
+                        Id = Guid.NewGuid(),
                         Name = operationModel.Name,
                         Description = operationModel.Description,
-                        ModuleGuid = module.ModuleGuid,
-                        QueueName = module.QueueName,
-                        QueueNames = new List<string>()
+                        Module = analyticsModule
                     };
-                    operation.QueueNames.Add(module.QueueName);
-                    _analyticsRegistry.Add(new KeyValuePair<string, AnalyticsOperation>(operation.Name, operation));
+                    _analyticsOperationRepository.Add(operation);
+
                 }
             }
+            _analyticsOperationRepository.SaveChanges();
+            _analyticsModuleRepository.SaveChanges();
         }
 
         public string GetQueue(string name)
         {
             CheckAvailable();
 
-            if (!_analyticsRegistry.ContainsKey(name)) return null;
-            return _analyticsRegistry[name].QueueName;
+            if (!_analyticsOperationRepository.ContainsName(name)) return null;
+            return _analyticsOperationRepository.GetByName(name).Module.QueueName;
         }
 
-        public IList<string> GetQueues(string name)
-        {
-            CheckAvailable();
-
-            if (!_analyticsRegistry.ContainsKey(name)) return null;
-            return _analyticsRegistry[name].QueueNames;
-        }
 
         public IList<AnalyticsOperationModel> GetAvailableOperations()
         {
             CheckAvailable();
 
             IList<AnalyticsOperationModel> operations = new List<AnalyticsOperationModel>();
-            foreach (AnalyticsOperation operation in _analyticsRegistry.Values)
+            foreach (AnalyticsOperation operation in _analyticsOperationRepository.GetAll())
             {
                 operations.Add(new AnalyticsOperationModel()
                 {
@@ -91,17 +93,21 @@ namespace sdLitica.AnalyticsManagementCore
         public void CheckAvailable()
         {
             List<Guid> modulesToRemove = new List<Guid>();
-            foreach (Guid moduleGuid in _moduleLastHeardTime.Keys)
+            foreach (AnalyticsModule module in _analyticsModuleRepository.GetAll())
             {
-                if (DateTime.Now - _moduleLastHeardTime[moduleGuid] > new TimeSpan(0, 0, 15))
+                if (DateTime.Now - module.LastHeardTime > new TimeSpan(0,0,15))
                 {
-                    List<string> registryToRemove = _analyticsRegistry.Where(pair => pair.Value.ModuleGuid.Equals(moduleGuid)).Select(pair => pair.Key).ToList();
-                    foreach (string key in registryToRemove) _analyticsRegistry.Remove(key);
-
-                    modulesToRemove.Add(moduleGuid);
+                    foreach (AnalyticsOperation operation in _analyticsOperationRepository.GetAll())
+                    {
+                        _analyticsOperationRepository.Delete(operation);
+                    }
+                    _analyticsModuleRepository.Delete(module);
                 }
             }
-            foreach (Guid key in modulesToRemove) _moduleLastHeardTime.Remove(key);
+
+            _analyticsModuleRepository.SaveChanges();
+            _analyticsOperationRepository.SaveChanges();
+
         }
         
     }

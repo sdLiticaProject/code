@@ -16,13 +16,13 @@ namespace sdLitica.AnalyticsManagementCore
     public class AnalyticsService
     {
         private readonly IEventBus _eventBus;
-        private readonly OperationRepository _operationRepository;
+        private readonly OperationRequestRepository _OperationRequestRepository;
         private readonly AnalyticsRegistry _analyticsRegistry;
 
-        public AnalyticsService(IEventBus eventBus, OperationRepository operationRepository, AnalyticsRegistry analyticsRegistry)
+        public AnalyticsService(IEventBus eventBus, OperationRequestRepository OperationRequestRepository, AnalyticsRegistry analyticsRegistry)
         {
             _eventBus = eventBus;
-            _operationRepository = operationRepository;
+            _OperationRequestRepository = OperationRequestRepository;
             _analyticsRegistry = analyticsRegistry;
         }
 
@@ -33,8 +33,8 @@ namespace sdLitica.AnalyticsManagementCore
         public void ExecuteOperation(AnalyticsOperationRequest operation)
         {
 
-            _operationRepository.Add(operation);
-            _operationRepository.SaveChanges();
+            _OperationRequestRepository.Add(operation);
+            _OperationRequestRepository.SaveChanges();
 
             TimeSeriesAnalysisRequest @event = new TimeSeriesAnalysisRequest(operation);
             string routingKey = _analyticsRegistry.GetQueue(operation.OpName);
@@ -64,7 +64,7 @@ namespace sdLitica.AnalyticsManagementCore
         /// <returns></returns>
         public OperationStatus CheckResults(AnalyticsOperationRequest operation)
         {
-            return _operationRepository.GetStatus(operation.Id);
+            return _OperationRequestRepository.GetStatus(operation.Id);
         }
 
         /// <summary>
