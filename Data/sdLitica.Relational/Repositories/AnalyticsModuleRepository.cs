@@ -1,4 +1,5 @@
-﻿using sdLitica.Analytics;
+﻿using Microsoft.EntityFrameworkCore;
+using sdLitica.Analytics;
 using sdLitica.Relational.Context;
 using System;
 using System.Collections.Generic;
@@ -20,9 +21,12 @@ namespace sdLitica.Relational.Repositories
         }
         public IList<AnalyticsModule> GetAll()
         {
-            return Entity.ToList();
+            return Entity.Include(e => e.ModulesOperations).ThenInclude(mo => mo.AnalyticsOperation).ToList();
         }
-        
+        public new AnalyticsModule GetById(Guid id)
+        {
+            return Entity.Include(e => e.ModulesOperations).SingleOrDefault(e => e.Id == id);
+        }
 
     }
 }

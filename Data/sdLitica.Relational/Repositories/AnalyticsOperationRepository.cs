@@ -1,4 +1,5 @@
-﻿using sdLitica.Analytics;
+﻿using Microsoft.EntityFrameworkCore;
+using sdLitica.Analytics;
 using sdLitica.Relational.Context;
 using System;
 using System.Collections.Generic;
@@ -25,7 +26,7 @@ namespace sdLitica.Relational.Repositories
         }
         public AnalyticsOperation GetByName(string name)
         {
-            return Entity.Where(p => p.Name.Equals(name)).Single();
+            return Entity.Where(p => p.Name.Equals(name)).Include(e => e.ModulesOperations).ThenInclude(mo => mo.AnalyticsModule).Single();
         }
         public IList<AnalyticsOperation> GetAll()
         {

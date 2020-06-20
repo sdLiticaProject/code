@@ -14,5 +14,6 @@ namespace sdLitica.Analytics
         public Guid Id { get; set; }
         public DateTime LastHeardTime { get; set; }
         public string QueueName { get; set; } // todo
+        public IList<ModulesOperations> ModulesOperations { get; set; }
     }
 }

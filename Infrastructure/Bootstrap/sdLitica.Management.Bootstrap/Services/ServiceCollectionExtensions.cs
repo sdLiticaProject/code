@@ -20,6 +20,7 @@ namespace sdLitica.Bootstrap.Services
             services.AddScoped<OperationRequestRepository>();
             services.AddScoped<AnalyticsModuleRepository>();
             services.AddScoped<AnalyticsOperationRepository>();
+            services.AddScoped<ModulesOperationsRepository>();
 
             services.AddScoped<AnalyticsRegistry>();
             services.AddScoped<AnalyticsService>();

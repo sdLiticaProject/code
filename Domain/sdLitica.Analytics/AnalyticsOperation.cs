@@ -13,7 +13,8 @@ namespace sdLitica.Analytics
         }
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public AnalyticsModule Module { get; set; }
+        //public AnalyticsModule Module { get; set; }
+        public IList<ModulesOperations> ModulesOperations { get; set; }
         public string Description { get; set; }
     }
 }
