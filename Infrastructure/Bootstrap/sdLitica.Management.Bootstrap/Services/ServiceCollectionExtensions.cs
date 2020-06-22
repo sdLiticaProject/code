@@ -17,10 +17,10 @@ namespace sdLitica.Bootstrap.Services
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserTokenRepository, UserTokenRepository>();
 
-            services.AddScoped<OperationRequestRepository>();
+            services.AddScoped<AnalyticsOperationRequestRepository>();
             services.AddScoped<AnalyticsModuleRepository>();
             services.AddScoped<AnalyticsOperationRepository>();
-            services.AddScoped<ModulesOperationsRepository>();
+            services.AddScoped<ModuleOperationRepository>();
 
             services.AddScoped<AnalyticsRegistry>();
             services.AddScoped<AnalyticsService>();

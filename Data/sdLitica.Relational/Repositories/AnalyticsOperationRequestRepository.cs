@@ -5,11 +5,11 @@ using System;
 namespace sdLitica.Relational.Repositories
 {
     /// <summary>
-    /// Repository for metadata of operations. 
+    /// This class provides data access operations for AnalyticsOperationRequest.
     /// </summary>
-    public class OperationRequestRepository: RepositoryBase<AnalyticsOperationRequest>
+    public class AnalyticsOperationRequestRepository: RepositoryBase<AnalyticsOperationRequest>
     {
-        public OperationRequestRepository(MySqlDbContext context)
+        public AnalyticsOperationRequestRepository(MySqlDbContext context)
             : base(context)
         {
         }

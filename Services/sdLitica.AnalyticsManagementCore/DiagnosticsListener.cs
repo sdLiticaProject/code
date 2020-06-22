@@ -15,13 +15,13 @@ namespace sdLitica.AnalyticsManagementCore
 
         static IEventRegistry _eventRegistry;
         static IEventBus _eventBus;
-        static OperationRequestRepository _OperationRequestRepository;
+        static AnalyticsOperationRequestRepository _OperationRequestRepository;
         static AnalyticsRegistry _analyticsRegistry;
 
         public static IServiceProvider Services { get; set; }
 
 
-        public static void Initialize(IEventRegistry eventRegistry, IEventBus eventBus, OperationRequestRepository OperationRequestRepository, AnalyticsRegistry analyticsRegistry)//, IServiceProvider services)
+        public static void Initialize(IEventRegistry eventRegistry, IEventBus eventBus, AnalyticsOperationRequestRepository OperationRequestRepository, AnalyticsRegistry analyticsRegistry)//, IServiceProvider services)
         {
             _eventRegistry = eventRegistry;
             _eventBus = eventBus;
@@ -39,7 +39,7 @@ namespace sdLitica.AnalyticsManagementCore
             {
                 using (IServiceScope scope = Services.CreateScope())
                 {
-                    _OperationRequestRepository = scope.ServiceProvider.GetRequiredService<OperationRequestRepository>();
+                    _OperationRequestRepository = scope.ServiceProvider.GetRequiredService<AnalyticsOperationRequestRepository>();
                     _OperationRequestRepository.Update(@event.Operation);
                     _OperationRequestRepository.SaveChanges();
                 }
@@ -47,7 +47,7 @@ namespace sdLitica.AnalyticsManagementCore
         }
 
         /// <summary>
-        /// Subscribe to new analytical modules. Maybe it's not the best place for this method.
+        /// Subscribe to new analytical modules. It's not the best place for this method.
         /// </summary>
         public static void ListenNewModules()
         {

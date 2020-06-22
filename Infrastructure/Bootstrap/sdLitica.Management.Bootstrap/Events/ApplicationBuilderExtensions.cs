@@ -34,9 +34,9 @@ namespace sdLitica.Bootstrap.Events
             {
                 IEventBus eventBus = scope.ServiceProvider.GetRequiredService<IEventBus>();
                 AnalyticsRegistry analyticsRegistry = scope.ServiceProvider.GetRequiredService<AnalyticsRegistry>();
-                OperationRequestRepository OperationRequestRepository = scope.ServiceProvider.GetRequiredService<OperationRequestRepository>();
+                AnalyticsOperationRequestRepository operationRequestRepository = scope.ServiceProvider.GetRequiredService<AnalyticsOperationRequestRepository>();
 
-                DiagnosticsListener.Initialize(registry, eventBus, OperationRequestRepository, analyticsRegistry);
+                DiagnosticsListener.Initialize(registry, eventBus, operationRequestRepository, analyticsRegistry);
                 DiagnosticsListener.Listen();
                 DiagnosticsListener.ListenNewModules();
 

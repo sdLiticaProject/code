@@ -16,10 +16,10 @@ namespace sdLitica.AnalyticsManagementCore
     public class AnalyticsService
     {
         private readonly IEventBus _eventBus;
-        private readonly OperationRequestRepository _OperationRequestRepository;
+        private readonly AnalyticsOperationRequestRepository _OperationRequestRepository;
         private readonly AnalyticsRegistry _analyticsRegistry;
 
-        public AnalyticsService(IEventBus eventBus, OperationRequestRepository OperationRequestRepository, AnalyticsRegistry analyticsRegistry)
+        public AnalyticsService(IEventBus eventBus, AnalyticsOperationRequestRepository OperationRequestRepository, AnalyticsRegistry analyticsRegistry)
         {
             _eventBus = eventBus;
             _OperationRequestRepository = OperationRequestRepository;

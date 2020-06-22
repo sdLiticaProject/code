@@ -45,7 +45,8 @@ namespace sdLitica.Messages.Producers
         /// <summary>
         /// Publish (topic) a message to the bus
         /// </summary>
-        /// <param name="queue"></param>
+        /// <param name="exchange"></param>
+        /// <param name="routingKey"></param>
         /// <param name="message"></param>
         public void PublishToTopic(string exchange, string routingKey, IMessage message)
         {

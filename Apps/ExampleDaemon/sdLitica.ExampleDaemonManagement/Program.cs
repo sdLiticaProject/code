@@ -47,7 +47,7 @@ namespace sdLitica.ExampleDaemonManagement
 
             // creating module's model
             List<AnalyticsOperationModel> opArr = new List<AnalyticsOperationModel>();
-            opArr.Add(new AnalyticsOperationModel() { Name = "Mean", Description = "Average" });
+            opArr.Add(new AnalyticsOperationModel() { Name = "Mean", Description = "Description of mean" });
             AnalyticsModuleRegistrationModel moduleModel = new AnalyticsModuleRegistrationModel()
             {
                 ModuleGuid = Guid.NewGuid(),

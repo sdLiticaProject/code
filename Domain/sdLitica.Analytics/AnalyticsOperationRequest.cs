@@ -14,8 +14,6 @@ namespace sdLitica.Analytics
     }
 
 
-    //  At this moment, also used as its model in requests, messages. 
-
     /// <summary>
     /// Entity for metadata of analytics operation.
     /// </summary>
@@ -28,12 +26,12 @@ namespace sdLitica.Analytics
 
 
 
-        public Guid Id { get; set; } // should have 'protected set'
+        public Guid Id { get; set; } // temporary
 
         /// <summary>
         /// Name of operation to be performed. 
         /// </summary>
-        public string OpName { get; set; } // should have 'protected set'
+        public string OpName { get; set; } 
 
         /// <summary>
         /// Id of time-series on which operation is performed
@@ -47,9 +45,7 @@ namespace sdLitica.Analytics
         public OperationStatus Status { get; set; }
 
 
-        // TODO: add parameters of operation
-        //public Dictionary<string,string> Parameters { get; set; }
-        //public List<OperationParameter> Parameters { get; set; }
+        // TODO: add arguments of operation
 
     }
 }

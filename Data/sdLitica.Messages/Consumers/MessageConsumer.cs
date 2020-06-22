@@ -38,7 +38,8 @@ namespace sdLitica.Messages.Consumers
         /// <summary>
         /// Subscribe (topic) a message received through the bus
         /// </summary>
-        /// <param name="queue"></param>
+        /// <param name="exchange"></param>
+        /// <param name="routingKey"></param>
         /// <param name="action"></param>
         public void SubscribeToTopic(string exchange, string routingKey, Action<object> action)
         {

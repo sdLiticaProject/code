@@ -26,16 +26,16 @@ namespace sdLitica.Relational.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AnalyticsOperationRequest>();
+
             modelBuilder.Entity<AnalyticsModule>();
             modelBuilder.Entity<AnalyticsOperation>();
-            //modelBuilder.Entity<ModulesOperations>();
+
             modelBuilder.Entity<ModulesOperations>().HasKey(mo => new { mo.AnalyticsModuleId, mo.AnalyticsOperationId });
-            
+
             modelBuilder.Entity<ModulesOperations>()
                 .HasOne<AnalyticsModule>(sc => sc.AnalyticsModule)
                 .WithMany(s => s.ModulesOperations)
                 .HasForeignKey(sc => sc.AnalyticsModuleId);
-
 
             modelBuilder.Entity<ModulesOperations>()
                 .HasOne<AnalyticsOperation>(sc => sc.AnalyticsOperation)

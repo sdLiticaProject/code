@@ -18,6 +18,7 @@ namespace sdLitica.Messages.Abstractions
         /// Subscribe (topic) a queue
         /// </summary>
         /// <param name="queue"></param>
+        /// <param name="routingKey"></param>
         /// <param name="action"></param>
         void SubscribeToTopic(string queue, string routingKey, Action<object> action);
         /// <summary>

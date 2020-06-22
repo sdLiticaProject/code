@@ -11,18 +11,25 @@ using System.Text;
 
 namespace sdLitica.AnalyticsManagementCore
 {
+    /// <summary>
+    /// This service manages available analytical modules and operations. 
+    /// </summary>
     public class AnalyticsRegistry
     {
         private readonly AnalyticsOperationRepository _analyticsOperationRepository;
         private readonly AnalyticsModuleRepository _analyticsModuleRepository;
-        private readonly ModulesOperationsRepository _modulesOperationsRepository;
-        public AnalyticsRegistry(AnalyticsOperationRepository analyticsOperationRepository, AnalyticsModuleRepository analyticsModuleRepository, ModulesOperationsRepository modulesOperationsRepository)
+        private readonly ModuleOperationRepository _modulesOperationsRepository;
+        public AnalyticsRegistry(AnalyticsOperationRepository analyticsOperationRepository, AnalyticsModuleRepository analyticsModuleRepository, ModuleOperationRepository modulesOperationsRepository)
         {
             _analyticsOperationRepository = analyticsOperationRepository;
             _analyticsModuleRepository = analyticsModuleRepository;
             _modulesOperationsRepository = modulesOperationsRepository;
         }
 
+        /// <summary>
+        /// Register analytical module
+        /// </summary>
+        /// <param name="module"></param>
         public void Register(AnalyticsModuleRegistrationModel module)
         {
             CheckAvailable();
@@ -30,14 +37,6 @@ namespace sdLitica.AnalyticsManagementCore
             {
                 AnalyticsModule analyticsModule_ = _analyticsModuleRepository.GetById(module.ModuleGuid);
                 analyticsModule_.LastHeardTime = DateTime.Now;
-                /*
-                _analyticsModuleRepository.Update(new AnalyticsModule()
-                {
-                    Id = module.ModuleGuid,
-                    LastHeardTime = DateTime.Now,
-                    QueueName = module.QueueName
-                });
-                */
             }
             else
             {
@@ -49,11 +48,11 @@ namespace sdLitica.AnalyticsManagementCore
                 });
             }
             _analyticsModuleRepository.SaveChanges();
+
             AnalyticsModule analyticsModule = _analyticsModuleRepository.GetById(module.ModuleGuid);
             foreach (AnalyticsOperationModel operationModel in module.Operations) {
                 if (_analyticsOperationRepository.ContainsName(operationModel.Name))
                 {
-                    
                     AnalyticsOperation analyticsOperation = _analyticsOperationRepository.GetByName(operationModel.Name);
                     
                     if (!analyticsOperation.ModulesOperations.Select(mo => mo.AnalyticsModule).Contains(analyticsModule)) {
@@ -67,10 +66,6 @@ namespace sdLitica.AnalyticsManagementCore
                         analyticsOperation.ModulesOperations.Add(moduleOperation);
 
                     }
-                    /*
-                    if (!analyticsOperation.AnalyticsModules.Contains(analyticsModule)) {
-                        analyticsOperation.AnalyticsModules.Add(analyticsModule);
-                    }*/
                 }
                 else
                 {
@@ -80,7 +75,6 @@ namespace sdLitica.AnalyticsManagementCore
                         Name = operationModel.Name,
                         Description = operationModel.Description
                     };
-                    //operation.AnalyticsModules.Add(analyticsModule);
                     ModulesOperations moduleOperation = new ModulesOperations()
 
                     {
@@ -100,15 +94,23 @@ namespace sdLitica.AnalyticsManagementCore
             _modulesOperationsRepository.SaveChanges();
         }
 
+        /// <summary>
+        /// Get rabbitmq-queue for module that can execute operation given by name.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public string GetQueue(string name)
         {
             CheckAvailable();
 
             if (!_analyticsOperationRepository.ContainsName(name)) return null;
-            return _analyticsOperationRepository.GetByName(name).ModulesOperations.Select(mo => mo.AnalyticsModule).First().QueueName; // maybe random
+            return _analyticsOperationRepository.GetByName(name).ModulesOperations.Select(mo => mo.AnalyticsModule).First().QueueName; 
         }
 
-
+        /// <summary>
+        /// Get list of available analytical operations. 
+        /// </summary>
+        /// <returns></returns>
         public IList<AnalyticsOperationModel> GetAvailableOperations()
         {
             CheckAvailable();
@@ -125,6 +127,9 @@ namespace sdLitica.AnalyticsManagementCore
             return operations;
         }
 
+        /// <summary>
+        /// Delete disabled analytical modules and its operations. 
+        /// </summary>
         public void CheckAvailable()
         {
             List<Guid> modulesToRemove = new List<Guid>();
