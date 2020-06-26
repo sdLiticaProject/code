@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using sdLitica.Analytics;
 using sdLitica.Bootstrap.Extensions;
 using sdLitica.Events.Abstractions;
 using sdLitica.Events.Bus;
@@ -17,6 +16,9 @@ using log4net.Config;
 using System.Reflection;
 using sdLitica.Utils.Models;
 using System.Threading;
+using sdLitica.Entities.Analytics;
+using sdLitica.Utils.Abstractions;
+using sdLitica.Utils.Settings;
 
 namespace sdLitica.ExampleDaemonManagement
 {
@@ -37,8 +39,11 @@ namespace sdLitica.ExampleDaemonManagement
             IServiceCollection services = ConfigureServices();
             ServiceProvider serviceProvider = services.BuildServiceProvider();
 
+            IAppSettings appSettings = serviceProvider.GetRequiredService<IAppSettings>();
             ITimeSeriesService _timeSeriesService = serviceProvider.GetRequiredService<ITimeSeriesService>();
             IEventRegistry registry = serviceProvider.GetRequiredService<IEventRegistry>();
+
+            AnalyticsSettings analyticsSettings = appSettings.AnalyticsSettings;
 
             // register events
             registry.Register<TimeSeriesAnalysisRequest>(Exchanges.TimeSeries);
@@ -59,7 +64,12 @@ namespace sdLitica.ExampleDaemonManagement
             {
                 IEventBus sampleBus = scope.ServiceProvider.GetRequiredService<IEventBus>();
 
-                Timer peepTimer = new Timer((e) => { SendPeep(sampleBus, moduleModel); }, null, 5000, 5000); // todo: remove hardcoded values
+                Timer peepTimer = new Timer(
+                    (e) => { SendPeep(sampleBus, moduleModel); },
+                    null,
+                    analyticsSettings.ModuleAliveSignalInterval,
+                    analyticsSettings.ModuleAliveSignalInterval
+                    );
                 
 
                 // subscribe to analytical operations

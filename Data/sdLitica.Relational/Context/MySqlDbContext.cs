@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using sdLitica.Analytics;
+using sdLitica.Entities.Analytics;
 using sdLitica.Entities.Management;
 
 namespace sdLitica.Relational.Context
@@ -35,12 +35,16 @@ namespace sdLitica.Relational.Context
             modelBuilder.Entity<ModulesOperations>()
                 .HasOne<AnalyticsModule>(sc => sc.AnalyticsModule)
                 .WithMany(s => s.ModulesOperations)
-                .HasForeignKey(sc => sc.AnalyticsModuleId);
+                .HasForeignKey(sc => sc.AnalyticsModuleId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<ModulesOperations>()
                 .HasOne<AnalyticsOperation>(sc => sc.AnalyticsOperation)
                 .WithMany(s => s.ModulesOperations)
-                .HasForeignKey(sc => sc.AnalyticsOperationId);
+                .HasForeignKey(sc => sc.AnalyticsOperationId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
                 
 
 

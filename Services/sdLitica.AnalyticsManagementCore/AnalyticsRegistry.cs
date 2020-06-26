@@ -1,9 +1,11 @@
-﻿using sdLitica.Analytics;
+﻿using sdLitica.Entities.Analytics;
 using sdLitica.Events.Abstractions;
 using sdLitica.Events.Bus;
 using sdLitica.Events.Integration;
 using sdLitica.Relational.Repositories;
+using sdLitica.Utils.Abstractions;
 using sdLitica.Utils.Models;
+using sdLitica.Utils.Settings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,11 +18,13 @@ namespace sdLitica.AnalyticsManagementCore
     /// </summary>
     public class AnalyticsRegistry
     {
+        private readonly AnalyticsSettings _analyticsSettings;
         private readonly AnalyticsOperationRepository _analyticsOperationRepository;
         private readonly AnalyticsModuleRepository _analyticsModuleRepository;
         private readonly ModuleOperationRepository _modulesOperationsRepository;
-        public AnalyticsRegistry(AnalyticsOperationRepository analyticsOperationRepository, AnalyticsModuleRepository analyticsModuleRepository, ModuleOperationRepository modulesOperationsRepository)
+        public AnalyticsRegistry(IAppSettings _AppSettings, AnalyticsOperationRepository analyticsOperationRepository, AnalyticsModuleRepository analyticsModuleRepository, ModuleOperationRepository modulesOperationsRepository)
         {
+            _analyticsSettings = _AppSettings.AnalyticsSettings;
             _analyticsOperationRepository = analyticsOperationRepository;
             _analyticsModuleRepository = analyticsModuleRepository;
             _modulesOperationsRepository = modulesOperationsRepository;
@@ -104,7 +108,9 @@ namespace sdLitica.AnalyticsManagementCore
             CheckAvailable();
 
             if (!_analyticsOperationRepository.ContainsName(name)) return null;
-            return _analyticsOperationRepository.GetByName(name).ModulesOperations.Select(mo => mo.AnalyticsModule).First().QueueName; 
+            IList<ModulesOperations> modulesOperations = _analyticsOperationRepository.GetByName(name).ModulesOperations;
+            if (modulesOperations == null || modulesOperations.Count < 1) return null;
+            return modulesOperations.Select(mo => mo.AnalyticsModule).First().QueueName; 
         }
 
         /// <summary>
@@ -118,11 +124,15 @@ namespace sdLitica.AnalyticsManagementCore
             IList<AnalyticsOperationModel> operations = new List<AnalyticsOperationModel>();
             foreach (AnalyticsOperation operation in _analyticsOperationRepository.GetAll())
             {
-                operations.Add(new AnalyticsOperationModel()
+                IList<ModulesOperations> modulesOperations = operation.ModulesOperations;
+                if (modulesOperations != null && modulesOperations.Count > 0)
                 {
-                    Name = operation.Name,
-                    Description = operation.Description
-                });
+                    operations.Add(new AnalyticsOperationModel()
+                    {
+                        Name = operation.Name,
+                        Description = operation.Description
+                    });
+                }
             }
             return operations;
         }
@@ -135,15 +145,8 @@ namespace sdLitica.AnalyticsManagementCore
             List<Guid> modulesToRemove = new List<Guid>();
             foreach (AnalyticsModule module in _analyticsModuleRepository.GetAll())
             {
-                if (DateTime.Now - module.LastHeardTime > new TimeSpan(0,0,15))
+                if (DateTime.Now - module.LastHeardTime > new TimeSpan(0, 0, 0, 0, milliseconds: _analyticsSettings.ModuleDeadTimeout))
                 {
-                    foreach (AnalyticsOperation operation in module.ModulesOperations.Select(mo => mo.AnalyticsOperation))
-                    {
-                        foreach (ModulesOperations mo in operation.ModulesOperations.Where(mo => mo.AnalyticsModule.Id.Equals(module.Id))) {
-                            _modulesOperationsRepository.Delete(mo);
-                        }
-                        _analyticsOperationRepository.Delete(operation);
-                    }
                     _analyticsModuleRepository.Delete(module);
                 }
             }

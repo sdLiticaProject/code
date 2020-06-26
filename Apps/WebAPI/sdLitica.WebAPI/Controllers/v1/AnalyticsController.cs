@@ -2,8 +2,8 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using sdLitica.Analytics;
 using sdLitica.AnalyticsManagementCore;
+using sdLitica.Entities.Analytics;
 using sdLitica.WebAPI.Models.Analytics;
 
 namespace sdLitica.WebAPI.Controllers.v1

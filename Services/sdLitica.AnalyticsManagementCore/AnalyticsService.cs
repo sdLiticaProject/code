@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using sdLitica.Analytics;
+using sdLitica.Entities.Analytics;
 using sdLitica.Events.Abstractions;
 using sdLitica.Events.Integration;
 using sdLitica.Exceptions.Http;

@@ -1,7 +1,7 @@
 ﻿using sdLitica.Entities.Abstractions;
 using System;
 
-namespace sdLitica.Analytics
+namespace sdLitica.Entities.Analytics
 {
     /// <summary>
     /// enum for status of operation.
@@ -17,7 +17,7 @@ namespace sdLitica.Analytics
     /// <summary>
     /// Entity for metadata of analytics operation.
     /// </summary>
-    public class AnalyticsOperationRequest: Entity
+    public class AnalyticsOperationRequest : Entity
     {
 
         public AnalyticsOperationRequest()
@@ -31,7 +31,7 @@ namespace sdLitica.Analytics
         /// <summary>
         /// Name of operation to be performed. 
         /// </summary>
-        public string OpName { get; set; } 
+        public string OpName { get; set; }
 
         /// <summary>
         /// Id of time-series on which operation is performed

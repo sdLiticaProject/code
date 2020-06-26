@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace sdLitica.Analytics
+namespace sdLitica.Entities.Analytics
 {
     /// <summary>
     /// This class represents analytical modules. 

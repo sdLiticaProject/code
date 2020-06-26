@@ -106,7 +106,7 @@ namespace sdLitica
             });
 
             //sample subscribe for RabbitMQ
-            app.SubscribeEvents();
+            app.SubscribeEvents(); // todo
 
         }
     }

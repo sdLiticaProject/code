@@ -9,7 +9,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Domain\sdLitica.Analytics\sdLitica.Analytics.csproj" />
     <ProjectReference Include="..\..\Domain\sdLitica.Entities\sdLitica.Entities.csproj" />
   </ItemGroup>
 

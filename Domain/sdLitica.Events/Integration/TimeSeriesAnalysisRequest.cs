@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using sdLitica.Analytics;
+using sdLitica.Entities.Analytics;
 using sdLitica.Events.Abstractions;
 
 namespace sdLitica.Events.Integration

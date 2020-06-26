@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using sdLitica.Analytics;
+using sdLitica.Entities.Analytics;
 using sdLitica.Relational.Context;
 using System;
 using System.Collections.Generic;

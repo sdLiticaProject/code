@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace sdLitica.Analytics
+namespace sdLitica.Entities.Analytics
 {
     /// <summary>
     /// Linking entity to support many-to-many relationship for AnalyticsModule and AnalyticsOperation.
