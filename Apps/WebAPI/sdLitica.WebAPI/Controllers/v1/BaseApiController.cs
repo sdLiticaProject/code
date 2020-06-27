@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Linq;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
 
 namespace sdLitica.WebAPI.Controllers.v1
 {
@@ -11,6 +13,6 @@ namespace sdLitica.WebAPI.Controllers.v1
         /// current user id
         /// </summary>
         //public string UserId => HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-        public string UserId => User.Identity.Name;        
+        public string UserId => ((Claim)((ClaimsIdentity)User.Identity).Claims.First()).Value.ToString();        
     }
 }

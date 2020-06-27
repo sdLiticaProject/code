@@ -39,7 +39,7 @@ namespace sdLitica.WebAPI.Controllers.v1
         /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
-        public async Task<String> RegisterNewUser([FromBody] CreateUserModel newUser) {
+        public async Task<String> RegisterNewUser([FromBody] UserModel newUser) {
             
             User exitingUser = _userService.GetUser(newUser.Email);
 
@@ -99,10 +99,23 @@ namespace sdLitica.WebAPI.Controllers.v1
         [HttpPost("logout")]
         public async Task<NoContentResult> Logout()
         {
-            var user = _userService.GetUser(UserId);
+            var user = _userService.GetUser(new Guid(UserId));
             await _userService.ExpiresTokenAsync(user);
 
             return NoContent();
+        }
+
+        /// <summary>
+        /// This REST API handler sign out user from system
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("me")]
+        public async Task<UserModel> GetProfile()
+        {
+            var user = _userService.GetUser(new Guid(UserId));
+            
+
+            return new UserModel(user);
         }        
     }
 }
