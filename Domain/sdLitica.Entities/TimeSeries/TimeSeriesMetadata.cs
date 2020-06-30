@@ -55,7 +55,25 @@ namespace sdLitica.Entities.TimeSeries
         /// <summary>
         /// Comma-separated list of columns' names, updates when loading the time-series
         /// </summary>
-        public string Columms { get; protected set; }
+        public string Columns { get; protected set; }
+
+        /// <summary>
+        /// Modify time-series
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="description"></param>
+        /// <param name="rowsCount"></param>
+        /// <param name="columnsCount"></param>
+        /// <param name="columns"></param>
+        public void Modify(string name, string description, int rowsCount, int columnsCount, string columns)
+        {
+            Name = name;
+            Description = description;
+            RowsCount = rowsCount;
+            ColumnsCount = columnsCount;
+            Columns = columns;
+            DateModified = DateTime.Now;
+        }
 
         /// <summary>
         /// Create new time-series metadata entity
@@ -63,12 +81,13 @@ namespace sdLitica.Entities.TimeSeries
         /// <param name="name"></param>
         /// <param name="owner"></param>
         /// <returns></returns>
-        public static TimeSeriesMetadata Create(string name, User owner)
+        public static TimeSeriesMetadata Create(string name, User owner, string description = "")
         {
             TimeSeriesMetadata timeSeriesMetadata = new TimeSeriesMetadata()
             {
                 Id = Guid.NewGuid(),
                 Name = name,
+                Description = description,
                 DateCreated = DateTime.Now,
                 DateModified = DateTime.Now,
                 User = owner

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -23,10 +24,12 @@ namespace sdLitica.WebAPI.Controllers.v1
     public class TimeSeriesController : BaseApiController
     {
         private readonly ITimeSeriesService _timeSeriesService;
+        private readonly ITimeSeriesMetadataService _timeSeriesMetadataService;
 
-        public TimeSeriesController(ITimeSeriesService timeSeriesService)
+        public TimeSeriesController(ITimeSeriesService timeSeriesService, ITimeSeriesMetadataService timeSeriesMetadataService)
         {
             _timeSeriesService = timeSeriesService;
+            _timeSeriesMetadataService = timeSeriesMetadataService;
         }
 
         /// <summary>
@@ -40,6 +43,14 @@ namespace sdLitica.WebAPI.Controllers.v1
         public IActionResult AddTimeSeries()
         {
             var t = _timeSeriesService.AddRandomTimeSeries();
+            return Ok(t.Result);
+        }
+
+        [HttpPost]
+        [Route("temp")]
+        [Authorize]
+        public IActionResult AddTimeSeries([FromBody] CreateTimeSeriesModel timeSeriesModel) {
+            Task<string> t = _timeSeriesMetadataService.AddTimeseriesMetadata(timeSeriesModel.Name, UserId);
             return Ok(t.Result);
         }
 
