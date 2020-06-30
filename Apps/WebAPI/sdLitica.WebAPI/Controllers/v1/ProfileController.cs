@@ -106,7 +106,8 @@ namespace sdLitica.WebAPI.Controllers.v1
         }
 
         /// <summary>
-        /// This REST API handler sign out user from system
+        /// This REST API handler to get details about current user 
+        /// profile identified by authorization token
         /// </summary>
         /// <returns></returns>
         [HttpGet("me")]
