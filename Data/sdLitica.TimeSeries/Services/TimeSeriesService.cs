@@ -31,10 +31,19 @@ namespace sdLitica.TimeSeries.Services
 
         public async Task<string> AddRandomTimeSeries()
         {
+            string measurementName = Guid.NewGuid().ToString();
             var rows = CreateDynamicRowsStartingAt(new DateTime(2010, 1, 1, 1, 1, 1, DateTimeKind.Utc), 500,
-                out var measurementName);
+                measurementName);
             await _influxClient.WriteAsync(TimeSeriesSettings.InfluxDatabase, rows);
             return measurementName;
+        }
+
+        public async Task<string> AddRandomTimeSeries(string measurementId)
+        {
+            NamedDynamicInfluxRow[] rows = CreateDynamicRowsStartingAt(new DateTime(2010, 1, 1, 1, 1, 1, DateTimeKind.Utc), 500,
+                measurementId);
+            await _influxClient.WriteAsync(TimeSeriesSettings.InfluxDatabase, rows);
+            return measurementId;
         }
 
         public async Task<InfluxResult<DynamicInfluxRow>> ReadMeasurementById(string measurementId)
@@ -55,7 +64,7 @@ namespace sdLitica.TimeSeries.Services
         }
 
         private NamedDynamicInfluxRow[] CreateDynamicRowsStartingAt(DateTime start, int rows,
-            out string measurementName)
+            string measurementName)
         {
             var rng = new Random();
             var regions = new[] {"west-eu", "north-eu", "west-us", "east-us", "asia"};
@@ -63,7 +72,6 @@ namespace sdLitica.TimeSeries.Services
 
             var timestamp = start;
             var infos = new NamedDynamicInfluxRow[rows];
-            measurementName = Guid.NewGuid().ToString();
             for (var i = 0; i < rows; i++)
             {
                 long ram = rng.Next(int.MaxValue);

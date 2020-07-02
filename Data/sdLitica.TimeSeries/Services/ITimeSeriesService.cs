@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Vibrant.InfluxDB.Client;
@@ -11,6 +12,7 @@ namespace sdLitica.TimeSeries.Services
         Task<List<MeasurementRow>> ReadAllMeasurements();
 
         Task<string> AddRandomTimeSeries();
+        Task<string> AddRandomTimeSeries(string measurementId);
         
         Task<InfluxResult<DynamicInfluxRow>> ReadMeasurementById(string measurementId);
         Task<InfluxResult> DeleteMeasurementById(string measurementId);

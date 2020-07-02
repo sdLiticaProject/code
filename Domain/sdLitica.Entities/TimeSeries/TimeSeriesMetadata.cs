@@ -90,7 +90,8 @@ namespace sdLitica.Entities.TimeSeries
                 Description = description,
                 DateCreated = DateTime.Now,
                 DateModified = DateTime.Now,
-                User = owner
+                User = owner,
+                InfluxId = Guid.NewGuid()                
             };
             return timeSeriesMetadata;
         }

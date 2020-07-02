@@ -1,17 +1,15 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using sdLitica.Entities.TimeSeries;
+using sdLitica.TimeSeries.Services;
+using sdLitica.WebAPI.Entities.Common;
+using sdLitica.WebAPI.Entities.Common.Pages;
+using sdLitica.WebAPI.Models.TimeSeries;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using sdLitica.TimeSeries.Services;
-using sdLitica.WebAPI.Entities.Common;
-using sdLitica.WebAPI.Entities.Common.Pages;
-using sdLitica.WebAPI.Models.Management;
-using sdLitica.WebAPI.Models.TimeSeries;
 
 namespace sdLitica.WebAPI.Controllers.v1
 {
@@ -48,10 +46,20 @@ namespace sdLitica.WebAPI.Controllers.v1
 
         [HttpPost]
         [Route("temp")]
-        [Authorize]
-        public IActionResult AddTimeSeries([FromBody] CreateTimeSeriesModel timeSeriesModel) {
-            Task<string> t = _timeSeriesMetadataService.AddTimeseriesMetadata(timeSeriesModel.Name, UserId);
-            return Ok(t.Result);
+        public IActionResult AddTimeSeries([FromBody] TimeSeriesMetadataModel timeSeriesModel) {
+            Task<TimeSeriesMetadata> t = _timeSeriesMetadataService.AddTimeseriesMetadata(timeSeriesModel.Name, UserId);
+            _timeSeriesService.AddRandomTimeSeries(t.Result.InfluxId.ToString());
+            return Ok(new TimeSeriesMetadataModel(t.Result));
+        }
+
+        [HttpGet]
+        [Route("temp")]
+        public IActionResult GetTimeSeriesMetadataByUser()
+        {
+            List<TimeSeriesMetadata> t = _timeSeriesMetadataService.GetByUserId(UserId);
+            List<TimeSeriesMetadataModel> list = new List<TimeSeriesMetadataModel>();
+            t.ForEach(e => list.Add(new TimeSeriesMetadataModel(e)));
+            return Ok(list);
         }
 
         /// <summary>

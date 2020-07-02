@@ -22,13 +22,18 @@ namespace sdLitica.TimeSeries.Services
             _timeSeriesMetadataRepository = timeSeriesMetadataRepository;
         }
 
-        public async Task<string> AddTimeseriesMetadata(string name, string userId)
+        public async Task<TimeSeriesMetadata> AddTimeseriesMetadata(string name, string userId)
         {
             User user = _userService.GetUser(new Guid(userId));
             TimeSeriesMetadata t = TimeSeriesMetadata.Create(name, user);
             _timeSeriesMetadataRepository.Add(t);
             await _timeSeriesMetadataRepository.SaveChangesAsync();
-            return t.Id.ToString();
+            return t;
+        }
+
+        public List<TimeSeriesMetadata> GetByUserId(string userId)
+        {
+            return _timeSeriesMetadataRepository.GetByUserId(new Guid(userId));
         }
 
     }

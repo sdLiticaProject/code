@@ -1,7 +1,9 @@
-﻿using sdLitica.Entities.TimeSeries;
+﻿using Microsoft.EntityFrameworkCore;
+using sdLitica.Entities.TimeSeries;
 using sdLitica.Relational.Context;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace sdLitica.Relational.Repositories
@@ -19,6 +21,11 @@ namespace sdLitica.Relational.Repositories
             : base(context)
         {
 
+        }
+
+        public List<TimeSeriesMetadata> GetByUserId(Guid userId)
+        {
+            return Entity.Include(e => e.User).Where(e => e.UserId.Equals(userId)).ToList();
         }
     }
 }
