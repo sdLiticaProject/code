@@ -27,6 +27,11 @@ using sdLitica.Bootstrap.Extensions;
 using sdLitica.WebAPI.Models.Security;
 using sdLitica.Events.Extensions;
 using sdLitica.Bootstrap.Events;
+using System.IO;
+using System;
+using System.Reflection;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace sdLitica
 {
@@ -85,6 +90,18 @@ namespace sdLitica
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info { Title = "sdLitica Project REST API", Version = "v1" });
+
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
+
+                c.AddSecurityDefinition("cloudToken",
+                    new ApiKeyScheme { In = "header",
+                    Description = "Please enter into field the word 'cloudToken' following by space and a token received from /login endpoint", 
+                    Name = "Authorization", Type = "apiKey" });
+                c.AddSecurityRequirement(new Dictionary<string, IEnumerable<string>> {
+                    { "cloudToken", Enumerable.Empty<string>() },
+                });
             });            
         }
 
