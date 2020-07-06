@@ -5,6 +5,8 @@ using Vibrant.InfluxDB.Client;
 using Vibrant.InfluxDB.Client.Rows;
 using sdLitica.Utils.Settings;
 using sdLitica.Utils.Abstractions;
+using System.IO;
+using System.Text;
 
 namespace sdLitica.TimeSeries.Services
 {
@@ -107,5 +109,29 @@ namespace sdLitica.TimeSeries.Services
                 return new List<MeasurementRow>();
             }
         }
+
+        public async Task<string> UploadDataFromCsv(string measurementId, List<string> lines)
+        {
+            await DeleteMeasurementById(measurementId);
+            string[] headers = lines[0].Split(',');
+            NamedDynamicInfluxRow[] influxRows = new NamedDynamicInfluxRow[lines.Count - 1];
+            for (int i = 1; i < lines.Count; i++)
+            {
+                string[] rowValues = lines[i].Split(',');
+
+                NamedDynamicInfluxRow row = new NamedDynamicInfluxRow();
+                for (int j = 1; j < headers.Length; j++)
+                {
+                    row.Fields.Add(headers[j], rowValues[j]);
+                }
+                row.Timestamp = DateTime.Parse(rowValues[0]);
+                row.MeasurementName = measurementId;
+                influxRows[i - 1] = row;
+            }
+
+            await _influxClient.WriteAsync(TimeSeriesSettings.InfluxDatabase, influxRows);
+            return "?";
+        }
+
     }
 }

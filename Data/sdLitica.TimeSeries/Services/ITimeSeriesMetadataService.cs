@@ -10,5 +10,8 @@ namespace sdLitica.TimeSeries.Services
     {
         Task<TimeSeriesMetadata> AddTimeseriesMetadata(string name, string userId);
         List<TimeSeriesMetadata> GetByUserId(string userId);
+        Task<TimeSeriesMetadata> UpdateTimeSeriesMetadata(string guid, string name, string description);
+        Task DeleteTimeSeriesMetadata(string guid);
+        TimeSeriesMetadata GetTimeSeriesMetadata(string guid);
     }
 }

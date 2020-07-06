@@ -8,7 +8,9 @@ using sdLitica.WebAPI.Entities.Common.Pages;
 using sdLitica.WebAPI.Models.TimeSeries;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace sdLitica.WebAPI.Controllers.v1
@@ -52,6 +54,31 @@ namespace sdLitica.WebAPI.Controllers.v1
             return Ok(new TimeSeriesMetadataModel(t.Result));
         }
 
+        [HttpPost]
+        [Route("{measurementId}/data")]
+        public IActionResult UploadCsvData([FromRoute] string measurementId, [FromForm] IFormFile formFile)
+        {
+            // todo: check if authorized user owns this time-series, update rows and columns metadata after extraction
+            List<string> fileContent = ReadAsStringAsync(formFile).Result;
+            _timeSeriesService.UploadDataFromCsv(measurementId, fileContent);
+            return Ok();
+        }
+
+        //temporary here. consider move to sdLitica.Helpers
+        public static async Task<List<string>> ReadAsStringAsync(IFormFile file)
+        {
+            List<string> result = new List<string>();
+            using (var reader = new StreamReader(file.OpenReadStream()))
+            {
+                while (reader.Peek() >= 0)
+                {
+                    string line = await reader.ReadLineAsync();
+                    result.Add(line);
+                }
+            }
+            return result;
+        }
+
         [HttpGet]
         [Route("temp")]
         public IActionResult GetTimeSeriesMetadataByUser()
@@ -73,8 +100,9 @@ namespace sdLitica.WebAPI.Controllers.v1
         [HttpPost]
         [Route("{timeseriesId}")]
         //TODO: add content
-        public IActionResult UpdateTimeSeriesMetadata(string timeseriesId)
+        public IActionResult UpdateTimeSeriesMetadata([FromBody] TimeSeriesMetadataModel model)
         {
+            _timeSeriesMetadataService.UpdateTimeSeriesMetadata(model.Id, model.Name, model.Description).Wait();
             return Ok("ok");
         }
 
@@ -215,11 +243,13 @@ namespace sdLitica.WebAPI.Controllers.v1
         /// </returns>
         [HttpDelete]
         [Route("{timeseriesId}")]
-        public IActionResult DeleteTimeSeriesById(string timeseriesId)
+        public IActionResult DeleteTimeSeriesById(string timeSeriesMetadataId)
         {
-            var result = _timeSeriesService.DeleteMeasurementById(timeseriesId).Result;
+            string timeSeriesId = _timeSeriesMetadataService.GetTimeSeriesMetadata(timeSeriesMetadataId).InfluxId.ToString();
+            var result = _timeSeriesService.DeleteMeasurementById(timeSeriesId).Result;
             if (result.Succeeded)
             {
+                _timeSeriesMetadataService.DeleteTimeSeriesMetadata(timeSeriesMetadataId).Wait();
                 return NoContent();
             }
             else

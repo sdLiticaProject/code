@@ -61,17 +61,11 @@ namespace sdLitica.Entities.TimeSeries
         /// Modify time-series
         /// </summary>
         /// <param name="name"></param>
-        /// <param name="description"></param>
-        /// <param name="rowsCount"></param>
-        /// <param name="columnsCount"></param>
-        /// <param name="columns"></param>
-        public void Modify(string name, string description, int rowsCount, int columnsCount, string columns)
+        /// <param name="description"></pa
+        public void Modify(string name, string description)
         {
             Name = name;
             Description = description;
-            RowsCount = rowsCount;
-            ColumnsCount = columnsCount;
-            Columns = columns;
             DateModified = DateTime.Now;
         }
 

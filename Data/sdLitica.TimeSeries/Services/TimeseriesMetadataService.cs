@@ -1,5 +1,6 @@
 ﻿using sdLitica.Entities.Management;
 using sdLitica.Entities.TimeSeries;
+using sdLitica.Exceptions.Http;
 using sdLitica.PlatformCore;
 using sdLitica.Relational.Repositories;
 using sdLitica.Utils.Abstractions;
@@ -31,9 +32,39 @@ namespace sdLitica.TimeSeries.Services
             return t;
         }
 
+        public async Task<TimeSeriesMetadata> UpdateTimeSeriesMetadata(string guid, string name, string description)
+        {
+            TimeSeriesMetadata t = _timeSeriesMetadataRepository.GetById(new Guid(guid));
+            if (t == null)
+            {
+                throw new NotFoundException("this time-series is not found");
+            }
+
+            if (name == "") name = t.Name;
+            if (description == "") description = t.Description; // maybe default value instead of ""
+
+            t.Modify(name, description);
+            await _timeSeriesMetadataRepository.SaveChangesAsync();
+            return t;
+        }
+
         public List<TimeSeriesMetadata> GetByUserId(string userId)
         {
             return _timeSeriesMetadataRepository.GetByUserId(new Guid(userId));
+        }
+
+        public TimeSeriesMetadata GetTimeSeriesMetadata(string guid)
+        {
+            return _timeSeriesMetadataRepository.GetById(new Guid(guid));
+        }
+
+        public async Task DeleteTimeSeriesMetadata(string guid)
+        {
+            TimeSeriesMetadata ts = _timeSeriesMetadataRepository.GetById(new Guid(guid));
+            if (ts == null) throw new NotFoundException("this time-series is not found");
+
+            _timeSeriesMetadataRepository.Delete(ts);
+            await _timeSeriesMetadataRepository.SaveChangesAsync();
         }
 
     }

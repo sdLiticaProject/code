@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Vibrant.InfluxDB.Client;
 using Vibrant.InfluxDB.Client.Rows;
@@ -16,6 +17,8 @@ namespace sdLitica.TimeSeries.Services
         
         Task<InfluxResult<DynamicInfluxRow>> ReadMeasurementById(string measurementId);
         Task<InfluxResult> DeleteMeasurementById(string measurementId);
+
+        Task<string> UploadDataFromCsv(string measurementId, List<string> file);
 
     }
 }
