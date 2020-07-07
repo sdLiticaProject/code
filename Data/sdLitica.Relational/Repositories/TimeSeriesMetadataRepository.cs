@@ -23,11 +23,21 @@ namespace sdLitica.Relational.Repositories
 
         }
 
+        /// <summary>
+        /// Gets list of time-series metadata objects owned by user given by userId
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public List<TimeSeriesMetadata> GetByUserId(Guid userId)
         {
             return Entity.Include(e => e.User).Where(e => e.UserId.Equals(userId)).ToList();
         }
 
+        /// <summary>
+        /// Gets untracked time-series metadata object
+        /// </summary>
+        /// <param name="guid"></param>
+        /// <returns></returns>
         public TimeSeriesMetadata GetByIdReadonly(Guid guid)
         {
             return Entity.AsNoTracking().SingleOrDefault(e => e.Id == guid);

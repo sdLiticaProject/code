@@ -68,12 +68,12 @@ namespace sdLitica.WebAPI.Controllers.v1
         /// <param name="formFile"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("{measurementId}/data")]
+        [Route("{timeSeriesMetadataId}/data")]
         public IActionResult UploadCsvData([FromRoute] string timeSeriesMetadataId, [FromForm] IFormFile formFile)
         {
             // todo: update rows and columns metadata after extraction
             TimeSeriesMetadata timeSeriesMetadata = _timeSeriesMetadataService.GetTimeSeriesMetadata(timeSeriesMetadataId);
-            if (!(timeSeriesMetadata != null && timeSeriesMetadata.UserId.Equals(UserId)))
+            if (!(timeSeriesMetadata != null && timeSeriesMetadata.UserId.ToString().Equals(UserId)))
             {
                 return NotFound("this user does not have timeseries given by this id");
             }
@@ -121,16 +121,15 @@ namespace sdLitica.WebAPI.Controllers.v1
         ///    404 - If time series doesn't exists or it is not accessible by current user
         /// </returns>
         [HttpPost]
-        [Route("{timeseriesId}")]
-        //TODO: add content
-        public IActionResult UpdateTimeSeriesMetadata([FromBody] TimeSeriesMetadataModel model)
+        [Route("{timeSeriesMetadataId}")]
+        public IActionResult UpdateTimeSeriesMetadata([FromRoute] string timeSeriesMetadataId, [FromBody] TimeSeriesMetadataModel model)
         {
-            TimeSeriesMetadata timeSeriesMetadata = _timeSeriesMetadataService.GetTimeSeriesMetadata(model.Id);
-            if (timeSeriesMetadata == null || !timeSeriesMetadata.UserId.Equals(UserId))
+            TimeSeriesMetadata timeSeriesMetadata = _timeSeriesMetadataService.GetTimeSeriesMetadata(timeSeriesMetadataId);
+            if (timeSeriesMetadata == null || !timeSeriesMetadata.UserId.ToString().Equals(UserId))
             {
                 return NotFound("this user does not have this time-series");
             } 
-            _timeSeriesMetadataService.UpdateTimeSeriesMetadata(model.Id, model.Name, model.Description).Wait();
+            _timeSeriesMetadataService.UpdateTimeSeriesMetadata(timeSeriesMetadataId, model.Name, model.Description).Wait();
             return Ok("ok");
         }
 
@@ -193,11 +192,11 @@ namespace sdLitica.WebAPI.Controllers.v1
         ///    404 - If time series doesn't exists or it is not accessible by current user
         /// </returns>
         [HttpGet]
-        [Route("{timeSeriesMetadataId}")]
+        [Route("{timeSeriesMetadataId}/temp")]
         public IActionResult GetTimeSeriesMetadataById([FromRoute] string timeSeriesMetadataId)
         {
             TimeSeriesMetadata timeSeriesMetadata = _timeSeriesMetadataService.GetTimeSeriesMetadata(timeSeriesMetadataId);
-            if (timeSeriesMetadata == null || !timeSeriesMetadata.UserId.Equals(UserId))
+            if (timeSeriesMetadata == null || !timeSeriesMetadata.UserId.ToString().Equals(UserId))
             {
                 return NotFound("this user does not have this time-series");
             }
@@ -292,11 +291,11 @@ namespace sdLitica.WebAPI.Controllers.v1
         ///    404 - If time series doesn't exists or it is not accessible by current user
         /// </returns>
         [HttpDelete]
-        [Route("{timeseriesId}")]
-        public IActionResult DeleteTimeSeriesById(string timeSeriesMetadataId)
+        [Route("{timeSeriesMetadataId}")]
+        public IActionResult DeleteTimeSeriesById([FromRoute] string timeSeriesMetadataId)
         {
             TimeSeriesMetadata timeSeriesMetadata = _timeSeriesMetadataService.GetTimeSeriesMetadata(timeSeriesMetadataId);
-            if (timeSeriesMetadata == null || !timeSeriesMetadata.UserId.Equals(UserId))
+            if (timeSeriesMetadata == null || !timeSeriesMetadata.UserId.ToString().Equals(UserId))
             {
                 return NotFound("user does not have this time-series");
             }

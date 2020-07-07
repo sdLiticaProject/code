@@ -1,11 +1,12 @@
 ﻿using sdLitica.Entities.Abstractions;
 using sdLitica.Entities.Management;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace sdLitica.Entities.TimeSeries
 {
+    /// <summary>
+    /// This class represents metadata of time-series
+    /// </summary>
     public class TimeSeriesMetadata: Entity
     {
         /// <summary>
@@ -61,7 +62,7 @@ namespace sdLitica.Entities.TimeSeries
         /// Modify time-series
         /// </summary>
         /// <param name="name"></param>
-        /// <param name="description"></pa
+        /// <param name="description"></param>
         public void Modify(string name, string description)
         {
             Name = name;
