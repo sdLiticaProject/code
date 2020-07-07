@@ -10,7 +10,7 @@ namespace sdLitica.WebAPI.Models.Management
     public class UserModel
     {
         /// <summary>
-        /// Unique user identifier
+        /// Unique user identifier, read-only
         /// </summary>
         public string Id { get; set; }
         /// <summary>
