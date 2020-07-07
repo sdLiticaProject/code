@@ -27,5 +27,10 @@ namespace sdLitica.Relational.Repositories
         {
             return Entity.Include(e => e.User).Where(e => e.UserId.Equals(userId)).ToList();
         }
+
+        public TimeSeriesMetadata GetByIdReadonly(Guid guid)
+        {
+            return Entity.AsNoTracking().SingleOrDefault(e => e.Id == guid);
+        }
     }
 }
