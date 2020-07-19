@@ -38,7 +38,7 @@ namespace sdLitica.WebAPI.Controllers.v1
         ///    400 - There were issues with passed data, i.e. required fields missing or length constraints violated
         /// </returns>
         [HttpPost]
-        [AllowAnonymous]
+        [Route("old")]
         public IActionResult AddTimeSeries()
         {
             var t = _timeSeriesService.AddRandomTimeSeries();
@@ -54,7 +54,6 @@ namespace sdLitica.WebAPI.Controllers.v1
         ///    400 - There were issues with passed data, i.e. required fields missing or length constraints violated
         /// </returns>
         [HttpPost]
-        [Route("temp")]
         public IActionResult AddTimeSeries([FromBody] TimeSeriesMetadataModel timeSeriesModel) {
             Task<TimeSeriesMetadata> t = _timeSeriesMetadataService.AddTimeseriesMetadata(timeSeriesModel.Name, UserId);
             _timeSeriesService.AddRandomTimeSeries(t.Result.InfluxId.ToString());
@@ -103,7 +102,6 @@ namespace sdLitica.WebAPI.Controllers.v1
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("temp")]
         public IActionResult GetTimeSeriesMetadataByUser()
         {
             List<TimeSeriesMetadata> t = _timeSeriesMetadataService.GetByUserId(UserId);
@@ -138,7 +136,7 @@ namespace sdLitica.WebAPI.Controllers.v1
         /// </summary>
         /// <returns>Timeseries metadata, instead - 404</returns>
         [HttpGet]
-        [Route("{timeseriesId}")]
+        [Route("old/{timeseriesId}")]
         public IActionResult GetTimeSeriesMetadataById(string timeseriesId, int pageSize = 20, int offset = 0)
         {
             var measurementsResult = _timeSeriesService.ReadMeasurementById(timeseriesId).Result;
@@ -192,7 +190,7 @@ namespace sdLitica.WebAPI.Controllers.v1
         ///    404 - If time series doesn't exists or it is not accessible by current user
         /// </returns>
         [HttpGet]
-        [Route("{timeSeriesMetadataId}/temp")]
+        [Route("{timeSeriesMetadataId}")]
         public IActionResult GetTimeSeriesMetadataById([FromRoute] string timeSeriesMetadataId)
         {
             TimeSeriesMetadata timeSeriesMetadata = _timeSeriesMetadataService.GetTimeSeriesMetadata(timeSeriesMetadataId);
@@ -209,7 +207,6 @@ namespace sdLitica.WebAPI.Controllers.v1
         /// <returns>Timeseries data, instead - 404</returns>
         [HttpGet]
         [Route("{timeseriesId}/data")]
-        [AllowAnonymous]
         public IActionResult GetTimeSeriesDataById(string timeseriesId, int pageSize = 20, int offset = 0)
         {
             var measurementsResult = _timeSeriesService.ReadMeasurementById(timeseriesId).Result;
@@ -258,7 +255,7 @@ namespace sdLitica.WebAPI.Controllers.v1
         /// </summary>
         /// <returns>List of timeseries</returns>
         [HttpGet]
-        [AllowAnonymous]
+        [Route("old")]
         public IActionResult GetAllTimeSeries(int pageSize = 20, int offset = 0)
         {
             var measurementsResult = _timeSeriesService.ReadAllMeasurements().Result;
