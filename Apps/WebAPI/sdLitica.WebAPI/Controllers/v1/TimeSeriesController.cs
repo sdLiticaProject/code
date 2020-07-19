@@ -1,16 +1,16 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using sdLitica.Entities.TimeSeries;
 using sdLitica.TimeSeries.Services;
 using sdLitica.WebAPI.Entities.Common;
 using sdLitica.WebAPI.Entities.Common.Pages;
-using sdLitica.WebAPI.Models.Management;
 using sdLitica.WebAPI.Models.TimeSeries;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace sdLitica.WebAPI.Controllers.v1
 {
@@ -18,15 +18,16 @@ namespace sdLitica.WebAPI.Controllers.v1
     /// This controller is used to work with user timeseries
     /// </summary>
     [Route("api/v1/timeseries")]
-    //TODO: Change auth settings here
-    [AllowAnonymous]
+    [Authorize]
     public class TimeSeriesController : BaseApiController
     {
         private readonly ITimeSeriesService _timeSeriesService;
+        private readonly ITimeSeriesMetadataService _timeSeriesMetadataService;
 
-        public TimeSeriesController(ITimeSeriesService timeSeriesService)
+        public TimeSeriesController(ITimeSeriesService timeSeriesService, ITimeSeriesMetadataService timeSeriesMetadataService)
         {
             _timeSeriesService = timeSeriesService;
+            _timeSeriesMetadataService = timeSeriesMetadataService;
         }
 
         /// <summary>
@@ -37,10 +38,76 @@ namespace sdLitica.WebAPI.Controllers.v1
         ///    400 - There were issues with passed data, i.e. required fields missing or length constraints violated
         /// </returns>
         [HttpPost]
+        [Route("old")]
         public IActionResult AddTimeSeries()
         {
             var t = _timeSeriesService.AddRandomTimeSeries();
             return Ok(t.Result);
+        }
+
+        /// <summary>
+        /// This REST API handler creates a new time-series metadata object for current user
+        /// </summary>
+        /// <param name="timeSeriesModel"></param>
+        /// <returns>
+        ///    200 - Time-series was successfully created. Response payload will contain object with assigned id
+        ///    400 - There were issues with passed data, i.e. required fields missing or length constraints violated
+        /// </returns>
+        [HttpPost]
+        public IActionResult AddTimeSeries([FromBody] TimeSeriesMetadataModel timeSeriesModel) {
+            Task<TimeSeriesMetadata> t = _timeSeriesMetadataService.AddTimeseriesMetadata(timeSeriesModel.Name, UserId);
+            _timeSeriesService.AddRandomTimeSeries(t.Result.InfluxId.ToString());
+            return Ok(new TimeSeriesMetadataModel(t.Result));
+        }
+
+        /// <summary>
+        /// This REST API handler uploads a data from csv-file to the time-series given by timeSeriesMetadataId
+        /// </summary>
+        /// <param name="timeSeriesMetadataId"></param>
+        /// <param name="formFile"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("{timeSeriesMetadataId}/data")]
+        public IActionResult UploadCsvData([FromRoute] string timeSeriesMetadataId, [FromForm] IFormFile formFile)
+        {
+            // todo: update rows and columns metadata after extraction
+            TimeSeriesMetadata timeSeriesMetadata = _timeSeriesMetadataService.GetTimeSeriesMetadata(timeSeriesMetadataId);
+            if (!(timeSeriesMetadata != null && timeSeriesMetadata.UserId.ToString().Equals(UserId)))
+            {
+                return NotFound("this user does not have timeseries given by this id");
+            }
+            string measurementId = timeSeriesMetadata.InfluxId.ToString();
+            List<string> fileContent = ReadAsStringAsync(formFile).Result;
+            _timeSeriesService.UploadDataFromCsv(measurementId, fileContent);
+            return Ok();
+        }
+
+        //temporarily here. consider move to sdLitica.Helpers
+        public static async Task<List<string>> ReadAsStringAsync(IFormFile file)
+        {
+            List<string> result = new List<string>();
+            using (var reader = new StreamReader(file.OpenReadStream()))
+            {
+                while (reader.Peek() >= 0)
+                {
+                    string line = await reader.ReadLineAsync();
+                    result.Add(line);
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// This REST API handler returns all time-series metadata objects owned by user
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult GetTimeSeriesMetadataByUser()
+        {
+            List<TimeSeriesMetadata> t = _timeSeriesMetadataService.GetByUserId(UserId);
+            List<TimeSeriesMetadataModel> list = new List<TimeSeriesMetadataModel>();
+            t.ForEach(e => list.Add(new TimeSeriesMetadataModel(e)));
+            return Ok(list);
         }
 
         /// <summary>
@@ -52,10 +119,15 @@ namespace sdLitica.WebAPI.Controllers.v1
         ///    404 - If time series doesn't exists or it is not accessible by current user
         /// </returns>
         [HttpPost]
-        [Route("{timeseriesId}")]
-        //TODO: add content
-        public IActionResult UpdateTimeSeriesMetadata(string timeseriesId)
+        [Route("{timeSeriesMetadataId}")]
+        public IActionResult UpdateTimeSeriesMetadata([FromRoute] string timeSeriesMetadataId, [FromBody] TimeSeriesMetadataModel model)
         {
+            TimeSeriesMetadata timeSeriesMetadata = _timeSeriesMetadataService.GetTimeSeriesMetadata(timeSeriesMetadataId);
+            if (timeSeriesMetadata == null || !timeSeriesMetadata.UserId.ToString().Equals(UserId))
+            {
+                return NotFound("this user does not have this time-series");
+            } 
+            _timeSeriesMetadataService.UpdateTimeSeriesMetadata(timeSeriesMetadataId, model.Name, model.Description).Wait();
             return Ok("ok");
         }
 
@@ -64,7 +136,7 @@ namespace sdLitica.WebAPI.Controllers.v1
         /// </summary>
         /// <returns>Timeseries metadata, instead - 404</returns>
         [HttpGet]
-        [Route("{timeseriesId}")]
+        [Route("old/{timeseriesId}")]
         public IActionResult GetTimeSeriesMetadataById(string timeseriesId, int pageSize = 20, int offset = 0)
         {
             var measurementsResult = _timeSeriesService.ReadMeasurementById(timeseriesId).Result;
@@ -107,6 +179,26 @@ namespace sdLitica.WebAPI.Controllers.v1
                     return NotFound();
                 }
             }
+        }
+
+        /// <summary>
+        /// This REST API handler returns time-series metadata given by timeSeriesMetadataId
+        /// </summary>
+        /// <param name="timeSeriesMetadataId"></param>
+        /// <returns>
+        ///    200 - Time-series metadata
+        ///    404 - If time series doesn't exists or it is not accessible by current user
+        /// </returns>
+        [HttpGet]
+        [Route("{timeSeriesMetadataId}")]
+        public IActionResult GetTimeSeriesMetadataById([FromRoute] string timeSeriesMetadataId)
+        {
+            TimeSeriesMetadata timeSeriesMetadata = _timeSeriesMetadataService.GetTimeSeriesMetadata(timeSeriesMetadataId);
+            if (timeSeriesMetadata == null || !timeSeriesMetadata.UserId.ToString().Equals(UserId))
+            {
+                return NotFound("this user does not have this time-series");
+            }
+            return Ok(new TimeSeriesMetadataModel(timeSeriesMetadata));
         }
 
         /// <summary>
@@ -163,6 +255,7 @@ namespace sdLitica.WebAPI.Controllers.v1
         /// </summary>
         /// <returns>List of timeseries</returns>
         [HttpGet]
+        [Route("old")]
         public IActionResult GetAllTimeSeries(int pageSize = 20, int offset = 0)
         {
             var measurementsResult = _timeSeriesService.ReadAllMeasurements().Result;
@@ -195,12 +288,20 @@ namespace sdLitica.WebAPI.Controllers.v1
         ///    404 - If time series doesn't exists or it is not accessible by current user
         /// </returns>
         [HttpDelete]
-        [Route("{timeseriesId}")]
-        public IActionResult DeleteTimeSeriesById(string timeseriesId)
+        [Route("{timeSeriesMetadataId}")]
+        public IActionResult DeleteTimeSeriesById([FromRoute] string timeSeriesMetadataId)
         {
-            var result = _timeSeriesService.DeleteMeasurementById(timeseriesId).Result;
+            TimeSeriesMetadata timeSeriesMetadata = _timeSeriesMetadataService.GetTimeSeriesMetadata(timeSeriesMetadataId);
+            if (timeSeriesMetadata == null || !timeSeriesMetadata.UserId.ToString().Equals(UserId))
+            {
+                return NotFound("user does not have this time-series");
+            }
+
+            string timeSeriesId = timeSeriesMetadata.InfluxId.ToString();
+            var result = _timeSeriesService.DeleteMeasurementById(timeSeriesId).Result;
             if (result.Succeeded)
             {
+                _timeSeriesMetadataService.DeleteTimeSeriesMetadata(timeSeriesMetadataId).Wait();
                 return NoContent();
             }
             else

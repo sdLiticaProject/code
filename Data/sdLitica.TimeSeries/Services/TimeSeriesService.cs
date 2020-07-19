@@ -5,6 +5,8 @@ using Vibrant.InfluxDB.Client;
 using Vibrant.InfluxDB.Client.Rows;
 using sdLitica.Utils.Settings;
 using sdLitica.Utils.Abstractions;
+using System.IO;
+using System.Text;
 
 namespace sdLitica.TimeSeries.Services
 {
@@ -31,10 +33,19 @@ namespace sdLitica.TimeSeries.Services
 
         public async Task<string> AddRandomTimeSeries()
         {
+            string measurementName = Guid.NewGuid().ToString();
             var rows = CreateDynamicRowsStartingAt(new DateTime(2010, 1, 1, 1, 1, 1, DateTimeKind.Utc), 500,
-                out var measurementName);
+                measurementName);
             await _influxClient.WriteAsync(TimeSeriesSettings.InfluxDatabase, rows);
             return measurementName;
+        }
+
+        public async Task<string> AddRandomTimeSeries(string measurementId)
+        {
+            NamedDynamicInfluxRow[] rows = CreateDynamicRowsStartingAt(new DateTime(2010, 1, 1, 1, 1, 1, DateTimeKind.Utc), 500,
+                measurementId);
+            await _influxClient.WriteAsync(TimeSeriesSettings.InfluxDatabase, rows);
+            return measurementId;
         }
 
         public async Task<InfluxResult<DynamicInfluxRow>> ReadMeasurementById(string measurementId)
@@ -55,7 +66,7 @@ namespace sdLitica.TimeSeries.Services
         }
 
         private NamedDynamicInfluxRow[] CreateDynamicRowsStartingAt(DateTime start, int rows,
-            out string measurementName)
+            string measurementName)
         {
             var rng = new Random();
             var regions = new[] {"west-eu", "north-eu", "west-us", "east-us", "asia"};
@@ -63,7 +74,6 @@ namespace sdLitica.TimeSeries.Services
 
             var timestamp = start;
             var infos = new NamedDynamicInfluxRow[rows];
-            measurementName = Guid.NewGuid().ToString();
             for (var i = 0; i < rows; i++)
             {
                 long ram = rng.Next(int.MaxValue);
@@ -99,5 +109,29 @@ namespace sdLitica.TimeSeries.Services
                 return new List<MeasurementRow>();
             }
         }
+
+        public async Task<string> UploadDataFromCsv(string measurementId, List<string> lines)
+        {
+            await DeleteMeasurementById(measurementId);
+            string[] headers = lines[0].Split(',');
+            NamedDynamicInfluxRow[] influxRows = new NamedDynamicInfluxRow[lines.Count - 1];
+            for (int i = 1; i < lines.Count; i++)
+            {
+                string[] rowValues = lines[i].Split(',');
+
+                NamedDynamicInfluxRow row = new NamedDynamicInfluxRow();
+                for (int j = 1; j < headers.Length; j++)
+                {
+                    row.Fields.Add(headers[j], rowValues[j]);
+                }
+                row.Timestamp = DateTime.Parse(rowValues[0]);
+                row.MeasurementName = measurementId;
+                influxRows[i - 1] = row;
+            }
+
+            await _influxClient.WriteAsync(TimeSeriesSettings.InfluxDatabase, influxRows);
+            return "?";
+        }
+
     }
 }

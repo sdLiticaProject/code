@@ -9,7 +9,10 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\Domain\sdLitica.Entities\sdLitica.Entities.csproj" />
       <ProjectReference Include="..\..\Infrastructure\sdLitica.Utils\sdLitica.Utils.csproj" />
+      <ProjectReference Include="..\..\Services\sdLitica.PlatformCore\sdLitica.PlatformCore.csproj" />
+      <ProjectReference Include="..\sdLitica.Relational\sdLitica.Relational.csproj" />
     </ItemGroup>
 
 </Project>
