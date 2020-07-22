@@ -37,6 +37,7 @@ namespace sdLitica
 {
     public class Startup
     {
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -76,6 +77,15 @@ namespace sdLitica
                     options.AuthKey = "cloudToken";
                 });
 
+            // Adding CORS configuration
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                                builder =>
+                                {
+                                    builder.WithOrigins("http://sdlitica.sdcloud.io");
+                                });
+            });
             
             services.AddMvc(
                 config =>
@@ -114,6 +124,7 @@ namespace sdLitica
             }
 
             app.UseAuthentication();
+            app.UseCors(MyAllowSpecificOrigins);
             app.UseMvc();
             app.UseSwagger();
        
