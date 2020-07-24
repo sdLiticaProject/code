@@ -37,6 +37,7 @@ namespace sdLitica
 {
     public class Startup
     {
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -76,6 +77,15 @@ namespace sdLitica
                     options.AuthKey = "cloudToken";
                 });
 
+            // Adding CORS configuration
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                                builder =>
+                                {
+                                    builder.WithOrigins("http://sdlitica.sdcloud.io");
+                                });
+            });
             
             services.AddMvc(
                 config =>
@@ -106,6 +116,8 @@ namespace sdLitica
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        // Information about middleware order
+        // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/middleware/?view=aspnetcore-3.1
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
@@ -113,7 +125,9 @@ namespace sdLitica
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseCors(MyAllowSpecificOrigins);
             app.UseAuthentication();
+            
             app.UseMvc();
             app.UseSwagger();
        
