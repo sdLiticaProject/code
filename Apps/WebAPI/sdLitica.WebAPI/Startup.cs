@@ -116,6 +116,8 @@ namespace sdLitica
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        // Information about middleware order
+        // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/middleware/?view=aspnetcore-3.1
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
@@ -123,8 +125,9 @@ namespace sdLitica
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseAuthentication();
             app.UseCors(MyAllowSpecificOrigins);
+            app.UseAuthentication();
+            
             app.UseMvc();
             app.UseSwagger();
        
