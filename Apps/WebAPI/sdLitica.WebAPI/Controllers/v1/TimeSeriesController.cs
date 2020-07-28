@@ -1,19 +1,16 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using sdLitica.Entities.TimeSeries;
 using sdLitica.TimeSeries.Services;
 using sdLitica.WebAPI.Entities.Common;
 using sdLitica.WebAPI.Entities.Common.Pages;
-using sdLitica.WebAPI.Models.Management;
 using sdLitica.WebAPI.Models.TimeSeries;
-using Vibrant.InfluxDB.Client;
-using Vibrant.InfluxDB.Client.Rows;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace sdLitica.WebAPI.Controllers.v1
 {
@@ -21,15 +18,16 @@ namespace sdLitica.WebAPI.Controllers.v1
     /// This controller is used to work with user timeseries
     /// </summary>
     [Route("api/v1/timeseries")]
-    //TODO: Change auth settings here
-    [AllowAnonymous]
+    [Authorize]
     public class TimeSeriesController : BaseApiController
     {
         private readonly ITimeSeriesService _timeSeriesService;
+        private readonly ITimeSeriesMetadataService _timeSeriesMetadataService;
 
-        public TimeSeriesController(ITimeSeriesService timeSeriesService)
+        public TimeSeriesController(ITimeSeriesService timeSeriesService, ITimeSeriesMetadataService timeSeriesMetadataService)
         {
             _timeSeriesService = timeSeriesService;
+            _timeSeriesMetadataService = timeSeriesMetadataService;
         }
 
         /// <summary>
@@ -40,10 +38,76 @@ namespace sdLitica.WebAPI.Controllers.v1
         ///    400 - There were issues with passed data, i.e. required fields missing or length constraints violated
         /// </returns>
         [HttpPost]
+        [Route("old")]
         public IActionResult AddTimeSeries()
         {
-            Task<string> t = _timeSeriesService.AddRandomTimeSeries();
+            var t = _timeSeriesService.AddRandomTimeSeries();
             return Ok(t.Result);
+        }
+
+        /// <summary>
+        /// This REST API handler creates a new time-series metadata object for current user
+        /// </summary>
+        /// <param name="timeSeriesModel"></param>
+        /// <returns>
+        ///    200 - Time-series was successfully created. Response payload will contain object with assigned id
+        ///    400 - There were issues with passed data, i.e. required fields missing or length constraints violated
+        /// </returns>
+        [HttpPost]
+        public IActionResult AddTimeSeries([FromBody] TimeSeriesMetadataModel timeSeriesModel) {
+            Task<TimeSeriesMetadata> t = _timeSeriesMetadataService.AddTimeseriesMetadata(timeSeriesModel.Name, UserId);
+            _timeSeriesService.AddRandomTimeSeries(t.Result.InfluxId.ToString());
+            return Ok(new TimeSeriesMetadataModel(t.Result));
+        }
+
+        /// <summary>
+        /// This REST API handler uploads a data from csv-file to the time-series given by timeSeriesMetadataId
+        /// </summary>
+        /// <param name="timeSeriesMetadataId"></param>
+        /// <param name="formFile"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("{timeSeriesMetadataId}/data")]
+        public IActionResult UploadCsvData([FromRoute] string timeSeriesMetadataId, [FromForm] IFormFile formFile)
+        {
+            // todo: update rows and columns metadata after extraction
+            TimeSeriesMetadata timeSeriesMetadata = _timeSeriesMetadataService.GetTimeSeriesMetadata(timeSeriesMetadataId);
+            if (!(timeSeriesMetadata != null && timeSeriesMetadata.UserId.ToString().Equals(UserId)))
+            {
+                return NotFound("this user does not have timeseries given by this id");
+            }
+            string measurementId = timeSeriesMetadata.InfluxId.ToString();
+            List<string> fileContent = ReadAsStringAsync(formFile).Result;
+            _timeSeriesService.UploadDataFromCsv(measurementId, fileContent);
+            return Ok();
+        }
+
+        //temporarily here. consider move to sdLitica.Helpers
+        public static async Task<List<string>> ReadAsStringAsync(IFormFile file)
+        {
+            List<string> result = new List<string>();
+            using (var reader = new StreamReader(file.OpenReadStream()))
+            {
+                while (reader.Peek() >= 0)
+                {
+                    string line = await reader.ReadLineAsync();
+                    result.Add(line);
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// This REST API handler returns all time-series metadata objects owned by user
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult GetTimeSeriesMetadataByUser()
+        {
+            List<TimeSeriesMetadata> t = _timeSeriesMetadataService.GetByUserId(UserId);
+            List<TimeSeriesMetadataModel> list = new List<TimeSeriesMetadataModel>();
+            t.ForEach(e => list.Add(new TimeSeriesMetadataModel(e)));
+            return Ok(list);
         }
 
         /// <summary>
@@ -55,10 +119,15 @@ namespace sdLitica.WebAPI.Controllers.v1
         ///    404 - If time series doesn't exists or it is not accessible by current user
         /// </returns>
         [HttpPost]
-        [Route("{timeseriesId}")]
-        //TODO: add content
-        public IActionResult UpdateTimeSeriesMetadata(string timeseriesId)
+        [Route("{timeSeriesMetadataId}")]
+        public IActionResult UpdateTimeSeriesMetadata([FromRoute] string timeSeriesMetadataId, [FromBody] TimeSeriesMetadataModel model)
         {
+            TimeSeriesMetadata timeSeriesMetadata = _timeSeriesMetadataService.GetTimeSeriesMetadata(timeSeriesMetadataId);
+            if (timeSeriesMetadata == null || !timeSeriesMetadata.UserId.ToString().Equals(UserId))
+            {
+                return NotFound("this user does not have this time-series");
+            } 
+            _timeSeriesMetadataService.UpdateTimeSeriesMetadata(timeSeriesMetadataId, model.Name, model.Description).Wait();
             return Ok("ok");
         }
 
@@ -67,19 +136,19 @@ namespace sdLitica.WebAPI.Controllers.v1
         /// </summary>
         /// <returns>Timeseries metadata, instead - 404</returns>
         [HttpGet]
-        [Route("{timeseriesId}")]
+        [Route("old/{timeseriesId}")]
         public IActionResult GetTimeSeriesMetadataById(string timeseriesId, int pageSize = 20, int offset = 0)
         {
-            InfluxResult<DynamicInfluxRow> measurementsResult = _timeSeriesService.ReadMeasurementById(timeseriesId).Result;
+            var measurementsResult = _timeSeriesService.ReadMeasurementById(timeseriesId).Result;
             {
-                List<InfluxSeries<DynamicInfluxRow>> series = measurementsResult.Series;
+                var series = measurementsResult.Series;
                 if (series.Count != 0)
                 {
-                    List<TimeSeriesJsonEntity> timeseriesJsonEntities = new List<TimeSeriesJsonEntity>();
-                    foreach (InfluxSeries<DynamicInfluxRow> t in series)
+                    var timeseriesJsonEntities = new List<TimeSeriesJsonEntity>();
+                    foreach (var t in series)
                     {
-                        List<DynamicInfluxRow> rows = t.Rows;
-                        foreach (DynamicInfluxRow t1 in rows)
+                        var rows = t.Rows;
+                        foreach (var t1 in rows)
                         {
                             timeseriesJsonEntities.Add(new TimeSeriesJsonEntity()
                             {
@@ -91,9 +160,9 @@ namespace sdLitica.WebAPI.Controllers.v1
                         }
                     }
 
-                    List<TimeSeriesJsonEntity> page = timeseriesJsonEntities.Skip(offset).Take(pageSize).ToList();
+                    var page = timeseriesJsonEntities.Skip(offset).Take(pageSize).ToList();
 
-                    ApiEntityListPage<TimeSeriesJsonEntity> listOfResults =
+                    var listOfResults =
                         new ApiEntityListPage<TimeSeriesJsonEntity>(page,
                             HttpContext.Request.Path.ToString(), new PaginationProperties()
                             {
@@ -113,6 +182,26 @@ namespace sdLitica.WebAPI.Controllers.v1
         }
 
         /// <summary>
+        /// This REST API handler returns time-series metadata given by timeSeriesMetadataId
+        /// </summary>
+        /// <param name="timeSeriesMetadataId"></param>
+        /// <returns>
+        ///    200 - Time-series metadata
+        ///    404 - If time series doesn't exists or it is not accessible by current user
+        /// </returns>
+        [HttpGet]
+        [Route("{timeSeriesMetadataId}")]
+        public IActionResult GetTimeSeriesMetadataById([FromRoute] string timeSeriesMetadataId)
+        {
+            TimeSeriesMetadata timeSeriesMetadata = _timeSeriesMetadataService.GetTimeSeriesMetadata(timeSeriesMetadataId);
+            if (timeSeriesMetadata == null || !timeSeriesMetadata.UserId.ToString().Equals(UserId))
+            {
+                return NotFound("this user does not have this time-series");
+            }
+            return Ok(new TimeSeriesMetadataModel(timeSeriesMetadata));
+        }
+
+        /// <summary>
         /// This REST API handler returns timeseries data by id
         /// </summary>
         /// <returns>Timeseries data, instead - 404</returns>
@@ -120,16 +209,16 @@ namespace sdLitica.WebAPI.Controllers.v1
         [Route("{timeseriesId}/data")]
         public IActionResult GetTimeSeriesDataById(string timeseriesId, int pageSize = 20, int offset = 0)
         {
-            InfluxResult<DynamicInfluxRow> measurementsResult = _timeSeriesService.ReadMeasurementById(timeseriesId).Result;
+            var measurementsResult = _timeSeriesService.ReadMeasurementById(timeseriesId).Result;
             {
-                List<InfluxSeries<DynamicInfluxRow>> series = measurementsResult.Series;
+                var series = measurementsResult.Series;
                 if (series.Count != 0)
                 {
                     List<TimeSeriesDataJsonEntity> timeseriesDataJsonEntities = new List<TimeSeriesDataJsonEntity>();
-                    foreach (InfluxSeries<DynamicInfluxRow> t in series)
+                    foreach (var t in series)
                     {
-                        List<DynamicInfluxRow> rows = t.Rows;
-                        foreach (DynamicInfluxRow t1 in rows)
+                        var rows = t.Rows;
+                        foreach (var t1 in rows)
                         {
                             timeseriesDataJsonEntities.Add(new TimeSeriesDataJsonEntity()
                             {
@@ -140,9 +229,9 @@ namespace sdLitica.WebAPI.Controllers.v1
                         }
                     }
 
-                    List<TimeSeriesDataJsonEntity> page = timeseriesDataJsonEntities.Skip(offset).Take(pageSize).ToList();
+                    var page = timeseriesDataJsonEntities.Skip(offset).Take(pageSize).ToList();
 
-                    ApiEntityListPage<TimeSeriesDataJsonEntity> listOfResults =
+                    var listOfResults =
                         new ApiEntityListPage<TimeSeriesDataJsonEntity>(page,
                             HttpContext.Request.Path.ToString(), new PaginationProperties()
                             {
@@ -166,17 +255,18 @@ namespace sdLitica.WebAPI.Controllers.v1
         /// </summary>
         /// <returns>List of timeseries</returns>
         [HttpGet]
+        [Route("old")]
         public IActionResult GetAllTimeSeries(int pageSize = 20, int offset = 0)
         {
-            List<MeasurementRow> measurementsResult = _timeSeriesService.ReadAllMeasurements().Result;
+            var measurementsResult = _timeSeriesService.ReadAllMeasurements().Result;
             {
-                MeasurementRow[] ms = measurementsResult.ToArray();
-                List<string> mt = ms.Select(t => t.Name).ToList();
-                List<MeasurementJsonEntity> measurementJsonEntities = mt.Select(t => new MeasurementJsonEntity() {Guid = t}).ToList();
+                var ms = measurementsResult.ToArray();
+                var mt = ms.Select(t => t.Name).ToList();
+                var measurementJsonEntities = mt.Select(t => new MeasurementJsonEntity() {Guid = t}).ToList();
 
-                List<MeasurementJsonEntity> page = measurementJsonEntities.Skip(offset).Take(pageSize).ToList();
+                var page = measurementJsonEntities.Skip(offset).Take(pageSize).ToList();
 
-                ApiEntityListPage<MeasurementJsonEntity> listOfResults =
+                var listOfResults =
                     new ApiEntityListPage<MeasurementJsonEntity>(page,
                         HttpContext.Request.Path.ToString(), new PaginationProperties()
                         {
@@ -198,12 +288,20 @@ namespace sdLitica.WebAPI.Controllers.v1
         ///    404 - If time series doesn't exists or it is not accessible by current user
         /// </returns>
         [HttpDelete]
-        [Route("{timeseriesId}")]
-        public IActionResult DeleteTimeSeriesById(string timeseriesId)
+        [Route("{timeSeriesMetadataId}")]
+        public IActionResult DeleteTimeSeriesById([FromRoute] string timeSeriesMetadataId)
         {
-            InfluxResult result = _timeSeriesService.DeleteMeasurementById(timeseriesId).Result;
+            TimeSeriesMetadata timeSeriesMetadata = _timeSeriesMetadataService.GetTimeSeriesMetadata(timeSeriesMetadataId);
+            if (timeSeriesMetadata == null || !timeSeriesMetadata.UserId.ToString().Equals(UserId))
+            {
+                return NotFound("user does not have this time-series");
+            }
+
+            string timeSeriesId = timeSeriesMetadata.InfluxId.ToString();
+            var result = _timeSeriesService.DeleteMeasurementById(timeSeriesId).Result;
             if (result.Succeeded)
             {
+                _timeSeriesMetadataService.DeleteTimeSeriesMetadata(timeSeriesMetadataId).Wait();
                 return NoContent();
             }
             else

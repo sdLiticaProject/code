@@ -39,7 +39,7 @@ namespace sdLitica.PlatformCore
         /// <param name="lastName"></param>
         /// <param name="email"></param>
         /// <param name="plainPassword"></param>
-        public void CreateUser(string firstName, string lastName, string email, string plainPassword)
+        public User CreateUser(string firstName, string lastName, string email, string plainPassword)
         {
             if (_userRepository.Exists(email))
                 throw new PropertyDuplicationException("Email", email);
@@ -47,6 +47,7 @@ namespace sdLitica.PlatformCore
             User user = User.Create(firstName, lastName, email, plainPassword);            
             _userRepository.Add(user);
             _userRepository.SaveChanges();
+            return user;
         }
 
         /// <summary>

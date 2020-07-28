@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using sdLitica.Entities.Analytics;
 using sdLitica.Entities.Management;
+using sdLitica.Entities.TimeSeries;
 
 namespace sdLitica.Relational.Context
 {
@@ -54,6 +55,8 @@ namespace sdLitica.Relational.Context
                 b.Property(p => p.TokenExpirationDate).HasColumnName("expiration");
                 b.ToTable("user_token");
             });
+
+            modelBuilder.Entity<TimeSeriesMetadata>();
 
 
             base.OnModelCreating(modelBuilder);

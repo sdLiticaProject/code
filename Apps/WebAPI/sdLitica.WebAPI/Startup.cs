@@ -27,11 +27,17 @@ using sdLitica.Bootstrap.Extensions;
 using sdLitica.WebAPI.Models.Security;
 using sdLitica.Events.Extensions;
 using sdLitica.Bootstrap.Events;
+using System.IO;
+using System;
+using System.Reflection;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace sdLitica
 {
     public class Startup
     {
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -71,6 +77,15 @@ namespace sdLitica
                     options.AuthKey = "cloudToken";
                 });
 
+            // Adding CORS configuration
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                                builder =>
+                                {
+                                    builder.WithOrigins("http://sdlitica.sdcloud.io");
+                                });
+            });
             
             services.AddMvc(
                 config =>
@@ -85,10 +100,24 @@ namespace sdLitica
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info { Title = "sdLitica Project REST API", Version = "v1" });
+
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
+
+                c.AddSecurityDefinition("cloudToken",
+                    new ApiKeyScheme { In = "header",
+                    Description = "Please enter into field the word 'cloudToken' following by space and a token received from /login endpoint", 
+                    Name = "Authorization", Type = "apiKey" });
+                c.AddSecurityRequirement(new Dictionary<string, IEnumerable<string>> {
+                    { "cloudToken", Enumerable.Empty<string>() },
+                });
             });            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        // Information about middleware order
+        // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/middleware/?view=aspnetcore-3.1
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
@@ -96,7 +125,9 @@ namespace sdLitica
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseCors(MyAllowSpecificOrigins);
             app.UseAuthentication();
+            
             app.UseMvc();
             app.UseSwagger();
        
