@@ -22,20 +22,24 @@ namespace sdLitica.Bootstrap.Events
         /// <param name="app"></param>
         public static void SubscribeEvents(this IApplicationBuilder app)
         {
-            var registry = app.ApplicationServices.GetRequiredService<IEventRegistry>();
+            IEventRegistry registry = app.ApplicationServices.GetRequiredService<IEventRegistry>();
             
-            registry.Register<TimeSeriesAnalysisEvent>(Exchanges.TimeSeries);
-            registry.Register<DiagnosticsEvent>(Exchanges.Diagnostics);
+            registry.Register<TimeSeriesAnalysisRequestEvent>(Exchanges.TimeSeries);
+            registry.Register<DiagnosticsResponseEvent>(Exchanges.Diagnostics);
+            registry.Register<AnalyticModuleRegistrationRequestEvent>(Exchanges.ModuleRegistration);
 
             DiagnosticsListener.Services = app.ApplicationServices.GetRequiredService<IServiceProvider>();
             
-            using (var scope = app.ApplicationServices.GetRequiredService<IServiceProvider>().CreateScope())
+            using (IServiceScope scope = app.ApplicationServices.GetRequiredService<IServiceProvider>().CreateScope())
             {
-                var eventBus = scope.ServiceProvider.GetRequiredService<IEventBus>();
-                var operationRepository = scope.ServiceProvider.GetRequiredService<OperationRepository>();
+                IEventBus eventBus = scope.ServiceProvider.GetRequiredService<IEventBus>();
+                AnalyticsRegistry analyticsRegistry = scope.ServiceProvider.GetRequiredService<AnalyticsRegistry>();
+                AnalyticsOperationRequestRepository operationRequestRepository = scope.ServiceProvider.GetRequiredService<AnalyticsOperationRequestRepository>();
 
-                DiagnosticsListener.Initialize(registry, eventBus, operationRepository);
+                DiagnosticsListener.Initialize(registry, eventBus, operationRequestRepository, analyticsRegistry);
                 DiagnosticsListener.Listen();
+                DiagnosticsListener.ListenNewModules();
+
             }
         }
     }

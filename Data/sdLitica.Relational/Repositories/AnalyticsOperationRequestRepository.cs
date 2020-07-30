@@ -1,15 +1,15 @@
-﻿using sdLitica.Analytics;
+﻿using sdLitica.Entities.Analytics;
 using sdLitica.Relational.Context;
 using System;
 
 namespace sdLitica.Relational.Repositories
 {
     /// <summary>
-    /// Repository for metadata of operations. 
+    /// This class provides data access operations for AnalyticsOperationRequest.
     /// </summary>
-    public class OperationRepository: RepositoryBase<AnalyticsOperation>
+    public class AnalyticsOperationRequestRepository: RepositoryBase<UserAnalyticsOperation>
     {
-        public OperationRepository(MySqlDbContext context)
+        public AnalyticsOperationRequestRepository(MySqlDbContext context)
             : base(context)
         {
         }
@@ -22,10 +22,10 @@ namespace sdLitica.Relational.Repositories
         /// <returns>Enum value for status of operation</returns>
         public OperationStatus GetStatus(Guid guid)
         {
-            AnalyticsOperation operation = Entity.Find(guid);
+            UserAnalyticsOperation operation = Entity.Find(guid);
             if (operation == null)
             {
-                throw new ArgumentNullException("OperationRepository does not contain operation " + guid);
+                throw new ArgumentNullException("OperationRequestRepository does not contain operation " + guid);
             }
             return operation.Status;
         }

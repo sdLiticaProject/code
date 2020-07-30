@@ -33,7 +33,7 @@ namespace sdLitica.Messages.Abstractions
             if (_connection != null && _connection.IsOpen) return;
             if (_settings == null) throw new ArgumentNullException(nameof(_settings));
 
-            var factory = new ConnectionFactory()
+            ConnectionFactory factory = new ConnectionFactory()
             {
                 UserName = _settings.UserName,
                 Password = _settings.Password,

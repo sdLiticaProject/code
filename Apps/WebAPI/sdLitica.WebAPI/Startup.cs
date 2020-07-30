@@ -101,8 +101,8 @@ namespace sdLitica
             {
                 c.SwaggerDoc("v1", new Info { Title = "sdLitica Project REST API", Version = "v1" });
 
-                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                string xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                string xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
 
                 c.AddSecurityDefinition("cloudToken",
@@ -137,7 +137,7 @@ namespace sdLitica
             });
 
             //sample subscribe for RabbitMQ
-            app.SubscribeEvents();
+            app.SubscribeEvents(); // todo
 
         }
     }

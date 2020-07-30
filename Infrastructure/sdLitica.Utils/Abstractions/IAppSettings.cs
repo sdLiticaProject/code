@@ -24,5 +24,10 @@ namespace sdLitica.Utils.Abstractions
         /// Provides setting for Messages (i.e. RabbitMQ)
         /// </summary>
         MessageSettings MessageSettings { get; }
+
+        /// <summary>
+        /// Provides setting for Analytics (e.g. timeouts for analytical modules)
+        /// </summary>
+        AnalyticsSettings AnalyticsSettings { get; }
     }
 }

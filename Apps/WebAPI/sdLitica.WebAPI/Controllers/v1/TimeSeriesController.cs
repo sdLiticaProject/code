@@ -11,6 +11,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Vibrant.InfluxDB.Client;
+using Vibrant.InfluxDB.Client.Rows;
 
 namespace sdLitica.WebAPI.Controllers.v1
 {
@@ -41,7 +43,7 @@ namespace sdLitica.WebAPI.Controllers.v1
         [Route("old")]
         public IActionResult AddTimeSeries()
         {
-            var t = _timeSeriesService.AddRandomTimeSeries();
+            Task<string> t = _timeSeriesService.AddRandomTimeSeries();
             return Ok(t.Result);
         }
 
@@ -86,7 +88,7 @@ namespace sdLitica.WebAPI.Controllers.v1
         public static async Task<List<string>> ReadAsStringAsync(IFormFile file)
         {
             List<string> result = new List<string>();
-            using (var reader = new StreamReader(file.OpenReadStream()))
+            using (StreamReader reader = new StreamReader(file.OpenReadStream()))
             {
                 while (reader.Peek() >= 0)
                 {
@@ -139,16 +141,16 @@ namespace sdLitica.WebAPI.Controllers.v1
         [Route("old/{timeseriesId}")]
         public IActionResult GetTimeSeriesMetadataById(string timeseriesId, int pageSize = 20, int offset = 0)
         {
-            var measurementsResult = _timeSeriesService.ReadMeasurementById(timeseriesId).Result;
+            InfluxResult<DynamicInfluxRow> measurementsResult = _timeSeriesService.ReadMeasurementById(timeseriesId).Result;
             {
-                var series = measurementsResult.Series;
+                List<InfluxSeries<DynamicInfluxRow>> series = measurementsResult.Series;
                 if (series.Count != 0)
                 {
-                    var timeseriesJsonEntities = new List<TimeSeriesJsonEntity>();
-                    foreach (var t in series)
+                    List<TimeSeriesJsonEntity> timeseriesJsonEntities = new List<TimeSeriesJsonEntity>();
+                    foreach (InfluxSeries<DynamicInfluxRow> t in series)
                     {
-                        var rows = t.Rows;
-                        foreach (var t1 in rows)
+                        List<DynamicInfluxRow> rows = t.Rows;
+                        foreach (DynamicInfluxRow t1 in rows)
                         {
                             timeseriesJsonEntities.Add(new TimeSeriesJsonEntity()
                             {
@@ -160,9 +162,9 @@ namespace sdLitica.WebAPI.Controllers.v1
                         }
                     }
 
-                    var page = timeseriesJsonEntities.Skip(offset).Take(pageSize).ToList();
+                    List<TimeSeriesJsonEntity> page = timeseriesJsonEntities.Skip(offset).Take(pageSize).ToList();
 
-                    var listOfResults =
+                    ApiEntityListPage<TimeSeriesJsonEntity> listOfResults =
                         new ApiEntityListPage<TimeSeriesJsonEntity>(page,
                             HttpContext.Request.Path.ToString(), new PaginationProperties()
                             {
@@ -209,16 +211,16 @@ namespace sdLitica.WebAPI.Controllers.v1
         [Route("{timeseriesId}/data")]
         public IActionResult GetTimeSeriesDataById(string timeseriesId, int pageSize = 20, int offset = 0)
         {
-            var measurementsResult = _timeSeriesService.ReadMeasurementById(timeseriesId).Result;
+            InfluxResult<DynamicInfluxRow> measurementsResult = _timeSeriesService.ReadMeasurementById(timeseriesId).Result;
             {
-                var series = measurementsResult.Series;
+                List<InfluxSeries<DynamicInfluxRow>> series = measurementsResult.Series;
                 if (series.Count != 0)
                 {
                     List<TimeSeriesDataJsonEntity> timeseriesDataJsonEntities = new List<TimeSeriesDataJsonEntity>();
-                    foreach (var t in series)
+                    foreach (InfluxSeries<DynamicInfluxRow> t in series)
                     {
-                        var rows = t.Rows;
-                        foreach (var t1 in rows)
+                        List<DynamicInfluxRow> rows = t.Rows;
+                        foreach (DynamicInfluxRow t1 in rows)
                         {
                             timeseriesDataJsonEntities.Add(new TimeSeriesDataJsonEntity()
                             {
@@ -229,9 +231,9 @@ namespace sdLitica.WebAPI.Controllers.v1
                         }
                     }
 
-                    var page = timeseriesDataJsonEntities.Skip(offset).Take(pageSize).ToList();
+                    List<TimeSeriesDataJsonEntity> page = timeseriesDataJsonEntities.Skip(offset).Take(pageSize).ToList();
 
-                    var listOfResults =
+                    ApiEntityListPage<TimeSeriesDataJsonEntity> listOfResults =
                         new ApiEntityListPage<TimeSeriesDataJsonEntity>(page,
                             HttpContext.Request.Path.ToString(), new PaginationProperties()
                             {
@@ -258,15 +260,15 @@ namespace sdLitica.WebAPI.Controllers.v1
         [Route("old")]
         public IActionResult GetAllTimeSeries(int pageSize = 20, int offset = 0)
         {
-            var measurementsResult = _timeSeriesService.ReadAllMeasurements().Result;
+            List<MeasurementRow> measurementsResult = _timeSeriesService.ReadAllMeasurements().Result;
             {
-                var ms = measurementsResult.ToArray();
-                var mt = ms.Select(t => t.Name).ToList();
-                var measurementJsonEntities = mt.Select(t => new MeasurementJsonEntity() {Guid = t}).ToList();
+                MeasurementRow[] ms = measurementsResult.ToArray();
+                List<string> mt = ms.Select(t => t.Name).ToList();
+                List<MeasurementJsonEntity> measurementJsonEntities = mt.Select(t => new MeasurementJsonEntity() {Guid = t}).ToList();
 
-                var page = measurementJsonEntities.Skip(offset).Take(pageSize).ToList();
+                List<MeasurementJsonEntity> page = measurementJsonEntities.Skip(offset).Take(pageSize).ToList();
 
-                var listOfResults =
+                ApiEntityListPage<MeasurementJsonEntity> listOfResults =
                     new ApiEntityListPage<MeasurementJsonEntity>(page,
                         HttpContext.Request.Path.ToString(), new PaginationProperties()
                         {
@@ -298,7 +300,7 @@ namespace sdLitica.WebAPI.Controllers.v1
             }
 
             string timeSeriesId = timeSeriesMetadata.InfluxId.ToString();
-            var result = _timeSeriesService.DeleteMeasurementById(timeSeriesId).Result;
+            InfluxResult result = _timeSeriesService.DeleteMeasurementById(timeSeriesId).Result;
             if (result.Succeeded)
             {
                 _timeSeriesMetadataService.DeleteTimeSeriesMetadata(timeSeriesMetadataId).Wait();

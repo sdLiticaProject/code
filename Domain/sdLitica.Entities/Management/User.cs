@@ -71,7 +71,7 @@ namespace sdLitica.Entities.Management
         /// <returns>Returns an user with already encrypted password</returns>
         public static User Create(string firstName, string lastName, string email, string plainPassword)
         {
-            var user = new User()
+            User user = new User()
             {
                 Id = Guid.NewGuid(),
                 FirstName = firstName,

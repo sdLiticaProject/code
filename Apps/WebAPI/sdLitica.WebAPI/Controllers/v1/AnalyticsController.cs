@@ -1,8 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using sdLitica.Analytics;
 using sdLitica.AnalyticsManagementCore;
+using sdLitica.Entities.Analytics;
+using sdLitica.WebAPI.Models.Analytics;
 
 namespace sdLitica.WebAPI.Controllers.v1
 {
@@ -28,11 +30,28 @@ namespace sdLitica.WebAPI.Controllers.v1
         /// </summary>
         /// <returns>Result of operation over time-series</returns>
         [HttpPost]
-        [Route("calculate")] 
-        public async Task<NoContentResult> Calculation([FromBody] AnalyticsOperation analyticsOperation)
+        public async Task<NoContentResult> Calculation ([FromBody] AnalyticsRequestModel analyticsRequestModel) //([FromBody] AnalyticsOperation analyticsOperation)
         {
+            UserAnalyticsOperation analyticsOperation = new UserAnalyticsOperation()
+            {
+                Id = Guid.NewGuid(),
+                OpName = analyticsRequestModel.OperationName,
+                TimeSeriesId = analyticsRequestModel.TimeSeriesId
+            };
+
             _analyticsService.ExecuteOperation(analyticsOperation);
             return new NoContentResult();
+        }
+
+        /// <summary>
+        /// Returns operations available to be executed by analytics modules
+        /// </summary>
+        /// <returns>list of operations</returns>
+        [HttpGet]
+        [Route("availableOperations")]
+        public IActionResult GetAvailableOperations()
+        {
+            return Ok(_analyticsService.GetAvailableOperations());
         }
     }
 }

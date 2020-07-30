@@ -18,12 +18,12 @@ namespace sdLitica.WebAPI.Models.Management
         /// <param name="profile"></param>
         public UserJsonEntity(User profile)
         {
-            var props = typeof(User)
+            IEnumerable<System.Reflection.PropertyInfo> props = typeof(User)
                             .GetProperties()
                             .Where(p => !p.GetIndexParameters().Any())
                             .Where(p => p.Name != GetPropertyName(() => profile.Id))
                             .Where(p => p.Name != GetPropertyName(() => profile.Password));
-            foreach (var prop in props)
+            foreach (System.Reflection.PropertyInfo prop in props)
             {
                 prop.SetValue(this, prop.GetValue(profile));
             }

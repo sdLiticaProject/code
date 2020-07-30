@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using sdLitica.Analytics;
 using sdLitica.Bootstrap.Extensions;
 using sdLitica.Events.Abstractions;
 using sdLitica.Events.Bus;
@@ -15,6 +14,11 @@ using Vibrant.InfluxDB.Client.Rows;
 using log4net;
 using log4net.Config;
 using System.Reflection;
+using sdLitica.Utils.Models;
+using System.Threading;
+using sdLitica.Entities.Analytics;
+using sdLitica.Utils.Abstractions;
+using sdLitica.Utils.Settings;
 
 namespace sdLitica.ExampleDaemonManagement
 {
@@ -32,26 +36,47 @@ namespace sdLitica.ExampleDaemonManagement
             BasicConfigurator.Configure(LogManager.GetRepository(Assembly.GetEntryAssembly()));
 
             // configure dependency injection
-            var services = ConfigureServices();
-            var serviceProvider = services.BuildServiceProvider();
+            IServiceCollection services = ConfigureServices();
+            ServiceProvider serviceProvider = services.BuildServiceProvider();
 
-            var _timeSeriesService = serviceProvider.GetRequiredService<ITimeSeriesService>();
-            var registry = serviceProvider.GetRequiredService<IEventRegistry>();
+            IAppSettings appSettings = serviceProvider.GetRequiredService<IAppSettings>();
+            ITimeSeriesService _timeSeriesService = serviceProvider.GetRequiredService<ITimeSeriesService>();
+            IEventRegistry registry = serviceProvider.GetRequiredService<IEventRegistry>();
+
+            AnalyticsSettings analyticsSettings = appSettings.AnalyticsSettings;
 
             // register events
-            registry.Register<TimeSeriesAnalysisEvent>(Exchanges.TimeSeries);
-            registry.Register<DiagnosticsEvent>(Exchanges.Diagnostics);
+            registry.Register<TimeSeriesAnalysisRequestEvent>(Exchanges.TimeSeries);
+            registry.Register<DiagnosticsResponseEvent>(Exchanges.Diagnostics);
+            registry.Register<AnalyticModuleRegistrationRequestEvent>(Exchanges.ModuleRegistration);
 
-
-            using (var scope = serviceProvider.GetRequiredService<IServiceProvider>().CreateScope())
+            // creating module's model
+            List<AnalyticsOperationModel> opArr = new List<AnalyticsOperationModel>();
+            opArr.Add(new AnalyticsOperationModel() { Name = "Mean", Description = "Description of mean" });
+            AnalyticsModuleRegistrationModel moduleModel = new AnalyticsModuleRegistrationModel()
             {
-                var sampleBus = scope.ServiceProvider.GetRequiredService<IEventBus>();
+                ModuleGuid = Guid.NewGuid(),
+                QueueName = "mean_module",
+                Operations = opArr
+            };
+
+            using (IServiceScope scope = serviceProvider.GetRequiredService<IServiceProvider>().CreateScope())
+            {
+                IEventBus sampleBus = scope.ServiceProvider.GetRequiredService<IEventBus>();
+
+                Timer peepTimer = new Timer(
+                    (e) => { SendPeep(sampleBus, moduleModel); },
+                    null,
+                    analyticsSettings.ModulHearbeatInterval,
+                    analyticsSettings.ModulHearbeatInterval
+                    );
+                
 
                 // subscribe to analytical operations
-                sampleBus.Subscribe<TimeSeriesAnalysisEvent>((TimeSeriesAnalysisEvent @event) =>
+                sampleBus.SubscribeToTopic<TimeSeriesAnalysisRequestEvent>((TimeSeriesAnalysisRequestEvent @event) =>
                 {
                     log.Info(@event.Name + " " + @event.Operation.OpName);
-                    AnalyticsOperation operation = @event.Operation;
+                    UserAnalyticsOperation operation = @event.Operation;
                     log.Info(operation.Id);
 
                     try
@@ -79,9 +104,9 @@ namespace sdLitica.ExampleDaemonManagement
                     finally
                     {
                         // publish information about operation
-                        sampleBus.Publish(new DiagnosticsEvent(operation));
+                        sampleBus.Publish(new DiagnosticsResponseEvent(operation));
                     }
-                });
+                }, "mean_module");
                 
                 
             }
@@ -92,13 +117,18 @@ namespace sdLitica.ExampleDaemonManagement
             Console.ReadLine();
         }
 
+        public static void SendPeep(IEventBus sampleBus, AnalyticsModuleRegistrationModel moduleModel)
+        {
+            sampleBus.PublishToTopic(new AnalyticModuleRegistrationRequestEvent(moduleModel));
+        }
+
         /// <summary>
         /// Loads configuration for dependency injection.
         /// </summary>
         /// <returns></returns>
         public static IConfiguration LoadConfiguration()
         {
-            var builder = new ConfigurationBuilder()
+            IConfigurationBuilder builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: true);
 
@@ -113,7 +143,7 @@ namespace sdLitica.ExampleDaemonManagement
         {
             IServiceCollection services = new ServiceCollection();
 
-            var config = LoadConfiguration();
+            IConfiguration config = LoadConfiguration();
             services.AddSingleton(config);
 
             // required to run the application
