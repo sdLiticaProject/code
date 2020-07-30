@@ -6,7 +6,7 @@ namespace sdLitica.Utils.Settings
 {
     public class AnalyticsSettings
     {
-        public int ModuleAliveSignalInterval { get; set; }
+        public int ModulHearbeatInterval { get; set; }
         public int ModuleDeadTimeout { get; set; }
     }
 }

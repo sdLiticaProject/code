@@ -67,8 +67,8 @@ namespace sdLitica.ExampleDaemonManagement
                 Timer peepTimer = new Timer(
                     (e) => { SendPeep(sampleBus, moduleModel); },
                     null,
-                    analyticsSettings.ModuleAliveSignalInterval,
-                    analyticsSettings.ModuleAliveSignalInterval
+                    analyticsSettings.ModulHearbeatInterval,
+                    analyticsSettings.ModulHearbeatInterval
                     );
                 
 
