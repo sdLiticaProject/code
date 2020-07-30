@@ -7,20 +7,20 @@ namespace sdLitica.Events.Integration
     /// <summary>
     /// This is sample event class used to illustrate for the team
     /// </summary>
-    public class TimeSeriesAnalysisRequest : Event
+    public class TimeSeriesAnalysisRequestEvent : Event
     {
 
-        public TimeSeriesAnalysisRequest() : base()
+        public TimeSeriesAnalysisRequestEvent() : base()
         {
 
         }
 
-        public TimeSeriesAnalysisRequest(AnalyticsOperationRequest operation) : base()
+        public TimeSeriesAnalysisRequestEvent(UserAnalyticsOperation operation) : base()
         {
             Operation = operation;
         }
 
         [JsonProperty]
-        public AnalyticsOperationRequest Operation { get; set; }
+        public UserAnalyticsOperation Operation { get; set; }
     }
 }

@@ -7,13 +7,13 @@ using System.Text;
 
 namespace sdLitica.Events.Integration
 {
-    public class AnalyticModuleRegistrationRequest : Event
+    public class AnalyticModuleRegistrationRequestEvent : Event
     {
-        public AnalyticModuleRegistrationRequest() : base()
+        public AnalyticModuleRegistrationRequestEvent() : base()
         {
 
         }
-        public AnalyticModuleRegistrationRequest(AnalyticsModuleRegistrationModel module) : base()
+        public AnalyticModuleRegistrationRequestEvent(AnalyticsModuleRegistrationModel module) : base()
         {
             Module = module;
         }

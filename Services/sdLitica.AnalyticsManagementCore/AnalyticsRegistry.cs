@@ -94,8 +94,8 @@ namespace sdLitica.AnalyticsManagementCore
                 }
             }
             _analyticsOperationRepository.SaveChanges();
-            _analyticsModuleRepository.SaveChanges();
-            _modulesOperationsRepository.SaveChanges();
+            //_analyticsModuleRepository.SaveChanges();
+            //_modulesOperationsRepository.SaveChanges();
         }
 
         /// <summary>
@@ -152,8 +152,8 @@ namespace sdLitica.AnalyticsManagementCore
             }
 
             _analyticsModuleRepository.SaveChanges();
-            _analyticsOperationRepository.SaveChanges();
-            _modulesOperationsRepository.SaveChanges();
+            //_analyticsOperationRepository.SaveChanges();
+            //_modulesOperationsRepository.SaveChanges();
 
         }
         

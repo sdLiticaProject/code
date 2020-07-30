@@ -30,13 +30,13 @@ namespace sdLitica.AnalyticsManagementCore
         /// Execute operation. Publishes event, that contains AnalyticsOperation for analytical modules.
         /// </summary>
         /// <param name="operation"></param>
-        public void ExecuteOperation(AnalyticsOperationRequest operation)
+        public void ExecuteOperation(UserAnalyticsOperation operation)
         {
 
             _OperationRequestRepository.Add(operation);
             _OperationRequestRepository.SaveChanges();
 
-            TimeSeriesAnalysisRequest @event = new TimeSeriesAnalysisRequest(operation);
+            TimeSeriesAnalysisRequestEvent @event = new TimeSeriesAnalysisRequestEvent(operation);
             string routingKey = _analyticsRegistry.GetQueue(operation.OpName);
             if (routingKey != null)
             {
@@ -62,7 +62,7 @@ namespace sdLitica.AnalyticsManagementCore
         /// </summary>
         /// <param name="operation"></param>
         /// <returns></returns>
-        public OperationStatus CheckResults(AnalyticsOperationRequest operation)
+        public OperationStatus CheckResults(UserAnalyticsOperation operation)
         {
             return _OperationRequestRepository.GetStatus(operation.Id);
         }
@@ -71,7 +71,7 @@ namespace sdLitica.AnalyticsManagementCore
         /// Fetch results of operation.
         /// </summary>
         /// <param name="operation"></param>
-        public void FetchResults(AnalyticsOperationRequest operation)
+        public void FetchResults(UserAnalyticsOperation operation)
         {
             throw new NotImplementedException();
         }

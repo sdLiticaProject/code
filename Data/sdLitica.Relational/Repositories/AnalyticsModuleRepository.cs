@@ -42,7 +42,7 @@ namespace sdLitica.Relational.Repositories
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public new AnalyticsModule GetById(Guid id)
+        public override AnalyticsModule GetById(Guid id)
         {
             return Entity.Include(e => e.ModulesOperations).ThenInclude(mo => mo.AnalyticsOperation).SingleOrDefault(e => e.Id == id);
         }

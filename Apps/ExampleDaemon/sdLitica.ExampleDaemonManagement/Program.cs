@@ -46,9 +46,9 @@ namespace sdLitica.ExampleDaemonManagement
             AnalyticsSettings analyticsSettings = appSettings.AnalyticsSettings;
 
             // register events
-            registry.Register<TimeSeriesAnalysisRequest>(Exchanges.TimeSeries);
-            registry.Register<DiagnosticsResponse>(Exchanges.Diagnostics);
-            registry.Register<AnalyticModuleRegistrationRequest>(Exchanges.ModuleRegistration);
+            registry.Register<TimeSeriesAnalysisRequestEvent>(Exchanges.TimeSeries);
+            registry.Register<DiagnosticsResponseEvent>(Exchanges.Diagnostics);
+            registry.Register<AnalyticModuleRegistrationRequestEvent>(Exchanges.ModuleRegistration);
 
             // creating module's model
             List<AnalyticsOperationModel> opArr = new List<AnalyticsOperationModel>();
@@ -73,10 +73,10 @@ namespace sdLitica.ExampleDaemonManagement
                 
 
                 // subscribe to analytical operations
-                sampleBus.SubscribeToTopic<TimeSeriesAnalysisRequest>((TimeSeriesAnalysisRequest @event) =>
+                sampleBus.SubscribeToTopic<TimeSeriesAnalysisRequestEvent>((TimeSeriesAnalysisRequestEvent @event) =>
                 {
                     log.Info(@event.Name + " " + @event.Operation.OpName);
-                    AnalyticsOperationRequest operation = @event.Operation;
+                    UserAnalyticsOperation operation = @event.Operation;
                     log.Info(operation.Id);
 
                     try
@@ -104,7 +104,7 @@ namespace sdLitica.ExampleDaemonManagement
                     finally
                     {
                         // publish information about operation
-                        sampleBus.Publish(new DiagnosticsResponse(operation));
+                        sampleBus.Publish(new DiagnosticsResponseEvent(operation));
                     }
                 }, "mean_module");
                 
@@ -119,7 +119,7 @@ namespace sdLitica.ExampleDaemonManagement
 
         public static void SendPeep(IEventBus sampleBus, AnalyticsModuleRegistrationModel moduleModel)
         {
-            sampleBus.PublishToTopic(new AnalyticModuleRegistrationRequest(moduleModel));
+            sampleBus.PublishToTopic(new AnalyticModuleRegistrationRequestEvent(moduleModel));
         }
 
         /// <summary>

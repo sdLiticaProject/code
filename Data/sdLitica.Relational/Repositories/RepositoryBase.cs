@@ -72,7 +72,7 @@ namespace sdLitica.Relational.Repositories
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public T GetById(Guid id)
+        public virtual T GetById(Guid id)
         {
             return Entity.SingleOrDefault(e => e.Id == id);
         }
@@ -82,7 +82,7 @@ namespace sdLitica.Relational.Repositories
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<T> GetByIdAsync(Guid id)
+        public virtual async Task<T> GetByIdAsync(Guid id)
         {
             return await Entity.SingleOrDefaultAsync(e => e.Id == id);
         }

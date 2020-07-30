@@ -44,7 +44,7 @@ namespace sdLitica.Relational.Repositories
         /// <returns></returns>
         public AnalyticsOperation GetByName(string name)
         {
-            return Entity.Where(p => p.Name.Equals(name)).Include(e => e.ModulesOperations).ThenInclude(mo => mo.AnalyticsModule).Single();
+            return Entity.Where(p => p.Name.Equals(name)).Include(e => e.ModulesOperations).ThenInclude(mo => mo.AnalyticsModule).SingleOrDefault();
         }
 
         /// <summary>

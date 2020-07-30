@@ -33,7 +33,7 @@ namespace sdLitica.WebAPI.Controllers.v1
         [Route("calculate")] 
         public async Task<NoContentResult> Calculation ([FromBody] AnalyticsRequestModel analyticsRequestModel) //([FromBody] AnalyticsOperation analyticsOperation)
         {
-            AnalyticsOperationRequest analyticsOperation = new AnalyticsOperationRequest()
+            UserAnalyticsOperation analyticsOperation = new UserAnalyticsOperation()
             {
                 Id = Guid.NewGuid(),
                 OpName = analyticsRequestModel.OperationName,
