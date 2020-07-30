@@ -30,7 +30,6 @@ namespace sdLitica.WebAPI.Controllers.v1
         /// </summary>
         /// <returns>Result of operation over time-series</returns>
         [HttpPost]
-        [Route("calculate")] 
         public async Task<NoContentResult> Calculation ([FromBody] AnalyticsRequestModel analyticsRequestModel) //([FromBody] AnalyticsOperation analyticsOperation)
         {
             UserAnalyticsOperation analyticsOperation = new UserAnalyticsOperation()
@@ -49,6 +48,7 @@ namespace sdLitica.WebAPI.Controllers.v1
         /// </summary>
         /// <returns>list of operations</returns>
         [HttpGet]
+        [Route("availableOperations")]
         public IActionResult GetAvailableOperations()
         {
             return Ok(_analyticsService.GetAvailableOperations());
