@@ -92,15 +92,15 @@ namespace sdLitica.WebAPI.Controllers.v1
         {
             // Here should be proper auth via DB with clreation of token if auth succeeds
 
-            var user = _userService.GetUser(credentials.Email);
+            User user = _userService.GetUser(credentials.Email);
             if (user == null) throw new NotFoundException("User not found");
 
             if (!user.MatchPassword(credentials.Password))
                 throw new UnauthorizedException("Incorrect password");
 
-            var userToken = await _userService.GetNewTokenAsync(user);
+            UserToken userToken = await _userService.GetNewTokenAsync(user);
 
-            var tokenJson = new TokenJsonEntity()
+            TokenJsonEntity tokenJson = new TokenJsonEntity()
             {
                 Token = userToken.Token,
                 Expires = userToken.TokenExpirationDate.Ticks
@@ -129,7 +129,7 @@ namespace sdLitica.WebAPI.Controllers.v1
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<NoContentResult> Logout()
         {
-            var user = _userService.GetUser(new Guid(UserId));
+            User user = _userService.GetUser(new Guid(UserId));
             await _userService.ExpiresTokenAsync(user);
 
             return NoContent();
@@ -149,7 +149,7 @@ namespace sdLitica.WebAPI.Controllers.v1
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<UserModel> GetProfile()
         {
-            var user = _userService.GetUser(new Guid(UserId));
+            User user = _userService.GetUser(new Guid(UserId));
             
 
             return new UserModel(user);
