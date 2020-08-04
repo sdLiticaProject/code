@@ -30,13 +30,6 @@ namespace sdLitica.Relational.Context
 
             modelBuilder.Entity<User>();
             modelBuilder.Entity<UserToken>();
-            /*
-            modelBuilder.Entity<UserToken>(b =>
-            {
-                b.Property(p => p.TokenExpirationDate).HasColumnName("expiration");
-                b.ToTable("user_token");
-            });
-            */
 
             modelBuilder.Entity<TimeSeriesMetadata>();
 
