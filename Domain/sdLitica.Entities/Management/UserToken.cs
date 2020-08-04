@@ -2,25 +2,30 @@
 using sdLitica.Entities.Abstractions;
 using sdLitica.Utils.Helpers;
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace sdLitica.Entities.Management
 {
     /// <summary>
     /// This class is used to describe UserToken entity
     /// </summary>
+    [Table("USER_TOKENS")]
     public class UserToken : Entity
     {
         /// <summary>
         /// User token
         /// </summary>
+        [Column("TOKEN")]
         public string Token { get; protected set; }
         /// <summary>
         /// User token expiration date
         /// </summary>
+        [Column("EXPIRATION")]
         public DateTime TokenExpirationDate { get; protected set; }
         /// <summary>
         /// User Id identifier
         /// </summary>
+        [Column("USER_ID")]
         public Guid UserId { get; protected set; }
         /// <summary>
         /// User Id identifier

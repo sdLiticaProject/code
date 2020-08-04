@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace sdLitica.Entities.Abstractions
@@ -12,6 +13,7 @@ namespace sdLitica.Entities.Abstractions
         /// <summary>
         /// Entity unique Id
         /// </summary>
+        [Column("ID")]
         public Guid Id { get; protected set; }
 
         /// <summary>

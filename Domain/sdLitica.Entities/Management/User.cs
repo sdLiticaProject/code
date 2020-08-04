@@ -2,6 +2,7 @@
 using sdLitica.Utils.Helpers;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -10,23 +11,28 @@ namespace sdLitica.Entities.Management
     /// <summary>
     /// This class represents unique identity and info of the user
     /// </summary>
+    [Table("USERS")]
     public class User : Entity
     {
         /// <summary>
         /// User first name
         /// </summary>
+        [Column("FIRST_NAME")]
         public string FirstName { get; protected set; }
         /// <summary>
         /// User last name
         /// </summary>
+        [Column("LAST_NAME")]
         public string LastName { get; protected set; }
         /// <summary>
         /// User email
         /// </summary>
+        [Column("EMAIL")]
         public string Email { get; protected set; }
         /// <summary>
         /// User password
         /// </summary>
+        [Column("PASSWORD")]
         public string Password { get; protected set; }
 
         /// <summary>

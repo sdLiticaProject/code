@@ -1,18 +1,19 @@
-create table `sdliticadb`.`timeseriesmetadata` (
-  `id` VARCHAR(36) NOT NULL,
-  `name` VARCHAR(40) NOT NULL,
-  `description` VARCHAR(40),
-  `influxid` VARCHAR(36) NOT NULL,
-  `datecreated` DATETIME,
-  `datemodified` DATETIME,
-  `userid` VARCHAR(36) NOT NULL,
-  `rowscount` TINYINT,
-  `columnscount` TINYINT,
-  `columns` VARCHAR(80),
-  PRIMARY KEY (`id`),
-  CONSTRAINT `fk_timeseriesmetadata_to_user`
-    FOREIGN KEY(`userid`)
-    REFERENCES `sdliticadb`.`user` (`id`)
+create table `sdliticadb`.`TIMESERIES_METADATA` (
+  `ID` VARCHAR(36) NOT NULL,
+  `NAME` VARCHAR(40) NOT NULL,
+  `DESCRIPTION` VARCHAR(40),
+  `INFLUX_ID` VARCHAR(36) NOT NULL,
+  `DATE_CREATED` DATETIME,
+  `DATE_MODIFIED` DATETIME,
+  `USER_ID` VARCHAR(36) NOT NULL,
+  `ROWS_COUNT` TINYINT,
+  `COLUMNS_COUNT` TINYINT,
+  `COLUMNS` VARCHAR(80),
+  CONSTRAINT `TSMD_PK`
+    PRIMARY KEY (`ID`),
+  CONSTRAINT `TSMD_USERS_FK`
+    FOREIGN KEY(`USER_ID`)
+    REFERENCES `sdliticadb`.`USERS` (`ID`)
     ON DELETE CASCADE
     ON UPDATE RESTRICT
 ) ENGINE = InnoDB;
