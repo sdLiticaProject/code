@@ -1,6 +1,7 @@
 ﻿using sdLitica.Entities.Abstractions;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace sdLitica.Entities.Analytics
@@ -8,17 +9,18 @@ namespace sdLitica.Entities.Analytics
     /// <summary>
     /// This class represents available analytical operation. 
     /// </summary>
+    [Table("ANALYTICS_OPERATIONS")]
     public class AnalyticsOperation : Entity
     {
         public AnalyticsOperation()
         {
 
         }
-        public Guid Id { get; set; } // temporary
 
         /// <summary>
         /// Unique (but not yet) name of analytical operation
         /// </summary>
+        [Column("NAME")]
         public string Name { get; set; }
 
         /// <summary>
@@ -29,6 +31,7 @@ namespace sdLitica.Entities.Analytics
         /// <summary>
         /// Description of analytical operation.
         /// </summary>
+        [Column("DESCRIPTION")]
         public string Description { get; set; }
     }
 }
