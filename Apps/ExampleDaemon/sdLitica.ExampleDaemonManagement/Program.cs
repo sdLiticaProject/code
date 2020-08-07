@@ -104,7 +104,7 @@ namespace sdLitica.ExampleDaemonManagement
                     finally
                     {
                         // publish information about operation
-                        sampleBus.Publish(new DiagnosticsResponseEvent(operation));
+                        sampleBus.PublishToTopic(new DiagnosticsResponseEvent(operation));
                     }
                 }, "mean_module");
                 
