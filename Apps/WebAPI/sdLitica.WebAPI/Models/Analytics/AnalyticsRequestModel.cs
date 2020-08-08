@@ -12,6 +12,7 @@ namespace sdLitica.WebAPI.Models.Analytics
     /// </summary>
     public class AnalyticsRequestModel
     {
+        public string Id { get; set; }
 
         [Required]
         [Display(Name = nameof(OperationName))]
