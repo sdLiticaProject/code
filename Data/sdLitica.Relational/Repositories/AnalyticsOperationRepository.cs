@@ -44,7 +44,7 @@ namespace sdLitica.Relational.Repositories
         /// <returns></returns>
         public AnalyticsOperation GetByName(string name)
         {
-            return Entity.Where(p => p.Name.Equals(name)).Include(e => e.ModulesOperations).ThenInclude(mo => mo.AnalyticsModule).SingleOrDefault();
+            return Entity.Where(p => p.Name.Equals(name)).Include(e => e.AnalyticsModulesOperations).ThenInclude(mo => mo.AnalyticsModule).SingleOrDefault();
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace sdLitica.Relational.Repositories
         /// <returns></returns>
         public IList<AnalyticsOperation> GetAll()
         {
-            return Entity.Include(e => e.ModulesOperations).ThenInclude(mo => mo.AnalyticsModule).ToList();
+            return Entity.Include(e => e.AnalyticsModulesOperations).ThenInclude(mo => mo.AnalyticsModule).ToList();
         }
     }
 }

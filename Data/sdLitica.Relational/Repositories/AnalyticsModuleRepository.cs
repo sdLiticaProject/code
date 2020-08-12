@@ -34,7 +34,7 @@ namespace sdLitica.Relational.Repositories
         /// <returns></returns>
         public IList<AnalyticsModule> GetAll()
         {
-            return Entity.Include(e => e.ModulesOperations).ThenInclude(mo => mo.AnalyticsOperation).ToList();
+            return Entity.Include(e => e.AnalyticsModulesOperations).ThenInclude(mo => mo.AnalyticsOperation).ToList();
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace sdLitica.Relational.Repositories
         /// <returns></returns>
         public override AnalyticsModule GetById(Guid id)
         {
-            return Entity.Include(e => e.ModulesOperations).ThenInclude(mo => mo.AnalyticsOperation).SingleOrDefault(e => e.Id == id);
+            return Entity.Include(e => e.AnalyticsModulesOperations).ThenInclude(mo => mo.AnalyticsOperation).SingleOrDefault(e => e.Id == id);
         }
 
     }

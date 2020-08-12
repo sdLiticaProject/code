@@ -11,7 +11,7 @@ namespace sdLitica.Relational.Repositories
     /// <summary>
     /// This class provides data access operations for ModuleOperation entity.
     /// </summary>
-    public class ModuleOperationRepository: RepositoryBase<ModulesOperations>
+    public class ModuleOperationRepository: RepositoryBase<AnalyticsModulesOperations>
     {
         public ModuleOperationRepository(MySqlDbContext context)
             : base(context)
@@ -22,7 +22,7 @@ namespace sdLitica.Relational.Repositories
         /// Get all ModuleOperation's with related entities.
         /// </summary>
         /// <returns></returns>
-        public IList<ModulesOperations> GetAll()
+        public IList<AnalyticsModulesOperations> GetAll()
         {
             return Entity.Include(e => e.AnalyticsOperation).Include(e => e.AnalyticsModule).ToList();
         }

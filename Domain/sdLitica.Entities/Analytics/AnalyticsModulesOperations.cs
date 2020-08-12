@@ -10,9 +10,9 @@ namespace sdLitica.Entities.Analytics
     /// Linking entity to support many-to-many relationship for AnalyticsModule and AnalyticsOperation.
     /// </summary>
     [Table("ANALYTICS_MODULES_OPERATIONS")]
-    public class ModulesOperations : Entity
+    public class AnalyticsModulesOperations : Entity
     {
-        public ModulesOperations()
+        public AnalyticsModulesOperations()
         {
             Id = Guid.NewGuid();
         }

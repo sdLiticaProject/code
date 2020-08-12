@@ -31,12 +31,12 @@ namespace sdLitica.Entities.Analytics
         /// Name of operation to be performed. 
         /// </summary>
         [Column("OPERATION_NAME")]
-        public string OpName { get; set; }
+        public string OperationName { get; set; }
 
         /// <summary>
         /// Id of time-series on which operation is performed
         /// </summary>
-        [Column("TIMESERIES_INFLUX_ID")]
+        [Column("TIMESERIES_EXTERNAL_ID")]
         public string TimeSeriesId { get; set; }
 
 

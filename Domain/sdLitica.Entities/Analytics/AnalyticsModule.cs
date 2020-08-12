@@ -33,6 +33,6 @@ namespace sdLitica.Entities.Analytics
         /// <summary>
         /// Navigation-property for many-to-many relationship with AnalyticsOperation entity. 
         /// </summary>
-        public IList<ModulesOperations> ModulesOperations { get; set; }
+        public IList<AnalyticsModulesOperations> AnalyticsModulesOperations { get; set; }
     }
 }

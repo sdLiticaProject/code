@@ -26,7 +26,7 @@ namespace sdLitica.WebAPI.Controllers.v1
 
 
         /// <summary>
-        /// This REST API handler returns result of some calculation given by OpName over time-series given by TimeSeriesId
+        /// This REST API handler returns result of some calculation given by OperationName over time-series given by TimeSeriesId
         /// </summary>
         /// <returns>Result of operation over time-series</returns>
         [HttpPost]
@@ -35,7 +35,7 @@ namespace sdLitica.WebAPI.Controllers.v1
             UserAnalyticsOperation analyticsOperation = new UserAnalyticsOperation()
             {
                 Id = Guid.NewGuid(),
-                OpName = analyticsRequestModel.OperationName,
+                OperationName = analyticsRequestModel.OperationName,
                 TimeSeriesId = analyticsRequestModel.TimeSeriesId
             };
 
