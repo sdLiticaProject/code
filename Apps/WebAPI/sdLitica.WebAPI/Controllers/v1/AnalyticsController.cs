@@ -35,7 +35,7 @@ namespace sdLitica.WebAPI.Controllers.v1
             UserAnalyticsOperation analyticsOperation = new UserAnalyticsOperation()
             {
                 Id = Guid.NewGuid(),
-                OpName = analyticsRequestModel.OperationName,
+                OperationName = analyticsRequestModel.OperationName,
                 TimeSeriesId = analyticsRequestModel.TimeSeriesId
             };
 

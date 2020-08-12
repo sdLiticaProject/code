@@ -31,7 +31,7 @@ namespace sdLitica.Entities.Analytics
         /// <summary>
         /// Name of operation to be performed. 
         /// </summary>
-        public string OpName { get; set; }
+        public string OperationName { get; set; }
 
         /// <summary>
         /// Id of time-series on which operation is performed

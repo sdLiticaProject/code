@@ -75,7 +75,7 @@ namespace sdLitica.ExampleDaemonManagement
                 // subscribe to analytical operations
                 sampleBus.SubscribeToTopic<TimeSeriesAnalysisRequestEvent>((TimeSeriesAnalysisRequestEvent @event) =>
                 {
-                    log.Info(@event.Name + " " + @event.Operation.OpName);
+                    log.Info(@event.Name + " " + @event.Operation.OperationName);
                     UserAnalyticsOperation operation = @event.Operation;
                     log.Info(operation.Id);
 
@@ -89,8 +89,8 @@ namespace sdLitica.ExampleDaemonManagement
                         for (int i = 0; i < rows.Count; i++)
                             series[i] = (double)rows[i].Fields["cpu"];
 
-                        // invoke method (from F-sharp lib) given by OpName.
-                        object operationResult = typeof(ExampleDaemonAnalysis.ExampleFunctions).GetMethod(@event.Operation.OpName).Invoke(null, new[] { series });
+                        // invoke method (from F-sharp lib) given by OperationName.
+                        object operationResult = typeof(ExampleDaemonAnalysis.ExampleFunctions).GetMethod(@event.Operation.OperationName).Invoke(null, new[] { series });
                         log.Info(operationResult);
                         string destinationPath = Path.Combine(Environment.CurrentDirectory, operation.Id.ToString() + ".txt");
                         System.IO.File.WriteAllText(destinationPath, operationResult.ToString());
@@ -103,6 +103,7 @@ namespace sdLitica.ExampleDaemonManagement
                     {
                         // if any error, set status
                         operation.Status = OperationStatus.Error;
+                        log.Info(e.Message);
                     }
                     finally
                     {
