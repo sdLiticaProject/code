@@ -75,7 +75,7 @@ namespace sdLitica.ExampleDaemonManagement
                 // subscribe to analytical operations
                 sampleBus.SubscribeToTopic<TimeSeriesAnalysisRequestEvent>((TimeSeriesAnalysisRequestEvent @event) =>
                 {
-                    log.Info(@event.Name + " " + @event.Operation.OpName);
+                    log.Info(@event.Name + " " + @event.Operation.OperationName);
                     UserAnalyticsOperation operation = @event.Operation;
                     log.Info(operation.Id);
 
@@ -89,8 +89,8 @@ namespace sdLitica.ExampleDaemonManagement
                         for (int i = 0; i < rows.Count; i++)
                             series[i] = (double)rows[i].Fields["cpu"];
 
-                        // invoke method (from F-sharp lib) given by OpName.
-                        log.Info(typeof(ExampleDaemonAnalysis.ExampleFunctions).GetMethod(@event.Operation.OpName).Invoke(null, new[] { series }));
+                        // invoke method (from F-sharp lib) given by OperationName.
+                        log.Info(typeof(ExampleDaemonAnalysis.ExampleFunctions).GetMethod(@event.Operation.OperationName).Invoke(null, new[] { series }));
 
                         // if no errors, status is complete
                         operation.Status = OperationStatus.Complete;
@@ -104,7 +104,7 @@ namespace sdLitica.ExampleDaemonManagement
                     finally
                     {
                         // publish information about operation
-                        sampleBus.Publish(new DiagnosticsResponseEvent(operation));
+                        sampleBus.PublishToTopic(new DiagnosticsResponseEvent(operation));
                     }
                 }, "mean_module");
                 

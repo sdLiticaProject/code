@@ -37,7 +37,7 @@ namespace sdLitica.AnalyticsManagementCore
             _OperationRequestRepository.SaveChanges();
 
             TimeSeriesAnalysisRequestEvent @event = new TimeSeriesAnalysisRequestEvent(operation);
-            string routingKey = _analyticsRegistry.GetQueue(operation.OpName);
+            string routingKey = _analyticsRegistry.GetQueue(operation.OperationName);
             if (routingKey != null)
             {
                 _eventBus.PublishToTopic(@event, routingKey);

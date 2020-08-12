@@ -59,15 +59,15 @@ namespace sdLitica.AnalyticsManagementCore
                 {
                     AnalyticsOperation analyticsOperation = _analyticsOperationRepository.GetByName(operationModel.Name);
                     
-                    if (!analyticsOperation.ModulesOperations.Select(mo => mo.AnalyticsModule).Contains(analyticsModule)) {
-                        ModulesOperations moduleOperation = new ModulesOperations()
+                    if (!analyticsOperation.AnalyticsModulesOperations.Select(mo => mo.AnalyticsModule).Contains(analyticsModule)) {
+                        AnalyticsModulesOperations moduleOperation = new AnalyticsModulesOperations()
                         {
                             AnalyticsOperation = analyticsOperation,
                             AnalyticsModule = analyticsModule
                         };
                         _modulesOperationsRepository.Add(moduleOperation);
-                        analyticsModule.ModulesOperations.Add(moduleOperation);
-                        analyticsOperation.ModulesOperations.Add(moduleOperation);
+                        analyticsModule.AnalyticsModulesOperations.Add(moduleOperation);
+                        analyticsOperation.AnalyticsModulesOperations.Add(moduleOperation);
 
                     }
                 }
@@ -79,15 +79,15 @@ namespace sdLitica.AnalyticsManagementCore
                         Name = operationModel.Name,
                         Description = operationModel.Description
                     };
-                    ModulesOperations moduleOperation = new ModulesOperations()
+                    AnalyticsModulesOperations moduleOperation = new AnalyticsModulesOperations()
 
                     {
                         AnalyticsOperation = operation,
                         AnalyticsModule = analyticsModule
                     };
                     _modulesOperationsRepository.Add(moduleOperation);
-                    analyticsModule.ModulesOperations.Add(moduleOperation);
-                    operation.ModulesOperations.Add(moduleOperation);
+                    analyticsModule.AnalyticsModulesOperations.Add(moduleOperation);
+                    operation.AnalyticsModulesOperations.Add(moduleOperation);
 
                     _analyticsOperationRepository.Add(operation);
 
@@ -108,7 +108,7 @@ namespace sdLitica.AnalyticsManagementCore
             CheckAvailable();
 
             if (!_analyticsOperationRepository.ContainsName(name)) return null;
-            IList<ModulesOperations> modulesOperations = _analyticsOperationRepository.GetByName(name).ModulesOperations;
+            IList<AnalyticsModulesOperations> modulesOperations = _analyticsOperationRepository.GetByName(name).AnalyticsModulesOperations;
             if (modulesOperations == null || modulesOperations.Count < 1) return null;
             return modulesOperations.Select(mo => mo.AnalyticsModule).First().QueueName; 
         }
@@ -124,7 +124,7 @@ namespace sdLitica.AnalyticsManagementCore
             IList<AnalyticsOperationModel> operations = new List<AnalyticsOperationModel>();
             foreach (AnalyticsOperation operation in _analyticsOperationRepository.GetAll())
             {
-                IList<ModulesOperations> modulesOperations = operation.ModulesOperations;
+                IList<AnalyticsModulesOperations> modulesOperations = operation.AnalyticsModulesOperations;
                 if (modulesOperations != null && modulesOperations.Count > 0)
                 {
                     operations.Add(new AnalyticsOperationModel()

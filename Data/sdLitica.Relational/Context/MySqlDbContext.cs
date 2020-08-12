@@ -31,18 +31,18 @@ namespace sdLitica.Relational.Context
             modelBuilder.Entity<AnalyticsModule>();
             modelBuilder.Entity<AnalyticsOperation>();
 
-            modelBuilder.Entity<ModulesOperations>().HasKey(mo => new { mo.AnalyticsModuleId, mo.AnalyticsOperationId });
+            modelBuilder.Entity<AnalyticsModulesOperations>().HasKey(mo => new { mo.AnalyticsModuleId, mo.AnalyticsOperationId });
 
-            modelBuilder.Entity<ModulesOperations>()
+            modelBuilder.Entity<AnalyticsModulesOperations>()
                 .HasOne<AnalyticsModule>(sc => sc.AnalyticsModule)
-                .WithMany(s => s.ModulesOperations)
+                .WithMany(s => s.AnalyticsModulesOperations)
                 .HasForeignKey(sc => sc.AnalyticsModuleId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<ModulesOperations>()
+            modelBuilder.Entity<AnalyticsModulesOperations>()
                 .HasOne<AnalyticsOperation>(sc => sc.AnalyticsOperation)
-                .WithMany(s => s.ModulesOperations)
+                .WithMany(s => s.AnalyticsModulesOperations)
                 .HasForeignKey(sc => sc.AnalyticsOperationId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);

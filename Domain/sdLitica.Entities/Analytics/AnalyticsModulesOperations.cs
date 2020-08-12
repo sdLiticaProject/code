@@ -1,6 +1,7 @@
 ﻿using sdLitica.Entities.Abstractions;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace sdLitica.Entities.Analytics
@@ -8,9 +9,10 @@ namespace sdLitica.Entities.Analytics
     /// <summary>
     /// Linking entity to support many-to-many relationship for AnalyticsModule and AnalyticsOperation.
     /// </summary>
-    public class ModulesOperations : Entity
+    [Table("ANALYTICS_MODULES_OPERATIONS")]
+    public class AnalyticsModulesOperations : Entity
     {
-        public ModulesOperations()
+        public AnalyticsModulesOperations()
         {
             Id = Guid.NewGuid();
         }
@@ -18,6 +20,7 @@ namespace sdLitica.Entities.Analytics
         /// <summary>
         /// Id of related AnalyticsModule
         /// </summary>
+        [Column("ANALYTICS_MODULE_ID")]
         public Guid AnalyticsModuleId { get; set; }
 
         /// <summary>
@@ -28,6 +31,7 @@ namespace sdLitica.Entities.Analytics
         /// <summary>
         /// Id of related AnalyticsOperation
         /// </summary>
+        [Column("ANALYTICS_OPERATION_ID")]
         public Guid AnalyticsOperationId { get; set; }
 
         /// <summary>

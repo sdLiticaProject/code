@@ -14,7 +14,7 @@ namespace sdLitica.Entities.Abstractions
         /// Entity unique Id
         /// </summary>
         [Column("ID")]
-        public Guid Id { get; protected set; }
+        public Guid Id { get; set; } // todo: protected set
 
         /// <summary>
         /// Creates an Entity with new guid id
