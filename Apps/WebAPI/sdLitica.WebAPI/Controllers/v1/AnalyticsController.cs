@@ -26,11 +26,11 @@ namespace sdLitica.WebAPI.Controllers.v1
 
 
         /// <summary>
-        /// This REST API handler returns result of some calculation given by OperationName over time-series given by TimeSeriesId
+        /// This REST API handler executes analytical operation. Then you (eventually) can access result of operation at [url]/[analyticsRequestModel.Id].txt
         /// </summary>
-        /// <returns>Result of operation over time-series</returns>
+        /// <returns>Description of user's analytical operation</returns>
         [HttpPost]
-        public async Task<NoContentResult> Calculation ([FromBody] AnalyticsRequestModel analyticsRequestModel) //([FromBody] AnalyticsOperation analyticsOperation)
+        public async Task<IActionResult> Calculation ([FromBody] AnalyticsRequestModel analyticsRequestModel) //([FromBody] AnalyticsOperation analyticsOperation)
         {
             UserAnalyticsOperation analyticsOperation = new UserAnalyticsOperation()
             {
@@ -40,7 +40,8 @@ namespace sdLitica.WebAPI.Controllers.v1
             };
 
             _analyticsService.ExecuteOperation(analyticsOperation);
-            return new NoContentResult();
+            analyticsRequestModel.Id = analyticsOperation.Id.ToString();
+            return Accepted(analyticsRequestModel);
         }
 
         /// <summary>

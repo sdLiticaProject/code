@@ -90,7 +90,10 @@ namespace sdLitica.ExampleDaemonManagement
                             series[i] = (double)rows[i].Fields["cpu"];
 
                         // invoke method (from F-sharp lib) given by OperationName.
-                        log.Info(typeof(ExampleDaemonAnalysis.ExampleFunctions).GetMethod(@event.Operation.OperationName).Invoke(null, new[] { series }));
+                        object operationResult = typeof(ExampleDaemonAnalysis.ExampleFunctions).GetMethod(@event.Operation.OperationName).Invoke(null, new[] { series });
+                        log.Info(operationResult);
+                        string destinationPath = Path.Combine(Environment.CurrentDirectory, operation.Id.ToString() + ".txt");
+                        System.IO.File.WriteAllText(destinationPath, operationResult.ToString());
 
                         // if no errors, status is complete
                         operation.Status = OperationStatus.Complete;
@@ -100,6 +103,7 @@ namespace sdLitica.ExampleDaemonManagement
                     {
                         // if any error, set status
                         operation.Status = OperationStatus.Error;
+                        log.Info(e.Message);
                     }
                     finally
                     {
