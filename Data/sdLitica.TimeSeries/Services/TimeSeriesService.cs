@@ -62,7 +62,7 @@ namespace sdLitica.TimeSeries.Services
         public async Task<InfluxResult<DynamicInfluxRow>> ReadMeasurementById(string measurementId, string from, string to, string step)
         {
             string query = "SELECT last(*) FROM " + "\"" + measurementId + "\"" + " WHERE time >= " + from + " AND time <= " + to + " GROUP BY time(" + step + ")";
-            System.Console.WriteLine(query);
+
             InfluxResultSet<DynamicInfluxRow> resultSet = await _influxClient.ReadAsync<DynamicInfluxRow>(TimeSeriesSettings.InfluxDatabase,
                 query);
 
