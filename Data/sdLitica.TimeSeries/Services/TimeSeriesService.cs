@@ -59,6 +59,19 @@ namespace sdLitica.TimeSeries.Services
             return result;
         }
 
+        public async Task<InfluxResult<DynamicInfluxRow>> ReadMeasurementById(string measurementId, string from, string to, string step)
+        {
+            string query = "SELECT last(*) FROM " + "\"" + measurementId + "\"" + " WHERE time >= " + from + " AND time <= " + to + " GROUP BY time(" + step + ")";
+
+            InfluxResultSet<DynamicInfluxRow> resultSet = await _influxClient.ReadAsync<DynamicInfluxRow>(TimeSeriesSettings.InfluxDatabase,
+                query);
+
+            // resultSet will contain 1 result in the Results collection (or multiple if you execute multiple queries at once)
+            InfluxResult<DynamicInfluxRow> result = resultSet.Results[0];
+
+            return result;
+        }
+
         public async Task<InfluxResult> DeleteMeasurementById(string measurementId)
         {
             InfluxResult result = await _influxClient.DropSeries(TimeSeriesSettings.InfluxDatabase, measurementId);
