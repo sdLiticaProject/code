@@ -206,6 +206,9 @@ namespace sdLitica.WebAPI.Controllers.v1
         /// <summary>
         /// This REST API handler returns all timeseries data by id
         /// </summary>
+        /// <param name="timeseriesId">id of time-series in external store</param>
+        /// <param name="pageSize"></param>
+        /// <param name="offset"></param>
         /// <returns>Timeseries data, instead - 404</returns>
         [HttpGet]
         [Route("{timeseriesId}/data/all")]
@@ -220,6 +223,12 @@ namespace sdLitica.WebAPI.Controllers.v1
         /// <summary>
         /// This REST API handler returns timeseries data by id
         /// </summary>
+        /// <param name="timeseriesId">id of time-series in external store</param>
+        /// <param name="from">starting point of date-time interval. format: https://docs.influxdata.com/influxdb/v1.8/query_language/explore-data#time-syntax</param>
+        /// <param name="to">end point of date-time interval. format: https://docs.influxdata.com/influxdb/v1.8/query_language/explore-data#time-syntax</param>
+        /// <param name="step">step of date-time interval. format: https://docs.influxdata.com/influxdb/v1.8/query_language/spec/#durations</param>
+        /// <param name="pageSize"></param>
+        /// <param name="offset"></param>
         /// <returns>Timeseries data, instead - 404</returns>
         [HttpGet]
         [Route("{timeseriesId}/data")]
