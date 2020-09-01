@@ -41,6 +41,8 @@ namespace sdLitica.WebAPI.Controllers.v1
 
             _analyticsService.ExecuteOperation(analyticsOperation);
             analyticsRequestModel.Id = analyticsOperation.Id.ToString();
+
+            Response.Headers.Add("Location", "api/v1/analytics/operations/"+analyticsOperation.Id.ToString());
             return Accepted(analyticsRequestModel);
         }
 
@@ -53,6 +55,32 @@ namespace sdLitica.WebAPI.Controllers.v1
         public IActionResult GetAvailableOperations()
         {
             return Ok(_analyticsService.GetAvailableOperations());
+        }
+
+        /// <summary>
+        /// Get user's analytical operation by id (e.g. check status)
+        /// </summary>
+        /// <param name="userOperationId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("operations/{userOperationId}")]
+        public IActionResult GetUserOperation([FromRoute] string userOperationId)
+        {
+            UserAnalyticsOperation userAnalyticsOperation = _analyticsService.GetUserAnalyticsOperation(userOperationId);
+            if (userAnalyticsOperation == null) return NotFound();
+
+            UserAnalyticsOperationModel model = new UserAnalyticsOperationModel()
+            {
+                Id = userAnalyticsOperation.Id.ToString(),
+                OperationName = userAnalyticsOperation.OperationName,
+                Status = userAnalyticsOperation.Status.ToString()
+            };
+
+            if (userAnalyticsOperation.Status.Equals(OperationStatus.Complete))
+            {
+                return Redirect("?");
+            }
+            return Ok(userAnalyticsOperation);
         }
     }
 }
