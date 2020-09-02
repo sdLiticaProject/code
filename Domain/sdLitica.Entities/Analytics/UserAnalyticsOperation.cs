@@ -46,6 +46,12 @@ namespace sdLitica.Entities.Analytics
         [Column("STATUS")]
         public OperationStatus Status { get; set; }
 
+        /// <summary>
+        /// Location of result of analytical operation
+        /// </summary>
+        [Column("RESULT_LOCATION")]
+        public string ResultLocation { get; set; }
+
 
         // TODO: add arguments of operation
 

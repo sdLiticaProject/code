@@ -34,5 +34,11 @@ namespace sdLitica.WebAPI.Models.Analytics
         /// </summary>
         [Display(Name = nameof(TimeSeriesId))]
         public string Status { get; set; }
+
+        /// <summary>
+        /// Location of result of analytical operation
+        /// </summary>
+        [Display(Name = nameof(ResultLocation))]
+        public string ResultLocation { get; set; }
     }
 }

@@ -78,9 +78,10 @@ namespace sdLitica.WebAPI.Controllers.v1
 
             if (userAnalyticsOperation.Status.Equals(OperationStatus.Complete))
             {
-                return Redirect("?");
+                model.ResultLocation = userAnalyticsOperation.ResultLocation;
+                return Ok(model);
             }
-            return Ok(userAnalyticsOperation);
+            return Ok(model);
         }
     }
 }
