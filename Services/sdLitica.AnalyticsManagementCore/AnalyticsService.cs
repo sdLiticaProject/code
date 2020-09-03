@@ -85,5 +85,10 @@ namespace sdLitica.AnalyticsManagementCore
         {
             return _OperationRequestRepository.GetById(new Guid(userAnalyticsOperationId));
         }
+
+        public List<UserAnalyticsOperation> GetUserOperations()
+        {
+            return _OperationRequestRepository.GetAll();
+        }
     }
 }

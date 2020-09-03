@@ -1,6 +1,9 @@
 ﻿using sdLitica.Entities.Analytics;
 using sdLitica.Relational.Context;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace sdLitica.Relational.Repositories
 {
@@ -28,6 +31,11 @@ namespace sdLitica.Relational.Repositories
                 throw new ArgumentNullException("OperationRequestRepository does not contain operation " + guid);
             }
             return operation.Status;
+        }
+
+        public List<UserAnalyticsOperation> GetAll()
+        {
+            return Entity.ToList();
         }
     }
 }
