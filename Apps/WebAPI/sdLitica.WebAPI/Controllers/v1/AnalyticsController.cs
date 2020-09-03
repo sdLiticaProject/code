@@ -41,10 +41,17 @@ namespace sdLitica.WebAPI.Controllers.v1
             };
 
             _analyticsService.ExecuteOperation(analyticsOperation);
-            analyticsRequestModel.Id = analyticsOperation.Id.ToString();
+
+            UserAnalyticsOperationModel userAnalyticsOperationModel = new UserAnalyticsOperationModel()
+            {
+                Id = analyticsOperation.Id.ToString(),
+                OperationName = analyticsOperation.OperationName,
+                TimeSeriesId = analyticsOperation.TimeSeriesId,
+                Status = analyticsOperation.Status.ToString()
+            };
 
             Response.Headers.Add("Location", "api/v1/analytics/operations/"+analyticsOperation.Id.ToString());
-            return Accepted(analyticsRequestModel);
+            return Accepted(userAnalyticsOperationModel);
         }
 
         /// <summary>

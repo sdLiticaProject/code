@@ -12,10 +12,6 @@ namespace sdLitica.WebAPI.Models.Analytics
     /// </summary>
     public class AnalyticsRequestModel
     {
-        /// <summary>
-        /// Id of related UserAnalyticsOperation entity
-        /// </summary>
-        public string Id { get; set; }
 
         /// <summary>
         /// Name of operation to be performed

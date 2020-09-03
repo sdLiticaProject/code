@@ -19,7 +19,7 @@ namespace sdLitica.Relational.Repositories
 
 
         /// <summary>
-        /// Returns status of operation given by guid. -1 failed, 0 in progress, 1 complete
+        /// Returns status of operation given by guid.
         /// </summary>
         /// <param name="guid"></param>
         /// <returns>Enum value for status of operation</returns>
@@ -33,6 +33,10 @@ namespace sdLitica.Relational.Repositories
             return operation.Status;
         }
 
+        /// <summary>
+        /// Returns all user's analytical operations
+        /// </summary>
+        /// <returns></returns>
         public List<UserAnalyticsOperation> GetAll()
         {
             return Entity.ToList();
