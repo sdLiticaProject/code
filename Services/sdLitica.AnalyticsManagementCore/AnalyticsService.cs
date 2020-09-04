@@ -75,5 +75,20 @@ namespace sdLitica.AnalyticsManagementCore
         {
             throw new NotImplementedException();
         }
+
+        /// <summary>
+        /// Get user's analytical operation by id
+        /// </summary>
+        /// <param name="userAnalyticsOperationId"></param>
+        /// <returns></returns>
+        public UserAnalyticsOperation GetUserAnalyticsOperation(string userAnalyticsOperationId)
+        {
+            return _OperationRequestRepository.GetById(new Guid(userAnalyticsOperationId));
+        }
+
+        public List<UserAnalyticsOperation> GetUserOperations()
+        {
+            return _OperationRequestRepository.GetAll();
+        }
     }
 }

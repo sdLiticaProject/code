@@ -6,12 +6,15 @@ using System.Threading.Tasks;
 
 namespace sdLitica.WebAPI.Models.Analytics
 {
-
     /// <summary>
-    /// analytics request model
+    /// represents user's analytical operation
     /// </summary>
-    public class AnalyticsRequestModel
+    public class UserAnalyticsOperationModel
     {
+        /// <summary>
+        /// Id of related UserAnalyticsOperation entity
+        /// </summary>
+        public string Id { get; set; }
 
         /// <summary>
         /// Name of operation to be performed
@@ -23,8 +26,13 @@ namespace sdLitica.WebAPI.Models.Analytics
         /// <summary>
         /// Id of time-series in external store
         /// </summary>
-        [Required]
         [Display(Name = nameof(TimeSeriesId))]
         public string TimeSeriesId { get; set; }
+
+        /// <summary>
+        /// Status of analytical operation
+        /// </summary>
+        [Display(Name = nameof(TimeSeriesId))]
+        public string Status { get; set; }
     }
 }
