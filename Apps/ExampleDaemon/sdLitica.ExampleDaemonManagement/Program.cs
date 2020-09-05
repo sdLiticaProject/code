@@ -87,7 +87,7 @@ namespace sdLitica.ExampleDaemonManagement
                         List<DynamicInfluxRow> rows = task.Result.Series[0].Rows;
                         double[] series = new double[rows.Count];
                         for (int i = 0; i < rows.Count; i++)
-                            series[i] = (double)rows[i].Fields["cpu"];
+                            series[i] = (double)rows[i].Fields[operation.Arguments["column"].ToString()];
 
                         // invoke method (from F-sharp lib) given by OperationName.
                         object operationResult = typeof(ExampleDaemonAnalysis.ExampleFunctions).GetMethod(@event.Operation.OperationName).Invoke(null, new[] { series });

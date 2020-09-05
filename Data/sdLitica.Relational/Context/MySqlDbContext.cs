@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using sdLitica.Entities.Analytics;
 using sdLitica.Entities.Management;
 using sdLitica.Entities.TimeSeries;
@@ -26,7 +28,12 @@ namespace sdLitica.Relational.Context
         /// <param name="modelBuilder"></param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<UserAnalyticsOperation>();
+            modelBuilder.Entity<UserAnalyticsOperation>()
+                .Property(e => e.Arguments)
+                .HasConversion(
+                    p => JsonConvert.SerializeObject(p, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }),
+                    p => JObject.Parse(p)
+                    );
 
             modelBuilder.Entity<AnalyticsModule>();
             modelBuilder.Entity<AnalyticsOperation>();
