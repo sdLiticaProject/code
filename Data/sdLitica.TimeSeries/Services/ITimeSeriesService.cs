@@ -16,6 +16,7 @@ namespace sdLitica.TimeSeries.Services
         Task<string> AddRandomTimeSeries(string measurementId);
         
         Task<InfluxResult<DynamicInfluxRow>> ReadMeasurementById(string measurementId);
+        Task<InfluxResult<DynamicInfluxRow>> ReadMeasurementById(string measurementId, string from, string to, string step);
         Task<InfluxResult> DeleteMeasurementById(string measurementId);
 
         Task<string> UploadDataFromCsv(string measurementId, List<string> file);

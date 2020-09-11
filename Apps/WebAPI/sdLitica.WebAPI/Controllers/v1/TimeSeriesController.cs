@@ -204,53 +204,41 @@ namespace sdLitica.WebAPI.Controllers.v1
         }
 
         /// <summary>
+        /// This REST API handler returns all timeseries data by id
+        /// </summary>
+        /// <param name="timeseriesId">id of time-series in external store</param>
+        /// <param name="pageSize"></param>
+        /// <param name="offset"></param>
+        /// <returns>Timeseries data, instead - 404</returns>
+        [HttpGet]
+        [Route("{timeseriesId}/data/all")]
+        public IActionResult GetAllTimeSeriesDataById(string timeseriesId, int pageSize = 20, int offset = 0)
+        {
+
+            InfluxResult<DynamicInfluxRow> measurementsResult = _timeSeriesService.ReadMeasurementById(timeseriesId).Result;
+            return MakePageFromMeasurements(measurementsResult, pageSize, offset);
+        }
+
+
+        /// <summary>
         /// This REST API handler returns timeseries data by id
         /// </summary>
+        /// <param name="timeseriesId">id of time-series in external store</param>
+        /// <param name="from">starting point of date-time interval. format: https://docs.influxdata.com/influxdb/v1.8/query_language/explore-data#time-syntax</param>
+        /// <param name="to">end point of date-time interval. format: https://docs.influxdata.com/influxdb/v1.8/query_language/explore-data#time-syntax</param>
+        /// <param name="step">step of date-time interval. format: https://docs.influxdata.com/influxdb/v1.8/query_language/spec/#durations</param>
+        /// <param name="pageSize"></param>
+        /// <param name="offset"></param>
         /// <returns>Timeseries data, instead - 404</returns>
         [HttpGet]
         [Route("{timeseriesId}/data")]
-        public IActionResult GetTimeSeriesDataById(string timeseriesId, int pageSize = 20, int offset = 0)
+        public IActionResult GetTimeSeriesDataById(string timeseriesId, string from = "", string to = "", string step = "", int pageSize = 20, int offset = 0)
         {
-            InfluxResult<DynamicInfluxRow> measurementsResult = _timeSeriesService.ReadMeasurementById(timeseriesId).Result;
-            {
-                List<InfluxSeries<DynamicInfluxRow>> series = measurementsResult.Series;
-                if (series.Count != 0)
-                {
-                    List<TimeSeriesDataJsonEntity> timeseriesDataJsonEntities = new List<TimeSeriesDataJsonEntity>();
-                    foreach (InfluxSeries<DynamicInfluxRow> t in series)
-                    {
-                        List<DynamicInfluxRow> rows = t.Rows;
-                        foreach (DynamicInfluxRow t1 in rows)
-                        {
-                            timeseriesDataJsonEntities.Add(new TimeSeriesDataJsonEntity()
-                            {
-                                Timestamp = t1.Timestamp.ToString(),
-                                Tags = t1.Tags,
-                                Fields = t1.Fields
-                            });
-                        }
-                    }
 
-                    List<TimeSeriesDataJsonEntity> page = timeseriesDataJsonEntities.Skip(offset).Take(pageSize).ToList();
-
-                    ApiEntityListPage<TimeSeriesDataJsonEntity> listOfResults =
-                        new ApiEntityListPage<TimeSeriesDataJsonEntity>(page,
-                            HttpContext.Request.Path.ToString(), new PaginationProperties()
-                            {
-                                PageSize = pageSize,
-                                Offset = offset,
-                                Count = page.Count,
-                                HasMore = timeseriesDataJsonEntities.Count > page.Count
-                            });
-
-                    return Ok(listOfResults);
-                }
-                else
-                {
-                    return NotFound();
-                }
-            }
+            InfluxResult<DynamicInfluxRow> measurementsResult = _timeSeriesService.ReadMeasurementById(timeseriesId, from, to, step).Result;
+            return MakePageFromMeasurements(measurementsResult, pageSize, offset);
         }
+
 
         /// <summary>
         /// This REST API handler returns list of all timeseries
@@ -311,5 +299,47 @@ namespace sdLitica.WebAPI.Controllers.v1
                 return NotFound();
             }
         }
+
+
+        private IActionResult MakePageFromMeasurements(InfluxResult<DynamicInfluxRow> measurementsResult, int pageSize, int offset)
+        {
+            List<InfluxSeries<DynamicInfluxRow>> series = measurementsResult.Series;
+            if (series.Count != 0)
+            {
+                List<TimeSeriesDataJsonEntity> timeseriesDataJsonEntities = new List<TimeSeriesDataJsonEntity>();
+                foreach (InfluxSeries<DynamicInfluxRow> t in series)
+                {
+                    List<DynamicInfluxRow> rows = t.Rows;
+                    foreach (DynamicInfluxRow t1 in rows)
+                    {
+                        timeseriesDataJsonEntities.Add(new TimeSeriesDataJsonEntity()
+                        {
+                            Timestamp = t1.Timestamp.ToString(),
+                            Tags = t1.Tags,
+                            Fields = t1.Fields
+                        });
+                    }
+                }
+
+                List<TimeSeriesDataJsonEntity> page = timeseriesDataJsonEntities.Skip(offset).Take(pageSize).ToList();
+
+                ApiEntityListPage<TimeSeriesDataJsonEntity> listOfResults =
+                    new ApiEntityListPage<TimeSeriesDataJsonEntity>(page,
+                        HttpContext.Request.Path.ToString(), new PaginationProperties()
+                        {
+                            PageSize = pageSize,
+                            Offset = offset,
+                            Count = page.Count,
+                            HasMore = timeseriesDataJsonEntities.Count > page.Count
+                        });
+
+                return Ok(listOfResults);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
     }
 }
