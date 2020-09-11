@@ -1,9 +1,9 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System;
+using Microsoft.Extensions.DependencyInjection;
 using sdLitica.Events.Abstractions;
 using sdLitica.Events.Bus;
 using sdLitica.Events.Integration;
 using sdLitica.Relational.Repositories;
-using System;
 
 namespace sdLitica.AnalyticsManagementCore
 {

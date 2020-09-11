@@ -1,11 +1,11 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using Microsoft.Extensions.DependencyInjection;
 using sdLitica.AnalyticsManagementCore;
 using sdLitica.Entities.Management.Repositories;
 using sdLitica.PlatformCore;
 using sdLitica.Relational.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace sdLitica.Bootstrap.Services
 {

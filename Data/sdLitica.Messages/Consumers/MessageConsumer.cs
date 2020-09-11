@@ -1,11 +1,11 @@
-﻿using Newtonsoft.Json;
-using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
-using sdLitica.Messages.Abstractions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using Newtonsoft.Json;
+using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
+using sdLitica.Messages.Abstractions;
 
 namespace sdLitica.Messages.Consumers
 {

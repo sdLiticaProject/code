@@ -1,9 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-using sdLitica.Entities.Analytics;
-using sdLitica.Relational.Context;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using sdLitica.Entities.Analytics;
+using sdLitica.Relational.Context;
 
 namespace sdLitica.Relational.Repositories
 {

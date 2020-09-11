@@ -1,6 +1,6 @@
-﻿using sdLitica.Entities.Analytics;
+﻿using System;
+using sdLitica.Entities.Analytics;
 using sdLitica.Relational.Context;
-using System;
 
 namespace sdLitica.Relational.Repositories
 {

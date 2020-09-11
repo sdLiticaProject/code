@@ -1,13 +1,13 @@
-﻿using sdLitica.Entities.Management;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading.Tasks;
+using sdLitica.Entities.Management;
 using sdLitica.Entities.TimeSeries;
 using sdLitica.Exceptions.Http;
 using sdLitica.PlatformCore;
 using sdLitica.Relational.Repositories;
 using sdLitica.Utils.Abstractions;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace sdLitica.TimeSeries.Services
 {

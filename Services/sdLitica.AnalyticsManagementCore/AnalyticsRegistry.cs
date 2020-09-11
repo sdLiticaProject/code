@@ -1,4 +1,8 @@
-﻿using sdLitica.Entities.Analytics;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using sdLitica.Entities.Analytics;
 using sdLitica.Events.Abstractions;
 using sdLitica.Events.Bus;
 using sdLitica.Events.Integration;
@@ -6,10 +10,6 @@ using sdLitica.Relational.Repositories;
 using sdLitica.Utils.Abstractions;
 using sdLitica.Utils.Models;
 using sdLitica.Utils.Settings;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace sdLitica.AnalyticsManagementCore
 {

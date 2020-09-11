@@ -1,7 +1,7 @@
-﻿using Newtonsoft.Json.Linq;
-using sdLitica.Entities.Abstractions;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
+using Newtonsoft.Json.Linq;
+using sdLitica.Entities.Abstractions;
 
 namespace sdLitica.Entities.Analytics
 {

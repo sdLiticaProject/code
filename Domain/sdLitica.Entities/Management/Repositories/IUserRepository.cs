@@ -1,7 +1,7 @@
-﻿using sdLitica.Entities.Abstractions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using sdLitica.Entities.Abstractions;
 
 namespace sdLitica.Entities.Management.Repositories
 {

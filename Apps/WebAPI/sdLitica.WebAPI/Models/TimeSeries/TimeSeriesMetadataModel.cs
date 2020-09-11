@@ -1,9 +1,9 @@
-﻿using sdLitica.Entities.TimeSeries;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using sdLitica.Entities.TimeSeries;
 
 namespace sdLitica.WebAPI.Models.TimeSeries
 {

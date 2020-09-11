@@ -1,8 +1,8 @@
-﻿using sdLitica.Events.Abstractions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using sdLitica.Events.Abstractions;
 using sdLitica.Messages.Abstractions;
 
 namespace sdLitica.Events.Bus
