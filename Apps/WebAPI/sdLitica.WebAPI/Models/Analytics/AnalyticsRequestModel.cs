@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace sdLitica.WebAPI.Models.Analytics
 {
@@ -26,5 +27,12 @@ namespace sdLitica.WebAPI.Models.Analytics
         [Required]
         [Display(Name = nameof(TimeSeriesId))]
         public string TimeSeriesId { get; set; }
+
+        /// <summary>
+        /// Arguments of analytical operation
+        /// </summary>
+        [Required]
+        [Display(Name = nameof(Arguments))]
+        public JObject Arguments { get; set; }
     }
 }

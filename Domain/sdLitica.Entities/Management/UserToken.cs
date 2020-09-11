@@ -1,8 +1,7 @@
-﻿
+﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 using sdLitica.Entities.Abstractions;
 using sdLitica.Utils.Helpers;
-using System;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace sdLitica.Entities.Management
 {

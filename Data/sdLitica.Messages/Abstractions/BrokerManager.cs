@@ -1,7 +1,7 @@
-﻿using RabbitMQ.Client;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using RabbitMQ.Client;
 
 namespace sdLitica.Messages.Abstractions
 {

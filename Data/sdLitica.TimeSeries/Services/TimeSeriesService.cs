@@ -1,12 +1,12 @@
 using System;
+using System.IO;
+using System.Text;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Vibrant.InfluxDB.Client;
 using Vibrant.InfluxDB.Client.Rows;
 using sdLitica.Utils.Settings;
 using sdLitica.Utils.Abstractions;
-using System.IO;
-using System.Text;
 
 namespace sdLitica.TimeSeries.Services
 {

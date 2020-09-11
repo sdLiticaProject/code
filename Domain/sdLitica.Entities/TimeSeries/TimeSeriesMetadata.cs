@@ -1,7 +1,7 @@
-﻿using sdLitica.Entities.Abstractions;
-using sdLitica.Entities.Management;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
+using sdLitica.Entities.Abstractions;
+using sdLitica.Entities.Management;
 
 namespace sdLitica.Entities.TimeSeries
 {

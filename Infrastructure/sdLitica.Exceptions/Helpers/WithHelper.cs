@@ -1,7 +1,7 @@
-﻿using sdLitica.Exceptions.Abstractions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using sdLitica.Exceptions.Abstractions;
 
 namespace sdLitica.Exceptions.Helpers
 {

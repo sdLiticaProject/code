@@ -1,8 +1,8 @@
-﻿using Microsoft.Extensions.Configuration;
-using sdLitica.Bootstrap.Settings;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.Extensions.Configuration;
+using sdLitica.Bootstrap.Settings;
 
 namespace sdLitica.Bootstrap.Extensions
 {

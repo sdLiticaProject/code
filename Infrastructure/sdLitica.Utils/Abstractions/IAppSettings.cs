@@ -1,7 +1,7 @@
-﻿using sdLitica.Utils.Settings;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using sdLitica.Utils.Settings;
 
 namespace sdLitica.Utils.Abstractions
 {

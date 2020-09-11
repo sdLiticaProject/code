@@ -1,12 +1,12 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using Microsoft.Extensions.DependencyInjection;
 using sdLitica.Events.Abstractions;
 using sdLitica.Events.Bus;
 using sdLitica.Messages.Abstractions;
 using sdLitica.Messages.Consumers;
 using sdLitica.Messages.Producers;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace sdLitica.Events.Extensions
 {

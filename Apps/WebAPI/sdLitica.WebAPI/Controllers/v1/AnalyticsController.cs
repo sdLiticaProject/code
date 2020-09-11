@@ -37,7 +37,8 @@ namespace sdLitica.WebAPI.Controllers.v1
             {
                 Id = Guid.NewGuid(),
                 OperationName = analyticsRequestModel.OperationName,
-                TimeSeriesId = analyticsRequestModel.TimeSeriesId
+                TimeSeriesId = analyticsRequestModel.TimeSeriesId,
+                Arguments = analyticsRequestModel.Arguments
             };
 
             _analyticsService.ExecuteOperation(analyticsOperation);

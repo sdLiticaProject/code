@@ -14,6 +14,11 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
  * *************************************************************************/
+using System.IO;
+using System;
+using System.Reflection;
+using System.Collections.Generic;
+using System.Linq;
 using sdLitica.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -27,11 +32,6 @@ using sdLitica.Bootstrap.Extensions;
 using sdLitica.WebAPI.Models.Security;
 using sdLitica.Events.Extensions;
 using sdLitica.Bootstrap.Events;
-using System.IO;
-using System;
-using System.Reflection;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace sdLitica
 {

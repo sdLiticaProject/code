@@ -1,8 +1,8 @@
-﻿using sdLitica.Utils.Abstractions;
-using sdLitica.Utils.Settings;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using sdLitica.Utils.Abstractions;
+using sdLitica.Utils.Settings;
 
 namespace sdLitica.Messages.Abstractions
 {

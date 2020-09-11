@@ -1,5 +1,5 @@
-﻿using sdLitica.WebAPI.Entities.Common;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using sdLitica.WebAPI.Entities.Common;
 
 namespace sdLitica.WebAPI.Models.Management
 {

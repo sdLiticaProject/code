@@ -15,11 +15,11 @@
  *  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
  * *************************************************************************/
 
+using System.Net.Http;
 using sdLitica.Attributes.Swagger;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Net.Http;
 
 namespace sdLitica.WebAPI.Controllers
 {

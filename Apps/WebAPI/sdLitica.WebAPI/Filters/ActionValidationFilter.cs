@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc.Filters;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using sdLitica.Exceptions.Http;
-using System.Collections.Generic;
 
 namespace sdLitica.Filters
 {

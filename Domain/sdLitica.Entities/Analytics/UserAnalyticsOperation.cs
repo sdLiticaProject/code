@@ -1,6 +1,7 @@
-﻿using sdLitica.Entities.Abstractions;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
+using Newtonsoft.Json.Linq;
+using sdLitica.Entities.Abstractions;
 
 namespace sdLitica.Entities.Analytics
 {
@@ -46,8 +47,11 @@ namespace sdLitica.Entities.Analytics
         [Column("STATUS")]
         public OperationStatus Status { get; set; }
 
-
-        // TODO: add arguments of operation
+        /// <summary>
+        /// Arguments for analytical operation
+        /// </summary>
+        [Column("ARGUMENTS")]
+        public JObject Arguments { get; set; }
 
     }
 }

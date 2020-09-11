@@ -1,9 +1,9 @@
-﻿using static sdLitica.Helpers.ReflectionHelper;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using sdLitica.WebAPI.Entities.Common;
 using sdLitica.Entities.Management;
+using static sdLitica.Helpers.ReflectionHelper;
 
 namespace sdLitica.WebAPI.Models.Management
 {

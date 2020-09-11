@@ -1,9 +1,9 @@
-﻿using Newtonsoft.Json;
-using sdLitica.Events.Abstractions;
-using sdLitica.Utils.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Newtonsoft.Json;
+using sdLitica.Events.Abstractions;
+using sdLitica.Utils.Models;
 
 namespace sdLitica.Events.Integration
 {
