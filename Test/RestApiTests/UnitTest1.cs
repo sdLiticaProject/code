@@ -1,14 +1,15 @@
 using System;
-using Xunit;
-
-namespace RestApiTests
+using NUnit.Framework;
+using sdLitica.Test.BaseApiTest;
+namespace sdLitica.Test.RestApiTests
 {
-    public class UnitTest1
+    [TestFixture]
+    public class UnitTest1: BaseApiTest.BaseApiTest
     {
-        [Fact]
+        [Test]
         public void Test1()
         {
-
+            Assert.AreEqual("Ivan", configuration.UserName);
         }
     }
 }
