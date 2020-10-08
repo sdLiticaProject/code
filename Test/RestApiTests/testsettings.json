@@ -1,5 +1,6 @@
 {
     "Server": {
-        "UserName": "Ivan1"
+        "UserName": "Ivan",
+        "RootUrl": "http://sdlitica.sdcloud.io:5000"
     }
 }

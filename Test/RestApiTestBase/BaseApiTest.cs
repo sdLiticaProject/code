@@ -10,6 +10,10 @@ using Microsoft.Extensions.Configuration;
 
 namespace sdLitica.Test.BaseApiTest
 {
+    /// <summary>
+    /// This class represents a base test class for all other integration test
+    /// classes
+    /// </summary>
     [TestFixture]
     public class BaseApiTest
     {
@@ -88,23 +92,7 @@ namespace sdLitica.Test.BaseApiTest
                 lastApiResponse = client.PostAsync(url, content).Result;
             }
         }
-        protected void whenPostRequestSent1(string url, AuthenticationHeaderValue credentials, HttpContent content)
-        {
-            Console.WriteLine("Sending POST request to " + url);
-            Console.WriteLine("==== Request content (start) ====");
-            Console.WriteLine(content.ReadAsStringAsync().Result);
-            Console.WriteLine("==== Request content (end) ====");
-            lastApiResponse = null;
-            lastApiResponseContent = null;
-            lastApiJson = null;
-
-            using (HttpClient client = HttpClientFactory.Create())
-            {
-                client.DefaultRequestHeaders.Authorization = credentials;
-                lastApiResponse = client.PostAsync(url, content).Result;
-            }
-        }
-
+       
         protected void whenPostRequestWithoutAuthSentWithoutContentType(string url, HttpContent content) {
             whenPostRequestWithoutAuthSentInternal(url, content, false);
         }
