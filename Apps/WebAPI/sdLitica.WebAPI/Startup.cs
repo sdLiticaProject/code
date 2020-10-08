@@ -14,6 +14,11 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
  * *************************************************************************/
+using System.IO;
+using System;
+using System.Reflection;
+using System.Collections.Generic;
+using System.Linq;
 using sdLitica.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -27,11 +32,6 @@ using sdLitica.Bootstrap.Extensions;
 using sdLitica.WebAPI.Models.Security;
 using sdLitica.Events.Extensions;
 using sdLitica.Bootstrap.Events;
-using System.IO;
-using System;
-using System.Reflection;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace sdLitica
 {
@@ -101,8 +101,8 @@ namespace sdLitica
             {
                 c.SwaggerDoc("v1", new Info { Title = "sdLitica Project REST API", Version = "v1" });
 
-                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                string xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                string xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
 
                 c.AddSecurityDefinition("cloudToken",
@@ -137,7 +137,7 @@ namespace sdLitica
             });
 
             //sample subscribe for RabbitMQ
-            app.SubscribeEvents();
+            app.SubscribeEvents(); // todo
 
         }
     }

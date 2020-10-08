@@ -1,9 +1,9 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System;
+using Microsoft.Extensions.DependencyInjection;
 using sdLitica.Events.Abstractions;
 using sdLitica.Events.Bus;
 using sdLitica.Events.Integration;
 using sdLitica.Relational.Repositories;
-using System;
 
 namespace sdLitica.AnalyticsManagementCore
 {
@@ -15,16 +15,18 @@ namespace sdLitica.AnalyticsManagementCore
 
         static IEventRegistry _eventRegistry;
         static IEventBus _eventBus;
-        static OperationRepository _operationRepository;
+        static AnalyticsOperationRequestRepository _OperationRequestRepository;
+        static AnalyticsRegistry _analyticsRegistry;
 
         public static IServiceProvider Services { get; set; }
 
 
-        public static void Initialize(IEventRegistry eventRegistry, IEventBus eventBus, OperationRepository operationRepository)//, IServiceProvider services)
+        public static void Initialize(IEventRegistry eventRegistry, IEventBus eventBus, AnalyticsOperationRequestRepository OperationRequestRepository, AnalyticsRegistry analyticsRegistry)//, IServiceProvider services)
         {
             _eventRegistry = eventRegistry;
             _eventBus = eventBus;
-            _operationRepository = operationRepository;
+            _OperationRequestRepository = OperationRequestRepository;
+            _analyticsRegistry = analyticsRegistry;
         }
 
         /// <summary>
@@ -32,14 +34,30 @@ namespace sdLitica.AnalyticsManagementCore
         /// </summary>
         public static void Listen()
         {
-            _eventRegistry.Register<DiagnosticsEvent>(Exchanges.Diagnostics);
-            _eventBus.Subscribe((DiagnosticsEvent @event) =>
+            _eventRegistry.Register<DiagnosticsResponseEvent>(Exchanges.Diagnostics);
+            _eventBus.SubscribeToTopic((DiagnosticsResponseEvent @event) =>
             {
-                using (var scope = Services.CreateScope())
+                using (IServiceScope scope = Services.CreateScope())
                 {
-                    _operationRepository = scope.ServiceProvider.GetRequiredService<OperationRepository>();
-                    _operationRepository.Update(@event.Operation);
-                    _operationRepository.SaveChanges();
+                    _OperationRequestRepository = scope.ServiceProvider.GetRequiredService<AnalyticsOperationRequestRepository>();
+                    _OperationRequestRepository.Update(@event.Operation);
+                    _OperationRequestRepository.SaveChanges();
+                }
+            });
+        }
+
+        /// <summary>
+        /// Subscribe to new analytical modules. It's not the best place for this method.
+        /// </summary>
+        public static void ListenNewModules()
+        {
+            _eventRegistry.Register<AnalyticModuleRegistrationRequestEvent>(Exchanges.ModuleRegistration);
+            _eventBus.SubscribeToTopic((AnalyticModuleRegistrationRequestEvent @event) =>
+            {
+                using (IServiceScope scope = Services.CreateScope())
+                {
+                    _analyticsRegistry = scope.ServiceProvider.GetRequiredService<AnalyticsRegistry>();
+                    _analyticsRegistry.Register(@event.Module);
                 }
             });
         }

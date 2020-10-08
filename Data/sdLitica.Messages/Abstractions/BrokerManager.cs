@@ -1,7 +1,7 @@
-﻿using RabbitMQ.Client;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using RabbitMQ.Client;
 
 namespace sdLitica.Messages.Abstractions
 {
@@ -25,9 +25,13 @@ namespace sdLitica.Messages.Abstractions
         /// Create exchange
         /// </summary>
         /// <param name="name"></param>
-        public void CreateExchange(string name)
+        /// <param name="exchangeType"></param>
+        public void CreateExchange(string name, string exchangeType)
         {
-            _brokerConnection.CreateExchange(name, ExchangeType.Direct);
+            if (!exchangeType.Equals(ExchangeType.Direct) && !exchangeType.Equals(ExchangeType.Topic))
+                throw new ArgumentException();
+
+            _brokerConnection.CreateExchange(name, exchangeType);
         }
 
         /// <summary>

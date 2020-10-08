@@ -1,11 +1,11 @@
-﻿using sdLitica.Entities.Management;
-using sdLitica.Entities.Management.Repositories;
-using sdLitica.Exceptions.Managements;
-using sdLitica.Utils.Abstractions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using sdLitica.Entities.Management;
+using sdLitica.Entities.Management.Repositories;
+using sdLitica.Exceptions.Managements;
+using sdLitica.Utils.Abstractions;
 
 namespace sdLitica.PlatformCore
 {
@@ -59,7 +59,7 @@ namespace sdLitica.PlatformCore
         {
             if (user == null) throw new ArgumentNullException(nameof(user));
 
-            var userToken = _userTokenRepository.GetByUser(user);
+            UserToken userToken = _userTokenRepository.GetByUser(user);
             if (userToken == null)
             {
                 userToken = UserToken.Create(user, _appSettings.TokenExpirationInHours);
@@ -99,7 +99,7 @@ namespace sdLitica.PlatformCore
         {
             if (user == null) throw new ArgumentNullException(nameof(user));
 
-            var userToken = _userTokenRepository.GetByUser(user);
+            UserToken userToken = _userTokenRepository.GetByUser(user);
             if (userToken == null) return;
 
             userToken.ExpiresToken();

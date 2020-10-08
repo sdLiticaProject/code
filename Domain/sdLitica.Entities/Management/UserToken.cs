@@ -1,26 +1,30 @@
-﻿
+﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 using sdLitica.Entities.Abstractions;
 using sdLitica.Utils.Helpers;
-using System;
 
 namespace sdLitica.Entities.Management
 {
     /// <summary>
     /// This class is used to describe UserToken entity
     /// </summary>
+    [Table("USER_TOKENS")]
     public class UserToken : Entity
     {
         /// <summary>
         /// User token
         /// </summary>
+        [Column("TOKEN")]
         public string Token { get; protected set; }
         /// <summary>
         /// User token expiration date
         /// </summary>
+        [Column("EXPIRATION")]
         public DateTime TokenExpirationDate { get; protected set; }
         /// <summary>
         /// User Id identifier
         /// </summary>
+        [Column("USER_ID")]
         public Guid UserId { get; protected set; }
         /// <summary>
         /// User Id identifier
@@ -40,7 +44,7 @@ namespace sdLitica.Entities.Management
         /// </summary>
         public void ExpiresToken()
         {
-            var now = DateTime.UtcNow;            
+            DateTime now = DateTime.UtcNow;            
             TokenExpirationDate = now.AddDays(-1);
         }
 
@@ -59,7 +63,7 @@ namespace sdLitica.Entities.Management
         /// <param name="expiration">Expiration in hours</param>
         public void CreateToken(int expiration)
         {
-            var now = DateTime.UtcNow;
+            DateTime now = DateTime.UtcNow;
             Token = HashHelper.GetSha256(Convert.ToString(now.Ticks));
             TokenExpirationDate = now.AddHours(expiration);
         }
@@ -70,7 +74,7 @@ namespace sdLitica.Entities.Management
         /// <param name="expiration">Expiration in hours</param>
         public void ShiftCurrentToken(int expiration)
         {
-            var now = DateTime.UtcNow;            
+            DateTime now = DateTime.UtcNow;            
             TokenExpirationDate = now.AddHours(expiration);
         }
 
@@ -81,7 +85,7 @@ namespace sdLitica.Entities.Management
         /// <returns></returns>
         public static UserToken Create(User user, int expiration)
         {
-            var userToken = new UserToken()
+            UserToken userToken = new UserToken()
             {
                 Id = Guid.NewGuid(),
                 User = user ?? throw new ArgumentNullException(nameof(user)),

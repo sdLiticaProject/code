@@ -1,7 +1,9 @@
-﻿using sdLitica.Entities.Abstractions;
-using System;
+﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
+using Newtonsoft.Json.Linq;
+using sdLitica.Entities.Abstractions;
 
-namespace sdLitica.Analytics
+namespace sdLitica.Entities.Analytics
 {
     /// <summary>
     /// enum for status of operation.
@@ -14,46 +16,42 @@ namespace sdLitica.Analytics
     }
 
 
-    //  At this moment, also used as its model in requests, messages. 
-
     /// <summary>
     /// Entity for metadata of analytics operation.
     /// </summary>
-    public class AnalyticsOperation: Entity
+    [Table("USER_ANALYTICS_OPERATIONS")]
+    public class UserAnalyticsOperation : Entity
     {
 
-        public AnalyticsOperation()
+        public UserAnalyticsOperation()
         {
         }
 
-        public void SetId()
-        {
-            Id = Guid.NewGuid();
-        }
-
-
-        public Guid Id { get; set; } // should have 'protected set'
 
         /// <summary>
         /// Name of operation to be performed. 
         /// </summary>
-        public string OpName { get; set; } // should have 'protected set'
+        [Column("OPERATION_NAME")]
+        public string OperationName { get; set; }
 
         /// <summary>
         /// Id of time-series on which operation is performed
         /// </summary>
+        [Column("TIMESERIES_EXTERNAL_ID")]
         public string TimeSeriesId { get; set; }
 
 
         /// <summary>
         /// Current status of operation
         /// </summary>
+        [Column("STATUS")]
         public OperationStatus Status { get; set; }
 
-
-        // TODO: add parameters of operation
-        //public Dictionary<string,string> Parameters { get; set; }
-        //public List<OperationParameter> Parameters { get; set; }
+        /// <summary>
+        /// Arguments for analytical operation
+        /// </summary>
+        [Column("ARGUMENTS")]
+        public JObject Arguments { get; set; }
 
     }
 }

@@ -1,11 +1,11 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using Microsoft.Extensions.DependencyInjection;
 using sdLitica.AnalyticsManagementCore;
 using sdLitica.Entities.Management.Repositories;
 using sdLitica.PlatformCore;
 using sdLitica.Relational.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace sdLitica.Bootstrap.Services
 {
@@ -17,7 +17,12 @@ namespace sdLitica.Bootstrap.Services
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserTokenRepository, UserTokenRepository>();
 
-            services.AddScoped<OperationRepository>();
+            services.AddScoped<AnalyticsOperationRequestRepository>();
+            services.AddScoped<AnalyticsModuleRepository>();
+            services.AddScoped<AnalyticsOperationRepository>();
+            services.AddScoped<ModuleOperationRepository>();
+
+            services.AddScoped<AnalyticsRegistry>();
             services.AddScoped<AnalyticsService>();
         }
     }

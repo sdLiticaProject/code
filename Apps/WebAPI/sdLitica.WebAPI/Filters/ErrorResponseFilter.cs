@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System;
+using System.Net;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;
 using sdLitica.Exceptions.Abstractions;
-using System;
-using System.Net;
 
 namespace sdLitica.Filters
 {

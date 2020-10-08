@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc.Filters;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using sdLitica.Exceptions.Http;
-using System.Collections.Generic;
 
 namespace sdLitica.Filters
 {
@@ -35,9 +35,9 @@ namespace sdLitica.Filters
             if (!modelState.IsValid)
             {
                 List<string> errors = new List<string>();
-                foreach (var state in modelState)
+                foreach (KeyValuePair<string, ModelStateEntry> state in modelState)
                 {
-                    foreach (var error in state.Value.Errors)
+                    foreach (ModelError error in state.Value.Errors)
                     {
                         errors.Add(error.ErrorMessage);
                     }

@@ -1,32 +1,38 @@
-﻿using sdLitica.Entities.Abstractions;
-using sdLitica.Utils.Helpers;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Security.Cryptography;
 using System.Text;
+using sdLitica.Entities.Abstractions;
+using sdLitica.Utils.Helpers;
 
 namespace sdLitica.Entities.Management
 {
     /// <summary>
     /// This class represents unique identity and info of the user
     /// </summary>
+    [Table("USERS")]
     public class User : Entity
     {
         /// <summary>
         /// User first name
         /// </summary>
+        [Column("FIRST_NAME")]
         public string FirstName { get; protected set; }
         /// <summary>
         /// User last name
         /// </summary>
+        [Column("LAST_NAME")]
         public string LastName { get; protected set; }
         /// <summary>
         /// User email
         /// </summary>
+        [Column("EMAIL")]
         public string Email { get; protected set; }
         /// <summary>
         /// User password
         /// </summary>
+        [Column("PASSWORD")]
         public string Password { get; protected set; }
 
         /// <summary>
@@ -71,7 +77,7 @@ namespace sdLitica.Entities.Management
         /// <returns>Returns an user with already encrypted password</returns>
         public static User Create(string firstName, string lastName, string email, string plainPassword)
         {
-            var user = new User()
+            User user = new User()
             {
                 Id = Guid.NewGuid(),
                 FirstName = firstName,

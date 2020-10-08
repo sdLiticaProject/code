@@ -13,7 +13,8 @@ namespace sdLitica.Messages.Abstractions
         /// Create exchange in the broker
         /// </summary>
         /// <param name="name"></param>
-        void CreateExchange(string name);
+        /// <param name="exchangeType"></param>
+        void CreateExchange(string name, string exchangeType);
         /// <summary>
         /// Create queue in the broker
         /// </summary>

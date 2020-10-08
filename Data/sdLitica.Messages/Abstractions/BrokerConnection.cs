@@ -1,8 +1,8 @@
-﻿using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
 
 namespace sdLitica.Messages.Abstractions
 {
@@ -33,7 +33,7 @@ namespace sdLitica.Messages.Abstractions
             if (_connection != null && _connection.IsOpen) return;
             if (_settings == null) throw new ArgumentNullException(nameof(_settings));
 
-            var factory = new ConnectionFactory()
+            ConnectionFactory factory = new ConnectionFactory()
             {
                 UserName = _settings.UserName,
                 Password = _settings.Password,

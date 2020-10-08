@@ -1,7 +1,7 @@
-﻿using sdLitica.Utils.Settings;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using sdLitica.Utils.Settings;
 
 namespace sdLitica.Utils.Abstractions
 {
@@ -24,5 +24,10 @@ namespace sdLitica.Utils.Abstractions
         /// Provides setting for Messages (i.e. RabbitMQ)
         /// </summary>
         MessageSettings MessageSettings { get; }
+
+        /// <summary>
+        /// Provides setting for Analytics (e.g. timeouts for analytical modules)
+        /// </summary>
+        AnalyticsSettings AnalyticsSettings { get; }
     }
 }

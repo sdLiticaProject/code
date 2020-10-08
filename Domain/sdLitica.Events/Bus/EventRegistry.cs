@@ -1,8 +1,8 @@
-﻿using sdLitica.Events.Abstractions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using sdLitica.Events.Abstractions;
 using sdLitica.Messages.Abstractions;
 
 namespace sdLitica.Events.Bus
@@ -26,21 +26,21 @@ namespace sdLitica.Events.Bus
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="exchange"></param>
-        public void Register<T>(string queue) where T : IEvent
+        /// <param name="exchangeType"></param>
+        public void Register<T>(string exchange, string exchangeType="topic") where T : IEvent
         {
-            var eventType = typeof(T);
+            Type eventType = typeof(T);
 
             if (_eventRegistry.ContainsKey(eventType))
             {
-                if (!_eventRegistry[eventType].Contains(queue))
-                    _eventRegistry[eventType].Add(queue);
+                if (!_eventRegistry[eventType].Contains(exchange))
+                    _eventRegistry[eventType].Add(exchange);
                 return;
             }
 
-            _eventRegistry.Add(new KeyValuePair<Type, IList<string>>(eventType, new List<string>() { queue }));
+            _eventRegistry.Add(new KeyValuePair<Type, IList<string>>(eventType, new List<string>() { exchange }));
             
-            //TODO needs: create queue OR exchanges
-            _brokerManager.CreateQueue(queue);
+            _brokerManager.CreateExchange(exchange, exchangeType);
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace sdLitica.Events.Bus
         /// <returns></returns>
         public IList<string> GetPublishingTarget<T>(T @event) where T : IEvent
         {
-            var eventType = @event.GetType();
+            Type eventType = @event.GetType();
 
             if (!_eventRegistry.ContainsKey(eventType)) return null;
 

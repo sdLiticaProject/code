@@ -10,12 +10,25 @@ namespace sdLitica.Events.Abstractions
     public interface IEventBus
     {
         /// <summary>
-        /// To publish an event to a queue or exchange
+        /// To publish (direct) an event to a queue or exchange
         /// </summary>
         /// <param name="event"></param>
         void Publish(IEvent @event);
         /// <summary>
-        /// Subcribe to an event and run the action after receive it
+        /// To publish (topic) an event to a queue or exchange
+        /// </summary>
+        /// <param name="event"></param>
+        /// <param name="routingKey"></param>
+        void PublishToTopic(IEvent @event, string routingKey="basic");
+        /// <summary>
+        /// Subcribe (topic) to an event and run the action after receive it
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="routingKey"></param>
+        /// <param name="action"></param>
+        void SubscribeToTopic<T>(Action<T> action, string routingKey="basic") where T : IEvent;
+        /// <summary>
+        /// Subcribe (direct) to an event and run the action after receive it
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="action"></param>
