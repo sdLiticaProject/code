@@ -77,7 +77,7 @@ namespace sdLitica.Entities.Management
         /// <returns>Returns an user with already encrypted password</returns>
         public static User Create(string firstName, string lastName, string email, string plainPassword)
         {
-            User user = new User()
+            User user = new User
             {
                 Id = Guid.NewGuid(),
                 FirstName = firstName,
@@ -86,6 +86,17 @@ namespace sdLitica.Entities.Management
             };
             user.ChangePassword(plainPassword);
             return user;
+        }
+
+        /// <summary>
+        /// Updates a first and last names of user
+        /// </summary>
+        /// <param name="firstName"></param>
+        /// <param name="lastName"></param>
+        public void Update(string firstName, string lastName)
+        {
+            if (!Equals(FirstName, firstName)) FirstName = firstName;
+            if (!Equals(LastName, lastName)) LastName = lastName;
         }
     }
 }

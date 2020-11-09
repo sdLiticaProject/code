@@ -33,7 +33,7 @@ namespace sdLitica.WebAPI.Controllers.v1
 
 
         /// <summary>
-        /// This API call will create a new user in the system
+        /// This REST API call will create a new user in the system
         /// </summary>
         /// <remarks>
         /// When this API call is used, it will create a new user that will be able
@@ -72,7 +72,25 @@ namespace sdLitica.WebAPI.Controllers.v1
         }
 
         /// <summary>
-        /// Log in user to the system
+        /// This REST API call updates a first and last names of the current user
+        /// </summary>
+        /// <remarks>
+        /// This endpoint allows to update user data in system.
+        /// </remarks>
+        /// <param name="updatedUser">An object describing new user info to be updated in the system</param>
+        /// <response code="200">When user info was successfully updated</response>
+        /// <response code="400">When request payload is malformed or required fields are missing</response>
+        [HttpPost("update")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<UserModel> UpdateUser([FromBody] UserUpdateModel updatedUser)
+        {
+            User user = _userService.UpdateUser(new Guid(UserId), updatedUser.FirstName, updatedUser.LastName);
+            return new UserModel(user);
+        }
+
+        /// <summary>
+        /// This REST API handler logins the user in the system
         /// </summary>
         /// <remarks>
         /// This endpoint allows retrieval of access token for valid pair of
@@ -115,7 +133,7 @@ namespace sdLitica.WebAPI.Controllers.v1
         }
 
         /// <summary>
-        /// Log out from the system for the given token
+        /// This REST API call logouts the user out of the system for the given token
         /// </summary>
         /// <remarks>
         /// When this request is authenticated with valid token it 
@@ -137,7 +155,7 @@ namespace sdLitica.WebAPI.Controllers.v1
         }
 
         /// <summary>
-        /// Get current user profile
+        /// This REST API call returns the current user profile
         /// </summary>
         /// <remarks>
         /// This REST API handler returns current user 
