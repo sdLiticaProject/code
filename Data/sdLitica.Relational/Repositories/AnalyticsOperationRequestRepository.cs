@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using sdLitica.Entities.Analytics;
@@ -40,6 +39,14 @@ namespace sdLitica.Relational.Repositories
         public List<UserAnalyticsOperation> GetAll()
         {
             return Entity.ToList();
+        }
+
+        /// <summary>
+        /// Returns all user's analytical operations
+        /// </summary>
+        public List<UserAnalyticsOperation> GetBySeriesId(string seriesId)
+        {
+            return Entity.Where(o => o.TimeSeriesId.Equals(seriesId)).ToList();
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using sdLitica.Entities.Analytics;
 using sdLitica.Events.Abstractions;
@@ -16,13 +15,13 @@ namespace sdLitica.AnalyticsManagementCore
     public class AnalyticsService
     {
         private readonly IEventBus _eventBus;
-        private readonly AnalyticsOperationRequestRepository _OperationRequestRepository;
+        private readonly AnalyticsOperationRequestRepository _operationRequestRepository;
         private readonly AnalyticsRegistry _analyticsRegistry;
 
-        public AnalyticsService(IEventBus eventBus, AnalyticsOperationRequestRepository OperationRequestRepository, AnalyticsRegistry analyticsRegistry)
+        public AnalyticsService(IEventBus eventBus, AnalyticsOperationRequestRepository operationRequestRepository, AnalyticsRegistry analyticsRegistry)
         {
             _eventBus = eventBus;
-            _OperationRequestRepository = OperationRequestRepository;
+            _operationRequestRepository = operationRequestRepository;
             _analyticsRegistry = analyticsRegistry;
         }
 
@@ -33,8 +32,8 @@ namespace sdLitica.AnalyticsManagementCore
         public void ExecuteOperation(UserAnalyticsOperation operation)
         {
 
-            _OperationRequestRepository.Add(operation);
-            _OperationRequestRepository.SaveChanges();
+            _operationRequestRepository.Add(operation);
+            _operationRequestRepository.SaveChanges();
 
             TimeSeriesAnalysisRequestEvent @event = new TimeSeriesAnalysisRequestEvent(operation);
             string routingKey = _analyticsRegistry.GetQueue(operation.OperationName);
@@ -64,7 +63,7 @@ namespace sdLitica.AnalyticsManagementCore
         /// <returns></returns>
         public OperationStatus CheckResults(UserAnalyticsOperation operation)
         {
-            return _OperationRequestRepository.GetStatus(operation.Id);
+            return _operationRequestRepository.GetStatus(operation.Id);
         }
 
         /// <summary>
@@ -83,12 +82,17 @@ namespace sdLitica.AnalyticsManagementCore
         /// <returns></returns>
         public UserAnalyticsOperation GetUserAnalyticsOperation(string userAnalyticsOperationId)
         {
-            return _OperationRequestRepository.GetById(new Guid(userAnalyticsOperationId));
+            return _operationRequestRepository.GetById(new Guid(userAnalyticsOperationId));
         }
 
         public List<UserAnalyticsOperation> GetUserOperations()
         {
-            return _OperationRequestRepository.GetAll();
+            return _operationRequestRepository.GetAll();
+        }
+
+        public List<UserAnalyticsOperation> GetUserAnalyticsOperationsBySeriesId(string seriesId)
+        {
+            return _operationRequestRepository.GetBySeriesId(seriesId);
         }
     }
 }

@@ -1,12 +1,10 @@
 using System;
-using System.IO;
-using System.Text;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using sdLitica.Utils.Abstractions;
+using sdLitica.Utils.Settings;
 using Vibrant.InfluxDB.Client;
 using Vibrant.InfluxDB.Client.Rows;
-using sdLitica.Utils.Settings;
-using sdLitica.Utils.Abstractions;
 
 namespace sdLitica.TimeSeries.Services
 {
@@ -61,7 +59,17 @@ namespace sdLitica.TimeSeries.Services
 
         public async Task<InfluxResult<DynamicInfluxRow>> ReadMeasurementById(string measurementId, string from, string to, string step)
         {
-            string query = "SELECT last(*) FROM " + "\"" + measurementId + "\"" + " WHERE time >= " + from + " AND time <= " + to + " GROUP BY time(" + step + ")";
+            string query = $"SELECT last(*) FROM \"{measurementId}\"";
+            if (!string.IsNullOrWhiteSpace(from) || !string.IsNullOrWhiteSpace(to))
+                query += " WHERE ";
+            if (!string.IsNullOrWhiteSpace(from))
+                query += $"time >= {from}";
+            if (!string.IsNullOrWhiteSpace(from) && !string.IsNullOrWhiteSpace(to))
+                query += " AND ";
+            if (!string.IsNullOrWhiteSpace(to))
+                query += $"time <= {to}";
+            if (!string.IsNullOrWhiteSpace(step))
+                query += $" GROUP BY time({step})";
 
             InfluxResultSet<DynamicInfluxRow> resultSet = await _influxClient.ReadAsync<DynamicInfluxRow>(TimeSeriesSettings.InfluxDatabase,
                 query);
