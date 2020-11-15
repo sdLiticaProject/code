@@ -13,31 +13,31 @@ using sdLitica.WebAPI.Models.Management;
 namespace sdLitica.WebAPI.Controllers.v1
 {
     /// <summary>
-    /// This controller is used to work with user authentification and authorization
+    /// This controller is used to work with user authentication and authorization
     /// </summary>
     [Produces("application/json")]
     [Route("api/v1/Profile")]
     [Authorize]
-    public class ProfileController : BaseApiController
+    public class ProfileController: BaseApiController
     {
         private readonly UserService _userService;
-        
+
         /// <summary>
         /// Main C-tor for the controller instance
         /// </summary>
         /// <param name="mysqlProfileService">Auto-injected service to interact with database</param>
         public ProfileController(UserService userService)
         {
-            _userService = userService;                  
+            _userService = userService;
         }
 
 
         /// <summary>
-        /// This API call will create a new user in the system
+        /// This REST API call will create a new user in the system
         /// </summary>
         /// <remarks>
         /// When this API call is used, it will create a new user that will be able
-        /// to login to the system. Email address used for registraton should be unique,
+        /// to login to the system. Email address used for registration should be unique,
         /// since it is used as a login name.
         /// </remarks>
         /// <param name="newUser">An object describing new user to be created in the system</param>
@@ -46,42 +46,62 @@ namespace sdLitica.WebAPI.Controllers.v1
         /// <response code="409">If specified email address already registered in the system</response> 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<UserModel> RegisterNewUser([FromBody] UserModel newUser) {
-            
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        public async Task<UserModel> RegisterNewUser([FromBody] UserModel newUser)
+        {
             User userInTheSystem = _userService.GetUser(newUser.Email);
 
-            
-            if (null == userInTheSystem)
+            if (userInTheSystem == null)
             {
                 userInTheSystem = _userService.CreateUser(newUser.FirstName,
-                                        newUser.LastName,
-                                        newUser.Email,
-                                        newUser.Password);
+                    newUser.LastName,
+                    newUser.Email,
+                    newUser.Password);
 
-                this.HttpContext.Response.StatusCode = 201;
+                this.HttpContext.Response.StatusCode = StatusCodes.Status201Created;
                 return new UserModel(userInTheSystem);
             }
             else
             {
-                throw new UserExistsException("User with email address '" + 
-                                              newUser.Email + 
+                throw new UserExistsException("User with email address '" +
+                                              newUser.Email +
                                               "' already registered in the system");
             }
         }
 
         /// <summary>
-        /// Log in user to the system
+        /// This REST API call updates a first and last names of the current user
+        /// </summary>
+        /// <remarks>
+        /// This endpoint allows to update user data in system.
+        /// </remarks>
+        /// <param name="updatedUser">An object describing new user info to be updated in the system</param>
+        /// <response code="200">When user info was successfully updated</response>
+        /// <response code="400">When request payload is malformed or required fields are missing</response>
+        [HttpPost("update")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<UserModel> UpdateUser([FromBody] UserUpdateModel updatedUser)
+        {
+            User user = _userService.UpdateUser(new Guid(UserId), updatedUser.FirstName, updatedUser.LastName);
+            return new UserModel(user);
+        }
+
+        /// <summary>
+        /// This REST API handler logins the user in the system
         /// </summary>
         /// <remarks>
         /// This endpoint allows retrieval of access token for valid pair of
         /// email and password for registered user. If provided credentials are
-        /// vlid, server will return an object containing token value and its
+        /// valid, server will return an object containing token value and its
         /// expiration time. Each time when token successfully used, its expiration
         /// time will extended.
         /// </remarks>
-        /// <param name="credentials">End-user credentials to identify user for whome token will be generated</param>
+        /// <param name="credentials">End-user credentials to identify user for whom token will be generated</param>
         /// <response code="200">When user was successfully logged in and token was issues</response>
-        /// <response code="400">When request payload is malformed or reuired fields are missing</response>
+        /// <response code="400">When request payload is malformed or required fields are missing</response>
         /// <response code="401">When request is valid, but credentials were not recognized by server</response>
         [HttpPost("login")]
         [AllowAnonymous]
@@ -90,7 +110,7 @@ namespace sdLitica.WebAPI.Controllers.v1
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ApiEntityPage<TokenJsonEntity>> Login([FromBody] LoginModel credentials)
         {
-            // Here should be proper auth via DB with clreation of token if auth succeeds
+            // Here should be proper auth via DB with creation of token if auth succeeds
 
             User user = _userService.GetUser(credentials.Email);
             if (user == null) throw new NotFoundException("User not found");
@@ -105,20 +125,19 @@ namespace sdLitica.WebAPI.Controllers.v1
                 Token = userToken.Token,
                 Expires = userToken.TokenExpirationDate.Ticks
             };
-            
-            ApiEntityPage<TokenJsonEntity> result =
-                                new ApiEntityPage<TokenJsonEntity>(tokenJson,
-                                                                    HttpContext.Request.Path.ToString());
+
+            ApiEntityPage<TokenJsonEntity> result = new ApiEntityPage<TokenJsonEntity>(tokenJson,
+                HttpContext.Request.Path.ToString());
 
             return result;
         }
 
         /// <summary>
-        /// Log out from the system for the given token
+        /// This REST API call logouts the user out of the system for the given token
         /// </summary>
         /// <remarks>
         /// When this request is authenticated with valid token it 
-        /// will log user out by imediate decomissioning of provided
+        /// will log user out by immediate decommissioning of provided
         /// token. After using of this endpoint, provided token
         /// is no more valid
         /// </remarks>
@@ -136,7 +155,7 @@ namespace sdLitica.WebAPI.Controllers.v1
         }
 
         /// <summary>
-        /// Get current user profile
+        /// This REST API call returns the current user profile
         /// </summary>
         /// <remarks>
         /// This REST API handler returns current user 
@@ -150,9 +169,7 @@ namespace sdLitica.WebAPI.Controllers.v1
         public async Task<UserModel> GetProfile()
         {
             User user = _userService.GetUser(new Guid(UserId));
-            
-
             return new UserModel(user);
-        }        
+        }
     }
 }
