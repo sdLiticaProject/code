@@ -6,6 +6,7 @@ using sdLitica.AnalyticsManagementCore;
 using sdLitica.Entities.Management.Repositories;
 using sdLitica.PlatformCore;
 using sdLitica.Relational.Repositories;
+using sdLitica.TimeSeries.Services;
 
 namespace sdLitica.Bootstrap.Services
 {
@@ -16,6 +17,9 @@ namespace sdLitica.Bootstrap.Services
             services.AddScoped<UserService>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserTokenRepository, UserTokenRepository>();
+
+            services.AddScoped<TimeSeriesMetadataRepository>();
+            services.AddScoped<ITimeSeriesMetadataService, TimeseriesMetadataService>();
 
             services.AddScoped<AnalyticsOperationRequestRepository>();
             services.AddScoped<AnalyticsModuleRepository>();

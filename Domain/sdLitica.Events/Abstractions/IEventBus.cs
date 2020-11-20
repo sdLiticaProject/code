@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace sdLitica.Events.Abstractions
 {
@@ -19,20 +20,26 @@ namespace sdLitica.Events.Abstractions
         /// </summary>
         /// <param name="event"></param>
         /// <param name="routingKey"></param>
-        void PublishToTopic(IEvent @event, string routingKey="basic");
+        void PublishToTopic(IEvent @event, string routingKey="");
         /// <summary>
         /// Subcribe (topic) to an event and run the action after receive it
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="routingKey"></param>
         /// <param name="action"></param>
-        void SubscribeToTopic<T>(Action<T> action, string routingKey="basic") where T : IEvent;
+        void SubscribeToTopic<T>(Action<T> action, string routingKey="") where T : IEvent;
         /// <summary>
         /// Subcribe (direct) to an event and run the action after receive it
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="action"></param>
         void Subscribe<T>(Action<T> action) where T : IEvent;
+        /// <summary>
+        /// Subcribe (direct) to an event and run the action after receive it
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="action"></param>
+        void Subscribe<T>(Func<T,Task> action) where T : IEvent;
         /// <summary>
         /// Read to an event and run the action after receive it
         /// </summary>
