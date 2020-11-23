@@ -158,7 +158,7 @@ namespace sdLitica.WebAPI.Controllers.v1
         /// <param name="seriesId">id of timeseries</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("operations/{userOperationId}/result")]
+        [Route("operations/bySeriesId/{seriesId}/result")]
         public IActionResult GetUserOperationResultsByTimeSeries([FromRoute] string seriesId)
         {
             List<UserAnalyticsOperation> operations =
