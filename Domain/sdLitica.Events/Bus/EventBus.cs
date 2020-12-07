@@ -34,7 +34,6 @@ namespace sdLitica.Events.Bus
             IList<string> exchanges = _eventRegistry.GetPublishingTarget(@event);
             foreach (string exchange in exchanges)
             {
-                System.Console.WriteLine("PUBLISH TO " + exchange);
                 _publisher.Publish(exchange, message);
             }
         }

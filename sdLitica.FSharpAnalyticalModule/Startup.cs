@@ -82,8 +82,6 @@ namespace sdLitica.FSharpAnalyticalModule
                 IEventBus eventBus = scope.ServiceProvider.GetService<IEventBus>();
                 eventBus.SubscribeToTopic<TimeSeriesAnalysisRequestEvent>(async (@event) =>
                 {
-                    System.Console.WriteLine("got the work");
-                    // todo: move DI to event bus
                     using (IServiceScope scope = app.ApplicationServices.GetRequiredService<IServiceProvider>().CreateScope())
                     {
                         AnalyticsIntegrationEventHandler handler = scope.ServiceProvider.GetRequiredService<AnalyticsIntegrationEventHandler>();

@@ -29,12 +29,10 @@ namespace sdLitica.FSharpAnalyticalModule.IntegrationEvents.EventHandling
         {
             UserAnalyticsOperation operation = @event.Operation;
             
-            System.Console.WriteLine("handling operation with " + operation.TimeSeriesId);
             try
             {
                 InfluxResult<DynamicInfluxRow> influxResult =
                     await _timeSeriesService.ReadMeasurementById(operation.TimeSeriesId);
-                System.Console.WriteLine("found measurement");
                 List<DynamicInfluxRow> rowsList = influxResult.Series[0].Rows;
                 Series<DateTime?, double> series = rowsList
                     .Select(x => KeyValue.Create(
@@ -42,7 +40,6 @@ namespace sdLitica.FSharpAnalyticalModule.IntegrationEvents.EventHandling
                         (double)x.Fields[operation.Arguments["column"].ToString()])).
                     ToSeries();
 
-                System.Console.WriteLine("APPLYING OPERATION");
                 // apply operation
                 switch (operation.OperationName)
                 {
@@ -63,14 +60,11 @@ namespace sdLitica.FSharpAnalyticalModule.IntegrationEvents.EventHandling
             }
             catch (Exception e)
             {
-                System.Console.WriteLine("setting error");
                 operation.Status = OperationStatus.Error;
             }
             finally
             {
-                System.Console.WriteLine("sending answer");
                 _eventBus.Publish(new DiagnosticsResponseEvent(operation));
-                System.Console.WriteLine("answer is sent");
             }
         }
     }
