@@ -149,6 +149,7 @@ namespace sdLitica.Test.BaseApiTest
         protected void thenAccessTokenRetrieved() {
             thenResponseIsValidJson();
             JToken jToken = lastApiJson.SelectToken("$.Entity.Token");
+            Assert.NotNull(jToken);
             currentApiAccessToken = jToken.Value<string>();
         }
 
