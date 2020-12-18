@@ -214,7 +214,6 @@ namespace sdLitica.WebAPI.Controllers.v1
         [Route("{timeseriesId}/data/all")]
         public IActionResult GetAllTimeSeriesDataById(string timeseriesId, int pageSize = 20, int offset = 0)
         {
-
             InfluxResult<DynamicInfluxRow> measurementsResult = _timeSeriesService.ReadMeasurementById(timeseriesId).Result;
             return MakePageFromMeasurements(measurementsResult, pageSize, offset);
         }
@@ -234,7 +233,6 @@ namespace sdLitica.WebAPI.Controllers.v1
         [Route("{timeseriesId}/data")]
         public IActionResult GetTimeSeriesDataById(string timeseriesId, string from = "", string to = "", string step = "", int pageSize = 20, int offset = 0)
         {
-
             InfluxResult<DynamicInfluxRow> measurementsResult = _timeSeriesService.ReadMeasurementById(timeseriesId, from, to, step).Result;
             return MakePageFromMeasurements(measurementsResult, pageSize, offset);
         }
