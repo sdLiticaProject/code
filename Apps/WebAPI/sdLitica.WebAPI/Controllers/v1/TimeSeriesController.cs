@@ -21,7 +21,7 @@ namespace sdLitica.WebAPI.Controllers.v1
     /// </summary>
     [Route("api/v1/timeseries")]
     [Authorize]
-    public class TimeSeriesController: BaseApiController
+    public class TimeSeriesController : BaseApiController
     {
         private readonly ITimeSeriesService _timeSeriesService;
         private readonly ITimeSeriesMetadataService _timeSeriesMetadataService;

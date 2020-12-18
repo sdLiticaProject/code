@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 using sdLitica.Utils.Abstractions;
 using sdLitica.Utils.Settings;
@@ -8,7 +9,7 @@ using Vibrant.InfluxDB.Client.Rows;
 
 namespace sdLitica.TimeSeries.Services
 {
-    public class TimeSeriesService : ITimeSeriesService
+    public class TimeSeriesService: ITimeSeriesService
     {
         private TimeSeriesSettings TimeSeriesSettings { set; get; }
 
@@ -59,20 +60,33 @@ namespace sdLitica.TimeSeries.Services
 
         public async Task<InfluxResult<DynamicInfluxRow>> ReadMeasurementById(string measurementId, string from, string to, string step)
         {
-            string query = $"SELECT last(*) FROM \"{measurementId}\"";
-            if (!string.IsNullOrWhiteSpace(from) || !string.IsNullOrWhiteSpace(to))
-                query += " WHERE ";
-            if (!string.IsNullOrWhiteSpace(from))
-                query += $"time >= {from}";
-            if (!string.IsNullOrWhiteSpace(from) && !string.IsNullOrWhiteSpace(to))
-                query += " AND ";
-            if (!string.IsNullOrWhiteSpace(to))
-                query += $"time <= {to}";
-            if (!string.IsNullOrWhiteSpace(step))
-                query += $" GROUP BY time({step})";
+            StringBuilder query = new StringBuilder($"SELECT last(*) FROM \"{measurementId}\"");
+            Dictionary<string, string> parameters = new Dictionary<string, string>();
 
-            InfluxResultSet<DynamicInfluxRow> resultSet = await _influxClient.ReadAsync<DynamicInfluxRow>(TimeSeriesSettings.InfluxDatabase,
-                query);
+            bool hasStartTime = !string.IsNullOrWhiteSpace(from);
+            bool hasEndTime = !string.IsNullOrWhiteSpace(to);
+            if (hasStartTime || hasEndTime)
+            {
+                query.Append(" WHERE ");
+                if (hasStartTime)
+                {
+                    query.Append("time >= $from");
+                    parameters.Add("from", from);
+                }
+                if (hasStartTime && hasEndTime) query.Append(" AND ");
+                if (hasEndTime)
+                {
+                    query.Append("time <= $to");
+                    parameters.Add("to", to);
+                }
+            }
+
+            // Vibrant.InfluxDB.Client substitutes all parameters with single quotes (e.g. ...GROUP BY time('1m'))
+            // but InfluxDB requires parameter for time(<interval>) function without quotes (e.g. ...time(1m))
+            // so, the <step> string parameter should be validated in controller when received from user
+            if (!string.IsNullOrWhiteSpace(step)) query.Append($" GROUP BY time({step})");
+
+            InfluxResultSet<DynamicInfluxRow> resultSet = await _influxClient.ReadAsync<DynamicInfluxRow>(TimeSeriesSettings.InfluxDatabase, query.ToString(), parameters);
 
             // resultSet will contain 1 result in the Results collection (or multiple if you execute multiple queries at once)
             InfluxResult<DynamicInfluxRow> result = resultSet.Results[0];
@@ -86,8 +100,7 @@ namespace sdLitica.TimeSeries.Services
             return result;
         }
 
-        private NamedDynamicInfluxRow[] CreateDynamicRowsStartingAt(DateTime start, int rows,
-            string measurementName)
+        private NamedDynamicInfluxRow[] CreateDynamicRowsStartingAt(DateTime start, int rows, string measurementName)
         {
             Random rng = new Random();
             string[] regions = new[] {"west-eu", "north-eu", "west-us", "east-us", "asia"};
@@ -153,6 +166,5 @@ namespace sdLitica.TimeSeries.Services
             await _influxClient.WriteAsync(TimeSeriesSettings.InfluxDatabase, influxRows);
             return "?";
         }
-
     }
 }
