@@ -16,9 +16,7 @@
  * *************************************************************************/
 
 using System.Net.Http;
-using sdLitica.Attributes.Swagger;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace sdLitica.WebAPI.Controllers
@@ -26,10 +24,10 @@ namespace sdLitica.WebAPI.Controllers
     /// <summary>
     /// This controller is used to stub requests to /
     /// </summary>
-    [HideInDocs]
     [Produces("application/json")]
     [AllowAnonymous]
-    public class RootController : Controller
+    [ApiExplorerSettings(IgnoreApi = true)]
+    public class RootController: Controller
     {
         /// <summary>
         /// This controller is used to stub requests to /
