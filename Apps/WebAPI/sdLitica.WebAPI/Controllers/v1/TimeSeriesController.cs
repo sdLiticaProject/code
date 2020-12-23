@@ -214,7 +214,6 @@ namespace sdLitica.WebAPI.Controllers.v1
         [Route("{timeseriesId}/data/all")]
         public IActionResult GetAllTimeSeriesDataById(string timeseriesId, int pageSize = 20, int offset = 0)
         {
-
             InfluxResult<DynamicInfluxRow> measurementsResult = _timeSeriesService.ReadMeasurementById(timeseriesId).Result;
             return MakePageFromMeasurements(measurementsResult, pageSize, offset);
         }
@@ -234,7 +233,6 @@ namespace sdLitica.WebAPI.Controllers.v1
         [Route("{timeseriesId}/data")]
         public IActionResult GetTimeSeriesDataById(string timeseriesId, string from = "", string to = "", string step = "", int pageSize = 20, int offset = 0)
         {
-
             InfluxResult<DynamicInfluxRow> measurementsResult = _timeSeriesService.ReadMeasurementById(timeseriesId, from, to, step).Result;
             return MakePageFromMeasurements(measurementsResult, pageSize, offset);
         }
@@ -300,45 +298,39 @@ namespace sdLitica.WebAPI.Controllers.v1
             }
         }
 
-
         private IActionResult MakePageFromMeasurements(InfluxResult<DynamicInfluxRow> measurementsResult, int pageSize, int offset)
         {
             List<InfluxSeries<DynamicInfluxRow>> series = measurementsResult.Series;
-            if (series.Count != 0)
+            if (series.Count == 0) return NotFound();
+
+            List<TimeSeriesDataJsonEntity> timeseriesDataJsonEntities = new List<TimeSeriesDataJsonEntity>();
+            foreach (InfluxSeries<DynamicInfluxRow> t in series)
             {
-                List<TimeSeriesDataJsonEntity> timeseriesDataJsonEntities = new List<TimeSeriesDataJsonEntity>();
-                foreach (InfluxSeries<DynamicInfluxRow> t in series)
+                List<DynamicInfluxRow> rows = t.Rows;
+                foreach (DynamicInfluxRow t1 in rows)
                 {
-                    List<DynamicInfluxRow> rows = t.Rows;
-                    foreach (DynamicInfluxRow t1 in rows)
+                    timeseriesDataJsonEntities.Add(new TimeSeriesDataJsonEntity
                     {
-                        timeseriesDataJsonEntities.Add(new TimeSeriesDataJsonEntity()
-                        {
-                            Timestamp = t1.Timestamp.ToString(),
-                            Tags = t1.Tags,
-                            Fields = t1.Fields
-                        });
-                    }
+                        Timestamp = t1.Timestamp.ToString(),
+                        Tags = t1.Tags,
+                        Fields = t1.Fields
+                    });
                 }
-
-                List<TimeSeriesDataJsonEntity> page = timeseriesDataJsonEntities.Skip(offset).Take(pageSize).ToList();
-
-                ApiEntityListPage<TimeSeriesDataJsonEntity> listOfResults =
-                    new ApiEntityListPage<TimeSeriesDataJsonEntity>(page,
-                        HttpContext.Request.Path.ToString(), new PaginationProperties()
-                        {
-                            PageSize = pageSize,
-                            Offset = offset,
-                            Count = page.Count,
-                            HasMore = timeseriesDataJsonEntities.Count > page.Count
-                        });
-
-                return Ok(listOfResults);
             }
-            else
-            {
-                return NotFound();
-            }
+
+            List<TimeSeriesDataJsonEntity> page = timeseriesDataJsonEntities.Skip(offset).Take(pageSize).ToList();
+
+            ApiEntityListPage<TimeSeriesDataJsonEntity> listOfResults =
+                new ApiEntityListPage<TimeSeriesDataJsonEntity>(page,
+                    HttpContext.Request.Path.ToString(), new PaginationProperties()
+                    {
+                        PageSize = pageSize,
+                        Offset = offset,
+                        Count = page.Count,
+                        HasMore = timeseriesDataJsonEntities.Count > page.Count
+                    });
+
+            return Ok(listOfResults);
         }
 
     }
