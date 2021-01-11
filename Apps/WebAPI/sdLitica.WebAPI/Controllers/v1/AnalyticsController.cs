@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,13 +11,13 @@ using sdLitica.WebAPI.Models.Analytics;
 namespace sdLitica.WebAPI.Controllers.v1
 {
     /// <summary>
-    /// This controller is a sample conmtroller for analytics operations
+    /// This controller is a sample controller for analytics operations
     /// </summary>
     [Produces("application/json")]
     [Route("api/v1/analytics")]
     //[Authorize]
     [AllowAnonymous]
-    public class AnalyticsController : BaseApiController
+    public class AnalyticsController: BaseApiController
     {
         private readonly AnalyticsService _analyticsService;
 
@@ -31,9 +32,9 @@ namespace sdLitica.WebAPI.Controllers.v1
         /// </summary>
         /// <returns>Description of user's analytical operation</returns>
         [HttpPost]
-        public async Task<IActionResult> Calculation ([FromBody] AnalyticsRequestModel analyticsRequestModel) //([FromBody] AnalyticsOperation analyticsOperation)
+        public async Task<IActionResult> Calculation([FromBody] AnalyticsRequestModel analyticsRequestModel) //([FromBody] AnalyticsOperation analyticsOperation)
         {
-            UserAnalyticsOperation analyticsOperation = new UserAnalyticsOperation()
+            UserAnalyticsOperation analyticsOperation = new UserAnalyticsOperation
             {
                 Id = Guid.NewGuid(),
                 OperationName = analyticsRequestModel.OperationName,
@@ -43,7 +44,7 @@ namespace sdLitica.WebAPI.Controllers.v1
 
             _analyticsService.ExecuteOperation(analyticsOperation);
 
-            UserAnalyticsOperationModel userAnalyticsOperationModel = new UserAnalyticsOperationModel()
+            UserAnalyticsOperationModel userAnalyticsOperationModel = new UserAnalyticsOperationModel
             {
                 Id = analyticsOperation.Id.ToString(),
                 OperationName = analyticsOperation.OperationName,
@@ -51,7 +52,7 @@ namespace sdLitica.WebAPI.Controllers.v1
                 Status = analyticsOperation.Status.ToString()
             };
 
-            Response.Headers.Add("Location", "api/v1/analytics/operations/"+analyticsOperation.Id.ToString());
+            Response.Headers.Add("Location", $"api/v1/analytics/operations/{analyticsOperation.Id}");
             return Accepted(userAnalyticsOperationModel);
         }
 
@@ -76,11 +77,12 @@ namespace sdLitica.WebAPI.Controllers.v1
         {
             List<UserAnalyticsOperation> t = _analyticsService.GetUserOperations();
             List<UserAnalyticsOperationModel> list = new List<UserAnalyticsOperationModel>();
-            t.ForEach(e => list.Add(new UserAnalyticsOperationModel()
+            t.ForEach(e => list.Add(new UserAnalyticsOperationModel
             {
                 Id = e.Id.ToString(),
                 OperationName = e.OperationName,
-                Status = e.Status.ToString()
+                Status = e.Status.ToString(),
+                TimeSeriesId = e.TimeSeriesId
             }));
             return Ok(list);
         }
@@ -94,14 +96,16 @@ namespace sdLitica.WebAPI.Controllers.v1
         [Route("operations/{userOperationId}")]
         public IActionResult GetUserOperation([FromRoute] string userOperationId)
         {
-            UserAnalyticsOperation userAnalyticsOperation = _analyticsService.GetUserAnalyticsOperation(userOperationId);
+            UserAnalyticsOperation userAnalyticsOperation =
+                _analyticsService.GetUserAnalyticsOperation(userOperationId);
             if (userAnalyticsOperation == null) return NotFound();
 
-            UserAnalyticsOperationModel model = new UserAnalyticsOperationModel()
+            UserAnalyticsOperationModel model = new UserAnalyticsOperationModel
             {
                 Id = userAnalyticsOperation.Id.ToString(),
                 OperationName = userAnalyticsOperation.OperationName,
-                Status = userAnalyticsOperation.Status.ToString()
+                Status = userAnalyticsOperation.Status.ToString(),
+                TimeSeriesId = userAnalyticsOperation.TimeSeriesId
             };
 
             return Ok(model);
@@ -116,10 +120,53 @@ namespace sdLitica.WebAPI.Controllers.v1
         [Route("operations/{userOperationId}/result")]
         public IActionResult GetUserOperationResult([FromRoute] string userOperationId)
         {
-            UserAnalyticsOperation userAnalyticsOperation = _analyticsService.GetUserAnalyticsOperation(userOperationId);
-            if (userAnalyticsOperation == null || userAnalyticsOperation.Status != OperationStatus.Complete) return NotFound();
+            UserAnalyticsOperation userAnalyticsOperation =
+                _analyticsService.GetUserAnalyticsOperation(userOperationId);
+            if (userAnalyticsOperation == null || userAnalyticsOperation.Status != OperationStatus.Complete)
+                return NotFound();
 
             return Ok(); // todo: return result of operation
+        }
+
+        /// <summary>
+        /// Get list of user's analytical operations by timeseries id
+        /// </summary>
+        /// <param name="seriesId">id of timeseries</param>
+        [HttpGet]
+        [Route("operations/bySeriesId/{seriesId}")]
+        public IActionResult GetUserOperationsByTimeSeries([FromRoute] string seriesId)
+        {
+            List<UserAnalyticsOperation> operations =
+                _analyticsService.GetUserAnalyticsOperationsBySeriesId(seriesId);
+            if (operations == null) return NotFound();
+
+            List<UserAnalyticsOperationModel> models = operations.Select(operation => new UserAnalyticsOperationModel
+                {
+                    Id = operation.Id.ToString(),
+                    OperationName = operation.OperationName,
+                    Status = operation.Status.ToString(),
+                    TimeSeriesId = operation.TimeSeriesId
+                })
+                .ToList();
+
+            return Ok(models);
+        }
+
+        /// <summary>
+        /// Get list of results of user's analytical operations by timeseries id
+        /// </summary>
+        /// <param name="seriesId">id of timeseries</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("operations/bySeriesId/{seriesId}/result")]
+        public IActionResult GetUserOperationResultsByTimeSeries([FromRoute] string seriesId)
+        {
+            List<UserAnalyticsOperation> operations =
+                _analyticsService.GetUserAnalyticsOperationsBySeriesId(seriesId);
+            if (operations == null)
+                return NotFound();
+        
+            return Ok("TODO: not implemented yet"); // todo: return result of operation
         }
     }
 }

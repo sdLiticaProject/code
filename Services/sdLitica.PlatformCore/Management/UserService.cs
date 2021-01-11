@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using sdLitica.Entities.Management;
 using sdLitica.Entities.Management.Repositories;
+using sdLitica.Exceptions.Http;
 using sdLitica.Exceptions.Managements;
 using sdLitica.Utils.Abstractions;
 
@@ -46,6 +47,22 @@ namespace sdLitica.PlatformCore
             
             User user = User.Create(firstName, lastName, email, plainPassword);            
             _userRepository.Add(user);
+            _userRepository.SaveChanges();
+            return user;
+        }
+
+        /// <summary>
+        /// Updates a first and last names of user
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="firstName"></param>
+        /// <param name="lastName"></param>
+        public User UpdateUser(Guid id, string firstName, string lastName)
+        {
+            User user = GetUser(id);
+            if (user == null) throw new NotFoundException("User not found");
+            user.Update(firstName, lastName);
+            _userRepository.Update(user);
             _userRepository.SaveChanges();
             return user;
         }

@@ -25,12 +25,14 @@ namespace sdLitica.WebAPI.Models.Management
         /// User email
         /// </summary>
         [Required]
+        [EmailAddress]
         public string Email { get; set; }
         /// <summary>
         /// User password
         /// </summary>
         [Required]
         [JsonProperty(NullValueHandling=NullValueHandling.Ignore)]
+        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
         public string Password { get; set; }
 
         /// <summary>
