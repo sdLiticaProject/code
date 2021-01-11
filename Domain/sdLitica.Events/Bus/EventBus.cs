@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using sdLitica.Events.Abstractions;
 using sdLitica.Events.Extensions;
 using sdLitica.Messages.Abstractions;
@@ -88,6 +89,25 @@ namespace sdLitica.Events.Bus
         /// <typeparam name="T"></typeparam>
         /// <param name="action"></param>
         public void Subscribe<T>(Action<T> action) where T : IEvent
+        {
+            T type = Activator.CreateInstance<T>();
+            IList<string> exchanges = _eventRegistry.GetPublishingTarget(type);
+
+            foreach (string exchange in exchanges)
+                _consumer.Subscribe(exchange, (obj) =>
+                {
+                    T @event = (T)obj;
+                    action(@event);
+                });
+
+        }
+
+        /// <summary>
+        /// Subcribe (direct) to an event and run the action after receive it
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="action"></param>
+        public void Subscribe<T>(Func<T,Task> action) where T : IEvent
         {
             T type = Activator.CreateInstance<T>();
             IList<string> exchanges = _eventRegistry.GetPublishingTarget(type);

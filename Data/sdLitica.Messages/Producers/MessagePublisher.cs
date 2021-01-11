@@ -39,7 +39,7 @@ namespace sdLitica.Messages.Producers
             properties.Persistent = true;
 
             //TODO: support exchange publishing
-            _channel.BasicPublish("", queue, properties, body);
+            _channel.BasicPublish(queue, "", properties, body);
         }
 
         /// <summary>

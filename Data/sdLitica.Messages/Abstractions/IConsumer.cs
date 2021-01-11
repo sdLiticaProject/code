@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace sdLitica.Messages.Abstractions
 {
@@ -27,5 +28,12 @@ namespace sdLitica.Messages.Abstractions
         /// <param name="queue"></param>
         /// <param name="action"></param>
         void Subscribe(string queue, Action<object> action);
+
+        /// <summary>
+        /// Subscribe a queue
+        /// </summary>
+        /// <param name="queue"></param>
+        /// <param name="action"></param>
+        void Subscribe(string queue, Func<object, Task> action);
     }
 }

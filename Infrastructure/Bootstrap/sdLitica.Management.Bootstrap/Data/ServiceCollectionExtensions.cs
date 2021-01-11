@@ -27,8 +27,6 @@ namespace sdLitica.Bootstrap.Data
         internal static void AddTimeSeries(this IServiceCollection services)
         {
             services.AddScoped<ITimeSeriesService, TimeSeriesService>();
-            services.AddScoped<TimeSeriesMetadataRepository>();
-            services.AddScoped<ITimeSeriesMetadataService, TimeseriesMetadataService>();
         }
     }
 }
