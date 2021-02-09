@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using sdLitica.Entities.Analytics;
@@ -11,7 +12,7 @@ namespace sdLitica.Relational.Context
     /// This class is used to configure MySql entities
     /// </summary>
     public class MySqlDbContext : DbContext
-    {
+    {        
         /// <summary>
         /// Creates an MySqlDbContext class with predefined options
         /// </summary>
@@ -58,6 +59,7 @@ namespace sdLitica.Relational.Context
 
             modelBuilder.Entity<User>();
             modelBuilder.Entity<UserToken>();
+            modelBuilder.Entity<UserApiKey>();
 
             modelBuilder.Entity<TimeSeriesMetadata>();
 

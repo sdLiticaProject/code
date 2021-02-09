@@ -17,6 +17,7 @@ namespace sdLitica.Bootstrap.Services
             services.AddScoped<UserService>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserTokenRepository, UserTokenRepository>();
+            services.AddScoped<IUserApiKeyRepository, UserApiKeyRepository>();
 
             services.AddScoped<TimeSeriesMetadataRepository>();
             services.AddScoped<ITimeSeriesMetadataService, TimeseriesMetadataService>();

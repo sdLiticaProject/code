@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -170,6 +171,93 @@ namespace sdLitica.WebAPI.Controllers.v1
         {
             User user = _userService.GetUser(new Guid(UserId));
             return new UserModel(user);
+        }
+
+        /// <summary>
+        /// List available API keys
+        /// </summary>
+        /// <remarks>
+        /// This REST API handler returns list of API keys  
+        /// created by the authenticated users. These keys can 
+        /// be used by other applications to access platfrom API's
+        /// </remarks>
+        /// <response code="200">When valid token is provided, list of available api keys</response>
+        /// <response code="401">When authentication token is missing or invalid</response>
+        [HttpGet("apikeys")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public ApiEntityListPage<UserApiKeyJsonEntity> GetApiKeys()
+        {
+            List<UserApiKey> apiKeys = _userService.GetUserApiKeys(UserId);
+
+            // Converting to unified fancy JSON
+            List<UserApiKeyJsonEntity> apiKeyJsonEntities = 
+                    apiKeys.ConvertAll<UserApiKeyJsonEntity>(key => new UserApiKeyJsonEntity(key));
+
+            ApiEntityListPage<UserApiKeyJsonEntity> result = 
+                new ApiEntityListPage<UserApiKeyJsonEntity>(apiKeyJsonEntities, Request.Path.ToString());
+
+            return result;
+        }
+
+
+        /// <summary>
+        /// Create new API key 
+        /// </summary>
+        /// <remarks>
+        /// This REST API handler returns current user 
+        /// profile for user identified by authorization token
+        /// </remarks>
+        /// <response code="201">When valid token is provided, profile for the user identified by the token</response>
+        /// <response code="401">When authentication token is missing or invalid</response>
+        [HttpPost("apikeys")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public ApiEntityPage<UserApiKeyJsonEntity> CreateApiKey([FromBody] IDictionary<string, string> requestBody)
+        {
+            // In general it is not a good idea to parse JSON object into the dictionary,
+            // but here we need to have only on field with description, so there is
+            // no need to create an object. Maybe in the fitire when we decide to have
+            // mode fields here - we will convert this to a normal input object.
+            string keyDescription = requestBody.ContainsKey("description") ? 
+                                        requestBody["description"] : 
+                                        "not set";
+
+            UserApiKey apiKey = _userService.CreateUserApiKey(UserId, keyDescription);
+
+            // Convreting to fancy JSON
+            ApiEntityPage<UserApiKeyJsonEntity> result = 
+                    new ApiEntityPage<UserApiKeyJsonEntity>(new UserApiKeyJsonEntity(apiKey), Request.Path.ToString());
+
+            Response.StatusCode = StatusCodes.Status201Created;
+
+            return result;
+        }
+
+        /// <summary>
+        /// Delete an API key by its Id
+        /// </summary>
+        /// <remarks>
+        /// This REST API handler allows user to delete an existing 
+        /// API key by its Id
+        /// </remarks>
+        /// <response code="204">When API key successfully deleted</response>
+        /// <response code="401">When authentication token is missing or invalid</response>
+        /// <response code="404">When API key was not found at specified Id</response>
+        [HttpDelete("apikeys/{keyId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public void DeleteApiKey([FromRoute] string keyId) {
+            
+            bool result = _userService.DeleteUserApiKey(keyId);
+
+            if (!result)
+            {
+                throw new NotFoundException();
+            }
+
+            Response.StatusCode = StatusCodes.Status204NoContent;
         }
     }
 }

@@ -1,6 +1,7 @@
 {
     "Server": {
-        "UserName": "Ivan",
-        "RootUrl": "http://sdlitica.sdcloud.io:5000"
+        "UserName": "user@sdcliud.io",
+        "Password": "Password123",
+        "RootUrl": "http://localhost:5000"
     }
 }
