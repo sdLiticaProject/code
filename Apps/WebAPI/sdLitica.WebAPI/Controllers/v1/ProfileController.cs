@@ -114,7 +114,7 @@ namespace sdLitica.WebAPI.Controllers.v1
             // Here should be proper auth via DB with creation of token if auth succeeds
 
             User user = _userService.GetUser(credentials.Email);
-            if (user == null) throw new UnauthorizedAccessException("Provided credentials are not valid");
+            if (user == null) throw new UnauthorizedException("Provided credentials are not valid");
 
             if (!user.MatchPassword(credentials.Password))
                 throw new UnauthorizedException("Provided credentials are not valid");
