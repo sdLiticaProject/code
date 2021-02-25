@@ -53,13 +53,26 @@ namespace sdLitica.WebAPI.Security
             Guid userId = default(Guid);
             try
             {
+                string schema = ((string)authorization)?.Split(' ', 2)[0]; 
                 string token = ((string)authorization)?.Split(' ', 2)[1];
-                UserToken userToken = await userService.GetByTokenAsync(token);
-                if (userToken == null || userToken.IsTokenExpired())
-                    throw new UnauthorizedAccessException();
 
-                await userService.ShiftTokenAsync(userToken);
-                userId = userToken.UserId;
+                if (schema.ToLower().Equals("cloudtoken"))
+                {
+                    UserToken userToken = await userService.GetByTokenAsync(token);
+                    if (userToken == null || userToken.IsTokenExpired())
+                        throw new UnauthorizedAccessException();
+
+                    await userService.ShiftTokenAsync(userToken);
+                    userId = userToken.UserId;
+                } 
+                else if (schema.ToLower().Equals("cloudapikey"))
+                {
+                    UserApiKey userApiKey = await userService.GetByApiKeyAsync(token);
+                    if (userApiKey == null)
+                        throw new UnauthorizedAccessException();
+
+                    userId = userApiKey.UserId;
+                } 
             }
             catch (Exception ex)
             {

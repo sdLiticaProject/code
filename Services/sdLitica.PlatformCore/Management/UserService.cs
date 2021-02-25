@@ -163,6 +163,18 @@ namespace sdLitica.PlatformCore
         }
 
         /// <summary>
+        /// This method get an UserApiKey entity for given api key value
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        public async Task<UserApiKey> GetByApiKeyAsync(string apiKey)
+        {
+            if (string.IsNullOrEmpty(apiKey)) return await Task.FromResult<UserApiKey>(null);
+
+            return await _userApiKeyRepository.GetByApiKeyAsync(apiKey);
+        }
+
+        /// <summary>
         /// Get the list of ApiKey entities owned by en-user
         /// </summary>
         /// <param name="user"></param>
