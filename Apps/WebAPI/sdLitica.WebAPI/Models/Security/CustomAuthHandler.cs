@@ -39,13 +39,19 @@ namespace sdLitica.WebAPI.Security
 
             if (!Request.Headers.TryGetValue(HeaderNames.Authorization, out var authorization))
             {
-                return AuthenticateResult.Fail("Auth failed :(");
+                return AuthenticateResult.Fail("Request was not archestrated with proper Authorization header");
             }
             
             if (string.IsNullOrEmpty(authorization))
             {
                 //TODO: Credentials are missing. Maybe we need to act here somehow
-                return AuthenticateResult.Fail("Auth failed :(");
+                return AuthenticateResult.Fail("Authorization header is empty or malformed");
+            }
+
+            if (((string)authorization)?.Split(' ').Length != 2)
+            {
+                //TODO: Credentials are missing. Maybe we need to act here somehow
+                return AuthenticateResult.Fail("Authorization header is malformed. Expected structure is '<schema> <value>'");
             }
 
             IServiceProvider serviceProvider = Request.HttpContext.RequestServices;
