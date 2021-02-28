@@ -62,23 +62,29 @@ namespace sdLitica.WebAPI.Security
                 string schema = ((string)authorization)?.Split(' ', 2)[0]; 
                 string token = ((string)authorization)?.Split(' ', 2)[1];
 
-                if (schema.ToLower().Equals("cloudtoken"))
+                if (String.Equals(schema, CustomAuthOptions.DefaultSchema, StringComparison.OrdinalIgnoreCase))
                 {
                     UserToken userToken = await userService.GetByTokenAsync(token);
                     if (userToken == null || userToken.IsTokenExpired())
-                        throw new UnauthorizedAccessException();
+                        return AuthenticateResult.Fail("Authorization header contains invalid token");
 
                     await userService.ShiftTokenAsync(userToken);
                     userId = userToken.UserId;
+                    Options.Schema = CustomAuthOptions.DefaultSchema;
                 } 
-                else if (schema.ToLower().Equals("cloudapikey"))
+                else if (String.Equals(schema, CustomAuthOptions.ApiKeyScheme, StringComparison.OrdinalIgnoreCase))
                 {
                     UserApiKey userApiKey = await userService.GetByApiKeyAsync(token);
                     if (userApiKey == null)
-                        throw new UnauthorizedAccessException();
+                        return AuthenticateResult.Fail("Authorization header contains invalid API key");
 
                     userId = userApiKey.UserId;
-                } 
+                    Options.Schema = CustomAuthOptions.ApiKeyScheme;
+                }
+                else 
+                {
+                    return AuthenticateResult.Fail("Authorization header contains unknows schema");
+                }
             }
             catch (Exception ex)
             {
@@ -86,8 +92,8 @@ namespace sdLitica.WebAPI.Security
             }
 
             List<Claim> claims = new List<Claim> { new Claim(ClaimTypes.NameIdentifier, userId.ToString()) };
-            List<ClaimsIdentity> identities = new List<ClaimsIdentity> { new ClaimsIdentity(claims, Options.Scheme)};
-            AuthenticationTicket ticket = new AuthenticationTicket(new ClaimsPrincipal(identities), Options.Scheme);
+            List<ClaimsIdentity> identities = new List<ClaimsIdentity> { new ClaimsIdentity(claims, Options.Schema)};
+            AuthenticationTicket ticket = new AuthenticationTicket(new ClaimsPrincipal(identities), Options.Schema);
 
             return AuthenticateResult.Success(ticket);
         }

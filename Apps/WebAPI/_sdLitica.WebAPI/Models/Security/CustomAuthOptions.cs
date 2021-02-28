@@ -5,7 +5,8 @@ namespace sdLitica.WebAPI.Security
 {
     public class CustomAuthOptions : AuthenticationSchemeOptions
     {
-        public const string DefaultScheme = "cloudToken";
+        public const string DefaultSchema = "cloudToken";
+        public const string ApiKeySchema = "cloudApiKey"
         public string Scheme => DefaultScheme;
         public StringValues AuthKey { get; set; }
     }
