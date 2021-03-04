@@ -39,13 +39,19 @@ namespace sdLitica.WebAPI.Security
 
             if (!Request.Headers.TryGetValue(HeaderNames.Authorization, out var authorization))
             {
-                return AuthenticateResult.Fail("Auth failed :(");
+                return AuthenticateResult.Fail("Request was not archestrated with proper Authorization header");
             }
             
             if (string.IsNullOrEmpty(authorization))
             {
                 //TODO: Credentials are missing. Maybe we need to act here somehow
-                return AuthenticateResult.Fail("Auth failed :(");
+                return AuthenticateResult.Fail("Authorization header is empty or malformed");
+            }
+
+            if (((string)authorization)?.Split(' ').Length != 2)
+            {
+                //TODO: Credentials are missing. Maybe we need to act here somehow
+                return AuthenticateResult.Fail("Authorization header is malformed. Expected structure is '<schema> <value>'");
             }
 
             IServiceProvider serviceProvider = Request.HttpContext.RequestServices;
@@ -53,13 +59,32 @@ namespace sdLitica.WebAPI.Security
             Guid userId = default(Guid);
             try
             {
+                string schema = ((string)authorization)?.Split(' ', 2)[0]; 
                 string token = ((string)authorization)?.Split(' ', 2)[1];
-                UserToken userToken = await userService.GetByTokenAsync(token);
-                if (userToken == null || userToken.IsTokenExpired())
-                    throw new UnauthorizedAccessException();
 
-                await userService.ShiftTokenAsync(userToken);
-                userId = userToken.UserId;
+                if (String.Equals(schema, CustomAuthOptions.DefaultSchema, StringComparison.OrdinalIgnoreCase))
+                {
+                    UserToken userToken = await userService.GetByTokenAsync(token);
+                    if (userToken == null || userToken.IsTokenExpired())
+                        return AuthenticateResult.Fail("Authorization header contains invalid token");
+
+                    await userService.ShiftTokenAsync(userToken);
+                    userId = userToken.UserId;
+                    Options.Schema = CustomAuthOptions.DefaultSchema;
+                } 
+                else if (String.Equals(schema, CustomAuthOptions.ApiKeyScheme, StringComparison.OrdinalIgnoreCase))
+                {
+                    UserApiKey userApiKey = await userService.GetByApiKeyAsync(token);
+                    if (userApiKey == null)
+                        return AuthenticateResult.Fail("Authorization header contains invalid API key");
+
+                    userId = userApiKey.UserId;
+                    Options.Schema = CustomAuthOptions.ApiKeyScheme;
+                }
+                else 
+                {
+                    return AuthenticateResult.Fail("Authorization header contains unknows schema");
+                }
             }
             catch (Exception ex)
             {
@@ -67,8 +92,8 @@ namespace sdLitica.WebAPI.Security
             }
 
             List<Claim> claims = new List<Claim> { new Claim(ClaimTypes.NameIdentifier, userId.ToString()) };
-            List<ClaimsIdentity> identities = new List<ClaimsIdentity> { new ClaimsIdentity(claims, Options.Scheme)};
-            AuthenticationTicket ticket = new AuthenticationTicket(new ClaimsPrincipal(identities), Options.Scheme);
+            List<ClaimsIdentity> identities = new List<ClaimsIdentity> { new ClaimsIdentity(claims, Options.Schema)};
+            AuthenticationTicket ticket = new AuthenticationTicket(new ClaimsPrincipal(identities), Options.Schema);
 
             return AuthenticateResult.Success(ticket);
         }

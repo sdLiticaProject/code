@@ -18,6 +18,7 @@ namespace sdLitica.PlatformCore
         private readonly IAppSettings _appSettings;
         private readonly IUserRepository _userRepository;
         private readonly IUserTokenRepository _userTokenRepository;
+        private readonly IUserApiKeyRepository _userApiKeyRepository;
 
         /// <summary>
         /// Creates an UserService. 
@@ -26,11 +27,16 @@ namespace sdLitica.PlatformCore
         /// <param name="appSettings"></param>
         /// <param name="userRepository"></param>
         /// <param name="userTokenRepository"></param>
-        public UserService(IAppSettings appSettings, IUserRepository userRepository, IUserTokenRepository userTokenRepository)
+        /// <param name="userApiKeyRepository"></param>
+        public UserService(IAppSettings appSettings, 
+                            IUserRepository userRepository,
+                            IUserTokenRepository userTokenRepository,
+                            IUserApiKeyRepository userApiKeyRepository)
         {
             _appSettings = appSettings;
             _userRepository = userRepository;
             _userTokenRepository = userTokenRepository;
+            _userApiKeyRepository = userApiKeyRepository;
         }
 
         /// <summary>
@@ -154,6 +160,63 @@ namespace sdLitica.PlatformCore
             if (string.IsNullOrEmpty(token)) return await Task.FromResult<UserToken>(null);
 
             return await _userTokenRepository.GetByTokenAsync(token);
+        }
+
+        /// <summary>
+        /// This method get an UserApiKey entity for given api key value
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        public async Task<UserApiKey> GetByApiKeyAsync(string apiKey)
+        {
+            if (string.IsNullOrEmpty(apiKey)) return await Task.FromResult<UserApiKey>(null);
+
+            return await _userApiKeyRepository.GetByApiKeyAsync(apiKey);
+        }
+
+        /// <summary>
+        /// Get the list of ApiKey entities owned by en-user
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        public List<UserApiKey> GetUserApiKeys(string userId)
+        {
+            return _userApiKeyRepository.GetByUserId(new Guid(userId));
+        }
+
+
+        /// <summary>
+        /// Get the list of ApiKey entities owned by en-user
+        /// </summary>
+        /// <param name="userId">Id of the user for whome new key will be issued</param>
+        /// <param name="description">Descritpion of an API key to be created</param>
+        /// <returns></returns>
+        public UserApiKey CreateUserApiKey(string userId, string description)
+        {
+            UserApiKey newKey = UserApiKey.CreateNew(_userRepository.GetById(new Guid(userId)), description);
+            _userApiKeyRepository.Add(newKey);
+            _userRepository.SaveChanges();
+            return _userApiKeyRepository.GetById(newKey.Id);
+        }
+
+        /// <summary>
+        /// Delete an API key by its Id
+        /// </summary>
+        /// <param name="apiKeyId">Id of the API key to be deleted</param>
+        /// <returns>True if key was deleted. Otherwise false</returns>
+        public bool DeleteUserApiKey(string apiKeyId)
+        {
+            bool result = false;
+
+            UserApiKey apiKey = _userApiKeyRepository.GetById(new Guid(apiKeyId));
+            if (null != apiKey)
+            {
+                _userApiKeyRepository.Delete(apiKey);
+                _userApiKeyRepository.SaveChanges();
+                result = true;
+            }
+
+            return result;
         }
     }
 }

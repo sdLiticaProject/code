@@ -20,7 +20,7 @@ namespace sdLitica.Test.BaseApiTest
         protected BaseTestConfiguration configuration;
         
         // This object contains most recent API response
-        private HttpResponseMessage lastApiResponse;
+        protected HttpResponseMessage lastApiResponse;
         protected String currentApiAccessToken;
 
         private string lastApiResponseContent;
@@ -54,8 +54,10 @@ namespace sdLitica.Test.BaseApiTest
         public void Init()
         {
             configuration = GetApplicationConfiguration(TestContext.CurrentContext.TestDirectory);
+            Assert.NotNull(configuration.RootUrl, "Server URL for tests executions is not set");
+            Assert.NotNull(configuration.UserName, "Default user name for tests executions is not set");
+            Assert.NotNull(configuration.Password, "Default password for tests executions is not set");
         }
-
 
         // API base invocation methods
         protected void whenGetRequestSent(string url, AuthenticationHeaderValue credentials)
@@ -287,13 +289,15 @@ namespace sdLitica.Test.BaseApiTest
             }
         }
 
-        protected void thenResponseContainsField(string fieldName)
+        protected string thenResponseContainsField(string fieldName)
         {
             Console.WriteLine(lastApiResponseContent);
             thenResponseIsValidJson();
 
             JToken jToken = lastApiJson.SelectToken("$." + fieldName);
             Assert.IsNotNull(jToken);
+
+            return jToken.ToString();
         }
 
         protected void thenResponseContainsFieldWithValue(string fieldName, string expectedValue)
@@ -360,6 +364,11 @@ namespace sdLitica.Test.BaseApiTest
 
             JArray jArray = lastApiJson.SelectToken("$." + arrayName) as JArray;
             Assert.GreaterOrEqual(jArray.Count, expectedSize);
+        }
+
+        protected AuthenticationHeaderValue givenAuthenticationHeaderFromToken(String tokenValue)
+        {
+            return new AuthenticationHeaderValue("cloudToken", tokenValue);
         }
 
         protected AuthenticationHeaderValue givenExistingUserCredentials()

@@ -7,9 +7,9 @@ namespace sdLitica.Test.RestApiTests
     public class UnitTest1: BaseApiTest.BaseApiTest
     {
         [Test]
-        public void Test1()
+        public void EnsureTestConfigurationIsCorrect()
         {
-            Assert.AreEqual("Ivan", configuration.UserName);
+            Assert.AreEqual("user@sdcliud.io", configuration.UserName);
         }
     }
 }

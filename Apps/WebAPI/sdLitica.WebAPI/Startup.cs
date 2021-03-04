@@ -66,15 +66,15 @@ namespace sdLitica
             // Add authentication 
             services.AddAuthentication(options =>
                 {
-                    options.DefaultAuthenticateScheme = CustomAuthOptions.DefaultScheme;
-                    options.DefaultChallengeScheme = CustomAuthOptions.DefaultScheme;
+                    options.DefaultAuthenticateScheme = CustomAuthOptions.DefaultSchema;
+                    options.DefaultChallengeScheme = CustomAuthOptions.DefaultSchema;
                 })
 
                 // Call custom authentication extension method
                 .AddCustomAuth(options =>
                 {
                     // Configure single or multiple passwords for authentication
-                    options.AuthKey = "cloudToken";
+                    options.AuthKey = CustomAuthOptions.DefaultSchema;
                 });
 
             // Adding CORS configuration
