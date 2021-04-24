@@ -80,14 +80,33 @@ namespace sdLitica.FSharpAnalyticalModule
             using (IServiceScope scope = app.ApplicationServices.GetRequiredService<IServiceProvider>().CreateScope())
             {
                 IEventBus eventBus = scope.ServiceProvider.GetService<IEventBus>();
+
                 eventBus.SubscribeToTopic<TimeSeriesAnalysisRequestEvent>(async (@event) =>
                 {
                     using (IServiceScope scope = app.ApplicationServices.GetRequiredService<IServiceProvider>().CreateScope())
                     {
                         AnalyticsIntegrationEventHandler handler = scope.ServiceProvider.GetRequiredService<AnalyticsIntegrationEventHandler>();
-                        await handler.Handle(@event);
+                        await handler.Handle(@event, "Min");
                     }
-                }, "some_module");
+                }, "*.min");
+
+                eventBus.SubscribeToTopic<TimeSeriesAnalysisRequestEvent>(async (@event) =>
+                {
+                    using (IServiceScope scope = app.ApplicationServices.GetRequiredService<IServiceProvider>().CreateScope())
+                    {
+                        AnalyticsIntegrationEventHandler handler = scope.ServiceProvider.GetRequiredService<AnalyticsIntegrationEventHandler>();
+                        await handler.Handle(@event, "Mean");
+                    }
+                }, "*.mean");
+
+                eventBus.SubscribeToTopic<TimeSeriesAnalysisRequestEvent>(async (@event) =>
+                {
+                    using (IServiceScope scope = app.ApplicationServices.GetRequiredService<IServiceProvider>().CreateScope())
+                    {
+                        AnalyticsIntegrationEventHandler handler = scope.ServiceProvider.GetRequiredService<AnalyticsIntegrationEventHandler>();
+                        await handler.Handle(@event, "Max");
+                    }
+                }, "*.max");
             }
         }
 

@@ -47,8 +47,7 @@ namespace sdLitica.AnalyticsManagementCore
                 _analyticsModuleRepository.Add(new AnalyticsModule()
                 {
                     Id = module.ModuleGuid,
-                    LastHeardTime = DateTime.Now,
-                    QueueName = module.QueueName
+                    LastHeardTime = DateTime.Now
                 });
             }
             _analyticsModuleRepository.SaveChanges();
@@ -63,7 +62,8 @@ namespace sdLitica.AnalyticsManagementCore
                         AnalyticsModulesOperations moduleOperation = new AnalyticsModulesOperations()
                         {
                             AnalyticsOperation = analyticsOperation,
-                            AnalyticsModule = analyticsModule
+                            AnalyticsModule = analyticsModule,
+                            RoutingKey = operationModel.RoutingKey
                         };
                         _modulesOperationsRepository.Add(moduleOperation);
                         analyticsModule.AnalyticsModulesOperations.Add(moduleOperation);
@@ -77,13 +77,15 @@ namespace sdLitica.AnalyticsManagementCore
                     {
                         Id = Guid.NewGuid(),
                         Name = operationModel.Name,
-                        Description = operationModel.Description
+                        Description = operationModel.Description,
+                        RoutingKey = "*." + operationModel.RoutingKey.Split('.').Last()
                     };
                     AnalyticsModulesOperations moduleOperation = new AnalyticsModulesOperations()
 
                     {
                         AnalyticsOperation = operation,
-                        AnalyticsModule = analyticsModule
+                        AnalyticsModule = analyticsModule,
+                        RoutingKey = operationModel.RoutingKey
                     };
                     _modulesOperationsRepository.Add(moduleOperation);
                     analyticsModule.AnalyticsModulesOperations.Add(moduleOperation);
@@ -107,10 +109,7 @@ namespace sdLitica.AnalyticsManagementCore
         {
             CheckAvailable();
 
-            if (!_analyticsOperationRepository.ContainsName(name)) return null;
-            IList<AnalyticsModulesOperations> modulesOperations = _analyticsOperationRepository.GetByName(name).AnalyticsModulesOperations;
-            if (modulesOperations == null || modulesOperations.Count < 1) return null;
-            return modulesOperations.Select(mo => mo.AnalyticsModule).First().QueueName; 
+            return _analyticsOperationRepository.GetByName(name)?.RoutingKey;
         }
 
         /// <summary>
