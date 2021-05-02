@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -26,7 +25,7 @@ namespace sdLitica.WebAPI.Controllers.v1
         /// <summary>
         /// Main C-tor for the controller instance
         /// </summary>
-        /// <param name="mysqlProfileService">Auto-injected service to interact with database</param>
+        /// <param name="userService">Auto-injected service to interact with database</param>
         public ProfileController(UserService userService)
         {
             _userService = userService;
