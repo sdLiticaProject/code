@@ -25,7 +25,7 @@ namespace sdLitica.FSharpAnalyticalModule.IntegrationEvents.EventHandling
             _timeSeriesService = timeSeriesService;
             _eventBus = eventBus;
         }
-        public async Task Handle(TimeSeriesAnalysisRequestEvent @event)
+        public async Task Handle(TimeSeriesAnalysisRequestEvent @event, string operationName)
         {
             UserAnalyticsOperation operation = @event.Operation;
             
@@ -41,7 +41,7 @@ namespace sdLitica.FSharpAnalyticalModule.IntegrationEvents.EventHandling
                     ToSeries();
 
                 // apply operation
-                switch (operation.OperationName)
+                switch (operationName)
                 {
                     case "Mean":
                         System.Console.WriteLine(series.Mean());

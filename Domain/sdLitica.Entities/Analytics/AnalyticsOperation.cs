@@ -18,6 +18,12 @@ namespace sdLitica.Entities.Analytics
         }
 
         /// <summary>
+        /// RabbitMQ routing key to this operation of any module (*.operation)
+        /// </summary>
+        [Column("ROUTING_KEY")]
+        public string RoutingKey { get; set; }
+
+        /// <summary>
         /// Unique (but not yet) name of analytical operation
         /// </summary>
         [Column("NAME")]

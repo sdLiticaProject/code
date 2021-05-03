@@ -14,7 +14,7 @@ namespace sdLitica.Events.Bus
         /// </summary>
         public static readonly string TimeSeries = "TimeSeriesExchange";
         public static readonly string Diagnostics = "DiagnosticsInfoExchange";
-        public static readonly string ModuleRegistration = "ModuleRegistrationQueue";
+        public static readonly string ModuleRegistration = "ModuleRegistrationExchange";//exchange
         //public static readonly string Analytics = "AnalyticsQueue";
 
         /// <summary>

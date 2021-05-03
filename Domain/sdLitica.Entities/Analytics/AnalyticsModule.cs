@@ -25,12 +25,6 @@ namespace sdLitica.Entities.Analytics
         public DateTime LastHeardTime { get; set; }
 
         /// <summary>
-        /// RabbitMQ queue to which this module is subscribed. 
-        /// </summary>
-        [Column("QUEUE_NAME")]
-        public string QueueName { get; set; }
-
-        /// <summary>
         /// Navigation-property for many-to-many relationship with AnalyticsOperation entity. 
         /// </summary>
         public IList<AnalyticsModulesOperations> AnalyticsModulesOperations { get; set; }
