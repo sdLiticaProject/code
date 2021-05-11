@@ -31,9 +31,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Data\sdLitica.Messages\sdLitica.Messages.csproj" />
-    <ProjectReference Include="..\..\..\Data\sdLitica.TimeSeries\sdLitica.TimeSeries.csproj" />
-    <ProjectReference Include="..\..\..\Infrastructure\Bootstrap\sdLitica.Management.Bootstrap\sdLitica.Bootstrap.csproj" />
+    <ProjectReference Include="..\..\..\..\core\Data\sdLitica.TimeSeries\sdLitica.TimeSeries.csproj" />
+    <ProjectReference Include="..\..\..\..\core\Infrastructure\Bootstrap\sdLitica.Management.Bootstrap\sdLitica.Bootstrap.csproj" />
+    <ProjectReference Include="..\..\..\..\core\Data\sdLitica.Messages\sdLitica.Messages.csproj" />
     <ProjectReference Include="..\sdLitica.ExampleDaemonAnalysis\sdLitica.ExampleDaemonAnalysis.fsproj" />
   </ItemGroup>
 

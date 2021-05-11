@@ -9,9 +9,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Domain\sdLitica.Events\sdLitica.Events.csproj" />
-    <ProjectReference Include="..\Infrastructure\Bootstrap\sdLitica.Management.Bootstrap\sdLitica.Bootstrap.csproj" />
-    <ProjectReference Include="..\Infrastructure\sdLitica.Utils\sdLitica.Utils.csproj" />
+    <ProjectReference Include="..\..\..\core\Domain\sdLitica.Events\sdLitica.Events.csproj" />
+    <ProjectReference Include="..\..\..\core\Infrastructure\Bootstrap\sdLitica.Management.Bootstrap\sdLitica.Bootstrap.csproj" />
+    <ProjectReference Include="..\..\..\core\Infrastructure\sdLitica.Utils\sdLitica.Utils.csproj" />
   </ItemGroup>
 
 </Project>

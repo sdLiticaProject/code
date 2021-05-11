@@ -1,15 +1,14 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using sdLitica.Events.Abstractions;
 using sdLitica.Events.Integration;
 using sdLitica.Utils.Abstractions;
 using sdLitica.Utils.Models;
 using sdLitica.Utils.Settings;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace sdLitica.FSharpAnalyticalModule
 {
