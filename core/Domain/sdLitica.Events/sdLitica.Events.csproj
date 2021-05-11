@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Data\sdLitica.Messages\sdLitica.Messages.csproj" />
+    <ProjectReference Include="..\sdLitica.Entities\sdLitica.Entities.csproj" />
+  </ItemGroup>
+
+</Project>
