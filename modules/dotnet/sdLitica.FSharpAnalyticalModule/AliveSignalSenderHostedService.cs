@@ -23,12 +23,11 @@ namespace sdLitica.FSharpAnalyticalModule
         private AnalyticsModuleRegistrationModel _moduleModel = new AnalyticsModuleRegistrationModel()
         {
             ModuleGuid = Guid.NewGuid(),
-            QueueName = "some_module",
             Operations = new List<AnalyticsOperationModel>
                 {
-                    new AnalyticsOperationModel { Name = "Mean", Description = "Description of mean" },
-                    new AnalyticsOperationModel { Name = "Max", Description = "Description of max" },
-                    new AnalyticsOperationModel { Name = "Min", Description = "Description of min" }
+                    new AnalyticsOperationModel { Name = "Mean", Description = "Description of mean", RoutingKey="fsharp1.mean" },
+                    new AnalyticsOperationModel { Name = "Max", Description = "Description of max", RoutingKey="fsharp1.max" },
+                    new AnalyticsOperationModel { Name = "Min", Description = "Description of min", RoutingKey="fsharp1.min" }
                 }
         };
 
