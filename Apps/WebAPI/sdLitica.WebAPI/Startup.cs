@@ -14,30 +14,30 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
  * *************************************************************************/
-using System.IO;
+
 using System;
+using System.Collections.Immutable;
+using System.IO;
 using System.Reflection;
-using System.Collections.Generic;
-using System.Linq;
-using sdLitica.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using sdLitica.Helpers;
-using Swashbuckle.AspNetCore.Swagger;
-using sdLitica.Bootstrap.Extensions;
-using sdLitica.WebAPI.Models.Security;
-using sdLitica.Events.Extensions;
+using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 using sdLitica.Bootstrap.Events;
+using sdLitica.Bootstrap.Extensions;
+using sdLitica.Filters;
+using sdLitica.WebAPI.Models.Security;
 
 namespace sdLitica
 {
     public class Startup
     {
         readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -50,7 +50,7 @@ namespace sdLitica
         {
             // Add appsettings file configuration to bootstrap
             Configuration.AddSettings();
-            
+
             // Add any type of services available
             services.AddServices();
 
@@ -81,44 +81,45 @@ namespace sdLitica
             services.AddCors(options =>
             {
                 options.AddPolicy(name: MyAllowSpecificOrigins,
-                                builder =>
-                                {
-                                    builder.WithOrigins("http://sdlitica.sdcloud.io");
-                                });
+                    builder => { builder.WithOrigins("http://sdlitica.sdcloud.io"); });
             });
-            
+
             services.AddMvc(
                 config =>
                 {
+                    config.EnableEndpointRouting = false;
                     config.Filters.Add(typeof(ErrorResponseFilter));
                     config.Filters.Add(typeof(ActionValidationFilter));
                     config.Filters.Add(
                         new AuthorizeFilter(new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build()));
                 }
             );
-            
+
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Info { Title = "sdLitica Project REST API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo {Title = "sdLitica Project REST API", Version = "v1"});
 
                 string xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 string xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
 
-                c.AddSecurityDefinition("cloudToken",
-                    new ApiKeyScheme { In = "header",
-                    Description = "Please enter into field the word 'cloudToken' following by space and a token received from /login endpoint", 
-                    Name = "Authorization", Type = "apiKey" });
-                c.AddSecurityRequirement(new Dictionary<string, IEnumerable<string>> {
-                    { "cloudToken", Enumerable.Empty<string>() },
-                });
-            });            
+                OpenApiSecurityScheme basicSecurityScheme = new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Description = "Please enter into field the word 'cloudToken' following by space and a token received from /login endpoint",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey,
+                    Reference = new OpenApiReference {Id = "cloudToken", Type = ReferenceType.SecurityScheme}
+                };
+                c.AddSecurityDefinition(basicSecurityScheme.Reference.Id, basicSecurityScheme);
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement {{basicSecurityScheme, ImmutableList<string>.Empty}});
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         // Information about middleware order
         // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/middleware/?view=aspnetcore-3.1
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -127,18 +128,14 @@ namespace sdLitica
 
             app.UseCors(MyAllowSpecificOrigins);
             app.UseAuthentication();
-            
+
             app.UseMvc();
             app.UseSwagger();
-       
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Insight Project REST API V1");
-            });
+
+            app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "Insight Project REST API V1"); });
 
             //sample subscribe for RabbitMQ
             app.SubscribeEvents(); // todo
-
         }
     }
 }

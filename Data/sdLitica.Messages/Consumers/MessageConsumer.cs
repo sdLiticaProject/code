@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -106,7 +105,7 @@ namespace sdLitica.Messages.Consumers
 
         private object CreateEventFromMessage(object model, BasicDeliverEventArgs ea)
         {
-            byte[] body = ea.Body;
+            ReadOnlySpan<byte> body = ea.Body.Span;
             string strMessage = Encoding.UTF8.GetString(body);
 
             Message message = JsonConvert.DeserializeObject<Message>(strMessage);

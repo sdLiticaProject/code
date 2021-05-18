@@ -3,7 +3,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using sdLitica.Bootstrap.Settings;
 using sdLitica.Relational.Context;
-using sdLitica.Relational.Repositories;
 using sdLitica.TimeSeries.Services;
 
 namespace sdLitica.Bootstrap.Data
@@ -14,10 +13,11 @@ namespace sdLitica.Bootstrap.Data
         {
             IConfiguration configuration = BootstrapSettings.AppSettings;
             string connectionString = configuration.GetConnectionString("MySql");
-            
+            ServerVersion serverVersion = ServerVersion.AutoDetect(connectionString);
+
             services.AddDbContextPool<MySqlDbContext>(options =>
             {
-                options.UseMySql(connectionString, mysql =>
+                options.UseMySql(connectionString, serverVersion, mysql =>
                 {
                     //mysql.AnsiCharSet() etc
                 });
