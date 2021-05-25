@@ -1,11 +1,5 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ExampleDaemon", "ExampleDaemon", "{A81CBFDA-9C7C-451A-93D2-54F42FA4F313}"
-EndProject
-Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "sdLitica.ExampleDaemonAnalysis", "ExampleDaemon\sdLitica.ExampleDaemonAnalysis\sdLitica.ExampleDaemonAnalysis.fsproj", "{06565F5F-CE30-4B93-8118-8CADABB6B974}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sdLitica.ExampleDaemonManagement", "ExampleDaemon\sdLitica.ExampleDaemonManagement\sdLitica.ExampleDaemonManagement.csproj", "{9AC8AE3C-2FB8-4FAC-8CF1-ABCD143717C8}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sdLitica.FSharpAnalyticalModule", "sdLitica.FSharpAnalyticalModule\sdLitica.FSharpAnalyticalModule.csproj", "{D0FD5A77-E4CB-499D-8A83-8336C57AB947}"
 EndProject
 Global
@@ -18,17 +12,7 @@ Global
 		{D0FD5A77-E4CB-499D-8A83-8336C57AB947}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D0FD5A77-E4CB-499D-8A83-8336C57AB947}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D0FD5A77-E4CB-499D-8A83-8336C57AB947}.Release|Any CPU.Build.0 = Release|Any CPU
-		{06565F5F-CE30-4B93-8118-8CADABB6B974}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{06565F5F-CE30-4B93-8118-8CADABB6B974}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{06565F5F-CE30-4B93-8118-8CADABB6B974}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{06565F5F-CE30-4B93-8118-8CADABB6B974}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9AC8AE3C-2FB8-4FAC-8CF1-ABCD143717C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9AC8AE3C-2FB8-4FAC-8CF1-ABCD143717C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9AC8AE3C-2FB8-4FAC-8CF1-ABCD143717C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9AC8AE3C-2FB8-4FAC-8CF1-ABCD143717C8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{06565F5F-CE30-4B93-8118-8CADABB6B974} = {A81CBFDA-9C7C-451A-93D2-54F42FA4F313}
-		{9AC8AE3C-2FB8-4FAC-8CF1-ABCD143717C8} = {A81CBFDA-9C7C-451A-93D2-54F42FA4F313}
 	EndGlobalSection
 EndGlobal
