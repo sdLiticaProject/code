@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Deedle" Version="2.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\core\Domain\sdLitica.Events\sdLitica.Events.csproj" />
+    <ProjectReference Include="..\..\..\core\Infrastructure\Bootstrap\sdLitica.Management.Bootstrap\sdLitica.Bootstrap.csproj" />
+    <ProjectReference Include="..\..\..\core\Infrastructure\sdLitica.Utils\sdLitica.Utils.csproj" />
+  </ItemGroup>
+
+</Project>
