@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace sdLitica.Messages.Abstractions
+﻿namespace sdLitica.Messages.Abstractions
 {
     /// <summary>
     /// This class represents a Message. 
@@ -16,12 +12,12 @@ namespace sdLitica.Messages.Abstractions
         public string Type { get; set; }
 
         /// <summary>
-        /// Event serialized that comprise the event data itselfs
+        /// Event serialized that comprise the event data itself
         /// </summary>
         public string Body { get; set; }
 
         /// <summary>
-        /// Default cosntructor
+        /// Default constructor
         /// </summary>
         /// <param name="type"></param>
         /// <param name="serializedBody"></param>
