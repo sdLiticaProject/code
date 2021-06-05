@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace sdLitica.Events.Abstractions
 {
@@ -18,9 +19,8 @@ namespace sdLitica.Events.Abstractions
         /// <summary>
         /// Get publishing queue or exchange
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="event"></param>
+        /// <typeparam name="T">event type</typeparam>
         /// <returns></returns>
-        IList<string> GetPublishingTarget<T>(T @event) where T: IEvent;
+        IList<string> GetPublishingTarget(Type eventType);
     }
 }

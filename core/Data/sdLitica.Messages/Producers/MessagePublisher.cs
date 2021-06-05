@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
@@ -10,7 +9,7 @@ namespace sdLitica.Messages.Producers
     /// <summary>
     /// Background class to publishes a message
     /// </summary>
-    internal class MessagePublisher : IPublisher
+    internal class MessagePublisher: IPublisher
     {
         private readonly IModel _channel;
 
@@ -20,26 +19,24 @@ namespace sdLitica.Messages.Producers
         /// <param name="brokerConnection"></param>
         public MessagePublisher(BrokerConnection brokerConnection)
         {
-            _channel = brokerConnection?.CreateChannel() 
-                ?? throw new ArgumentNullException(nameof(brokerConnection));
+            _channel = brokerConnection?.CreateChannel()
+                       ?? throw new ArgumentNullException(nameof(brokerConnection));
         }
 
         /// <summary>
         /// Publish (direct) a message to the bus
         /// </summary>
-        /// <param name="queue"></param>
+        /// <param name="exchange"></param>
         /// <param name="message"></param>
-        public void Publish(string queue, IMessage message)
+        public void Publish(string exchange, IMessage message)
         {
-            string serialized = JsonConvert.SerializeObject(message);
-            byte[] body = Encoding.UTF8.GetBytes(serialized);
+            byte[] body = Serialize(message);
             IBasicProperties properties = _channel.CreateBasicProperties();
 
             //if RabbitMQ restarts, the message will persist
             properties.Persistent = true;
 
-            //TODO: support exchange publishing
-            _channel.BasicPublish(queue, "", properties, body);
+            _channel.BasicPublish(exchange, "", properties, body);
         }
 
         /// <summary>
@@ -50,14 +47,19 @@ namespace sdLitica.Messages.Producers
         /// <param name="message"></param>
         public void PublishToTopic(string exchange, string routingKey, IMessage message)
         {
-            string serialized = JsonConvert.SerializeObject(message);
-            byte[] body = Encoding.UTF8.GetBytes(serialized);
+            byte[] body = Serialize(message);
             IBasicProperties properties = _channel.CreateBasicProperties();
 
             //if RabbitMQ restarts, the message will persist
             properties.Persistent = true;
 
             _channel.BasicPublish(exchange, routingKey, properties, body);
+        }
+
+        private static byte[] Serialize(IMessage message)
+        {
+            string content = JsonConvert.SerializeObject(message);
+            return Encoding.UTF8.GetBytes(content);
         }
     }
 }

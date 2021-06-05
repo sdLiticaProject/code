@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace sdLitica.Messages.Abstractions
@@ -11,29 +9,31 @@ namespace sdLitica.Messages.Abstractions
     public interface IConsumer
     {
         /// <summary>
-        /// Read a queue
+        /// Read a exchange
         /// </summary>
         /// <param name="queue"></param>
         void Read(string queue);
-        /// <summary>
-        /// Subscribe (topic) a queue
-        /// </summary>
-        /// <param name="queue"></param>
-        /// <param name="routingKey"></param>
-        /// <param name="action"></param>
-        void SubscribeToTopic(string queue, string routingKey, Action<object> action);
-        /// <summary>
-        /// Subscribe a queue
-        /// </summary>
-        /// <param name="queue"></param>
-        /// <param name="action"></param>
-        void Subscribe(string queue, Action<object> action);
 
         /// <summary>
-        /// Subscribe a queue
+        /// Subscribe (topic) a exchange
         /// </summary>
-        /// <param name="queue"></param>
+        /// <param name="exchange"></param>
+        /// <param name="routingKey"></param>
         /// <param name="action"></param>
-        void Subscribe(string queue, Func<object, Task> action);
+        void SubscribeToTopic(string exchange, string routingKey, Action<object> action);
+
+        /// <summary>
+        /// Subscribe a exchange
+        /// </summary>
+        /// <param name="exchange"></param>
+        /// <param name="action"></param>
+        void Subscribe(string exchange, Action<object> action);
+
+        /// <summary>
+        /// Subscribe a exchange
+        /// </summary>
+        /// <param name="exchange"></param>
+        /// <param name="action"></param>
+        void Subscribe(string exchange, Func<object, Task> action);
     }
 }

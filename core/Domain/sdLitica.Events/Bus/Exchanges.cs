@@ -9,5 +9,8 @@
         public const string Diagnostics = "DiagnosticsInfoExchange";
         public const string ModuleRegistrations = "ModuleRegistrationsExchange";
         public const string ModuleHeartbeats = "ModuleHeartbeatsExchange";
+        public const string AnalysisResults = "AnalysisResultsExchange";
+
+        public static string GetRpcQueue(string exchange) => $"{exchange}RpcQueue";
     }
 }
