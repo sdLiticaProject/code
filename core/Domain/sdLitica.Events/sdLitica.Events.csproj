@@ -8,6 +8,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Data\sdLitica.AnalysisResults\sdLitica.AnalysisResults.csproj" />
     <ProjectReference Include="..\..\Data\sdLitica.Messages\sdLitica.Messages.csproj" />
     <ProjectReference Include="..\sdLitica.Entities\sdLitica.Entities.csproj" />
   </ItemGroup>

@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.DependencyInjection;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using sdLitica.Events.Abstractions;
 using sdLitica.Events.Bus;
 using sdLitica.Events.Extensions;
+using sdLitica.Messages.Abstractions;
 
 namespace sdLitica.Events.Rpc
 {
@@ -16,11 +18,14 @@ namespace sdLitica.Events.Rpc
     /// </summary>
     public static class RpcServerRabbitMq
     {
-        public static void RegisterHandlers(IEventRegistry eventRegistry, IModel channel, IDictionary<IEvent, Func<IEvent, IEvent>> handlers)
+        public static void RegisterHandlers(IServiceProvider services, IDictionary<Type, Func<IEvent, IEvent>> handlers)
         {
-            foreach (var (@event, handler) in handlers)
+            var registry = services.GetRequiredService<IEventRegistry>();
+            var connection = services.GetRequiredService<BrokerConnection>();
+            var channel = connection.CreateChannel();
+            foreach (var (type, handler) in handlers)
             {
-                var exchange = eventRegistry.GetPublishingTarget(@event.GetType()).Single();
+                var exchange = registry.GetPublishingTarget(type).Single();
                 var queue = Exchanges.GetRpcQueue(exchange);
                 channel.QueueDeclare(queue);
                 var consumer = new EventingBasicConsumer(channel);

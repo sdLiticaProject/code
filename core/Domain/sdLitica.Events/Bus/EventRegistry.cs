@@ -36,7 +36,7 @@ namespace sdLitica.Events.Bus
                 return;
             }
 
-            _eventRegistry.Add(new KeyValuePair<Type, IList<string>>(eventType, new List<string>() {exchange}));
+            _eventRegistry.Add(eventType, new List<string> {exchange});
 
             _brokerManager.CreateExchange(exchange, exchangeType);
         }

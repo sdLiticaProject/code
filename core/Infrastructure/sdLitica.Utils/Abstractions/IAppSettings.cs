@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using sdLitica.Utils.Settings;
+﻿using sdLitica.Utils.Settings;
 
 namespace sdLitica.Utils.Abstractions
 {
@@ -29,5 +26,10 @@ namespace sdLitica.Utils.Abstractions
         /// Provides setting for Analytics (e.g. timeouts for analytical modules)
         /// </summary>
         AnalyticsSettings AnalyticsSettings { get; }
+        
+        /// <summary>
+        /// Provides setting for Analysis Results (e.g. MongoDB)
+        /// </summary>
+        AnalysisResultsSettings AnalysisResultsSettings { get; }
     }
 }
