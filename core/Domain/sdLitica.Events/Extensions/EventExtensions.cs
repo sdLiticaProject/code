@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 using Newtonsoft.Json;
 using sdLitica.Events.Abstractions;
@@ -24,6 +24,25 @@ namespace sdLitica.Events.Extensions
             string body = JsonConvert.SerializeObject(@event);
 
             return new Message(type, body);
+        }
+        
+        public static IEvent ToEvent(this byte[] body)
+        {
+            string strMessage = Encoding.UTF8.GetString(body);
+
+            Message message = JsonConvert.DeserializeObject<Message>(strMessage)
+                              ?? throw new Exception("Could not deserialize message object");
+
+            Assembly eventAssembly = Assembly.Load("sdLitica.Events");
+            Type type = eventAssembly.GetType(message.Type)
+                        ?? throw new Exception("Could not find corresponding type for event");
+            return (IEvent) JsonConvert.DeserializeObject(message.Body, type);
+        }
+
+        public static byte[] ToBytes(this IEvent @event)
+        {
+            string content = JsonConvert.SerializeObject(@event.ToMessage());
+            return Encoding.UTF8.GetBytes(content);
         }
     }
 }

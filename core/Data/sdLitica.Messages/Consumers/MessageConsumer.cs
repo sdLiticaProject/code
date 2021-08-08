@@ -12,10 +12,10 @@ namespace sdLitica.Messages.Consumers
     /// <summary>
     /// Background class to consume a message
     /// </summary>
-    internal class MessageConsumer : IConsumer
-    {        
+    internal class MessageConsumer: IConsumer
+    {
         private readonly IModel _channel;
-        
+
         /// <summary>
         /// Default constructor
         /// </summary>
@@ -23,7 +23,7 @@ namespace sdLitica.Messages.Consumers
         public MessageConsumer(BrokerConnection brokerConnection)
         {
             _channel = brokerConnection?.CreateChannel()
-                   ?? throw new ArgumentNullException(nameof(brokerConnection));
+                       ?? throw new ArgumentNullException(nameof(brokerConnection));
         }
 
         /// <summary>
@@ -43,81 +43,71 @@ namespace sdLitica.Messages.Consumers
         /// <param name="action"></param>
         public void SubscribeToTopic(string exchange, string routingKey, Action<object> action)
         {
-            //_channel.ExchangeDeclare(exchange: exchange, type: "topic", durable: true);
-
             string queue = _channel.QueueDeclare().QueueName;
-            _channel.QueueBind(queue: queue, exchange: exchange, routingKey: routingKey);
+            _channel.QueueBind(queue, exchange, routingKey);
 
             EventingBasicConsumer consumer = new EventingBasicConsumer(_channel);
-            consumer.Received += (object model, BasicDeliverEventArgs ea) =>
+            consumer.Received += (_, ea) =>
             {
-                object @event = CreateEventFromMessage(model, ea);
+                object @event = CreateEventFromMessage(ea);
                 action(@event);
             };
 
-            _channel.BasicConsume(queue: queue,
-                                 autoAck: true,
-                                 consumer: consumer);
+            _channel.BasicConsume(queue, true, consumer);
         }
 
         /// <summary>
         /// Subscribe (direct) a message received through the bus
         /// </summary>
-        /// <param name="queue"></param>
+        /// <param name="exchange"></param>
         /// <param name="action"></param>
         public void Subscribe(string exchange, Action<object> action)
         {
             string queue = _channel.QueueDeclare().QueueName;
-            _channel.QueueBind(queue: queue, exchange: exchange, routingKey: "");
+            _channel.QueueBind(queue, exchange, "");
 
             EventingBasicConsumer consumer = new EventingBasicConsumer(_channel);
-            consumer.Received += (object model, BasicDeliverEventArgs ea) =>
+            consumer.Received += (_, ea) =>
             {
-                object @event = CreateEventFromMessage(model, ea);
+                object @event = CreateEventFromMessage(ea);
                 action(@event);
             };
 
-            _channel.BasicConsume(queue: queue,
-                                 autoAck: true,
-                                 consumer: consumer);
+            _channel.BasicConsume(queue, true, consumer);
         }
+
         /// <summary>
         /// Subscribe (direct) a message received through the bus
         /// </summary>
-        /// <param name="queue"></param>
+        /// <param name="exchange"></param>
         /// <param name="action"></param>
-        public void Subscribe(string exchange, Func<object,Task> action)
+        public void Subscribe(string exchange, Func<object, Task> action)
         {
             string queue = _channel.QueueDeclare().QueueName;
-            _channel.QueueBind(queue: queue, exchange: exchange, routingKey: "");
+            _channel.QueueBind(queue, exchange, "");
 
             EventingBasicConsumer consumer = new EventingBasicConsumer(_channel);
-            consumer.Received += async (object model, BasicDeliverEventArgs ea) =>
+            consumer.Received += async (_, ea) =>
             {
-                object @event = CreateEventFromMessage(model, ea);
+                object @event = CreateEventFromMessage(ea);
                 await action(@event);
             };
 
-            _channel.BasicConsume(queue: queue,
-                                 autoAck: true,
-                                 consumer: consumer);
+            _channel.BasicConsume(queue, true, consumer);
         }
 
-        private object CreateEventFromMessage(object model, BasicDeliverEventArgs ea)
+        private static object CreateEventFromMessage(BasicDeliverEventArgs ea)
         {
-            ReadOnlySpan<byte> body = ea.Body.Span;
+            byte[] body = ea.Body.ToArray();
             string strMessage = Encoding.UTF8.GetString(body);
 
-            Message message = JsonConvert.DeserializeObject<Message>(strMessage);
-            if (message == null) throw new Exception("Could not deserialize message object");
+            Message message = JsonConvert.DeserializeObject<Message>(strMessage)
+                              ?? throw new Exception("Could not deserialize message object");
 
             Assembly eventAssembly = Assembly.Load("sdLitica.Events");
-            Type type = eventAssembly.GetType(message.Type);
-            object instance = Activator.CreateInstance(type);
-
-            object @event = JsonConvert.DeserializeObject(message.Body, type);
-
-            return @event;
+            Type type = eventAssembly.GetType(message.Type)
+                        ?? throw new Exception("Could not find corresponding type for event");
+            return JsonConvert.DeserializeObject(message.Body, type);
         }
     }
 }

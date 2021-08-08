@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace sdLitica.Messages.Abstractions
+﻿namespace sdLitica.Messages.Abstractions
 {
     /// <summary>
     /// Background interface to publish any event to a queue or exchange
@@ -15,6 +11,7 @@ namespace sdLitica.Messages.Abstractions
         /// <param name="exchange"></param>
         /// <param name="message"></param>
         void Publish(string exchange, IMessage message);
+
         /// <summary>
         /// Publish (topic) this message to a queue or exchange
         /// </summary>

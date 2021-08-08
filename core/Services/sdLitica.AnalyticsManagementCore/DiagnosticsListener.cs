@@ -51,7 +51,7 @@ namespace sdLitica.AnalyticsManagementCore
         /// </summary>
         public static void ListenNewModules()
         {
-            _eventRegistry.Register<AnalyticModuleRegistrationRequestEvent>(Exchanges.ModuleRegistration);
+            _eventRegistry.Register<AnalyticModuleRegistrationRequestEvent>(Exchanges.ModuleRegistrations);
             _eventBus.SubscribeToTopic((AnalyticModuleRegistrationRequestEvent @event) =>
             {
                 using (IServiceScope scope = Services.CreateScope())

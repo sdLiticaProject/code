@@ -50,6 +50,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dotnet", "dotnet", "{E4AD5B
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sdLitica.FSharpAnalyticalModule", "modules\dotnet\sdLitica.FSharpAnalyticalModule\sdLitica.FSharpAnalyticalModule.csproj", "{CCD022F2-98F9-4141-B284-178BCAB84035}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sdLitica.MongoConnector", "core\Apps\MongoConnector\sdLitica.MongoConnector\sdLitica.MongoConnector.csproj", "{B7FDC7E4-F7A1-4F88-940B-ED8B6611BCAD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sdLitica.AnalysisResults", "core\Data\sdLitica.AnalysisResults\sdLitica.AnalysisResults.csproj", "{1102ACFA-DC3B-4009-82FC-802F6EC2CB0B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -80,6 +84,8 @@ Global
 		{C597E32D-2AA2-4DA5-8A5E-46E540C649A1} = {73C36E56-F4A6-4710-89EA-D76D7B12333D}
 		{E4AD5B6D-7BC2-4ADA-A887-5044899E20AE} = {8EB1CC68-DDBA-47A4-BE81-9038673010DB}
 		{CCD022F2-98F9-4141-B284-178BCAB84035} = {E4AD5B6D-7BC2-4ADA-A887-5044899E20AE}
+		{B7FDC7E4-F7A1-4F88-940B-ED8B6611BCAD} = {4182E104-679C-4964-AD03-1BA574F613E9}
+		{1102ACFA-DC3B-4009-82FC-802F6EC2CB0B} = {E61E8393-9F2F-4F4F-B0AB-B24461B692C6}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{5DB7E23A-EFF7-4395-A94F-B005EDF06A4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -142,5 +148,13 @@ Global
 		{CCD022F2-98F9-4141-B284-178BCAB84035}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CCD022F2-98F9-4141-B284-178BCAB84035}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CCD022F2-98F9-4141-B284-178BCAB84035}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7FDC7E4-F7A1-4F88-940B-ED8B6611BCAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7FDC7E4-F7A1-4F88-940B-ED8B6611BCAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7FDC7E4-F7A1-4F88-940B-ED8B6611BCAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7FDC7E4-F7A1-4F88-940B-ED8B6611BCAD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1102ACFA-DC3B-4009-82FC-802F6EC2CB0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1102ACFA-DC3B-4009-82FC-802F6EC2CB0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1102ACFA-DC3B-4009-82FC-802F6EC2CB0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1102ACFA-DC3B-4009-82FC-802F6EC2CB0B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

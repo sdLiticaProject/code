@@ -1,8 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -12,11 +8,9 @@ using Microsoft.Extensions.Hosting;
 using sdLitica.Bootstrap.Extensions;
 using sdLitica.Events.Abstractions;
 using sdLitica.Events.Bus;
-using sdLitica.Events.Extensions;
 using sdLitica.Events.Integration;
 using sdLitica.FSharpAnalyticalModule.IntegrationEvents.EventHandling;
 using sdLitica.Utils.Abstractions;
-using sdLitica.Utils.Models;
 using sdLitica.Utils.Settings;
 
 namespace sdLitica.FSharpAnalyticalModule
@@ -75,7 +69,7 @@ namespace sdLitica.FSharpAnalyticalModule
             IEventRegistry registry = app.ApplicationServices.GetRequiredService<IEventRegistry>();
             registry.Register<TimeSeriesAnalysisRequestEvent>(Exchanges.TimeSeries);
             registry.Register<DiagnosticsResponseEvent>(Exchanges.Diagnostics);
-            registry.Register<AnalyticModuleRegistrationRequestEvent>(Exchanges.ModuleRegistration);
+            registry.Register<AnalyticModuleRegistrationRequestEvent>(Exchanges.ModuleRegistrations);
 
             using (IServiceScope scope = app.ApplicationServices.GetRequiredService<IServiceProvider>().CreateScope())
             {

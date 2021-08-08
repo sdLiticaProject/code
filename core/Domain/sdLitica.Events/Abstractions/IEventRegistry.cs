@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace sdLitica.Events.Abstractions
 {
@@ -15,13 +14,13 @@ namespace sdLitica.Events.Abstractions
         /// <typeparam name="T"></typeparam>
         /// <param name="exchange"></param>
         /// <param name="exchangeType"></param>
-        void Register<T>(string exchange, string exchangeType="topic") where T : IEvent;
+        void Register<T>(string exchange, string exchangeType = "topic") where T: IEvent;
+
         /// <summary>
         /// Get publishing queue or exchange
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="event"></param>
+        /// <typeparam name="T">event type</typeparam>
         /// <returns></returns>
-        IList<string> GetPublishingTarget<T>(T @event) where T : IEvent;        
+        IList<string> GetPublishingTarget(Type eventType);
     }
 }

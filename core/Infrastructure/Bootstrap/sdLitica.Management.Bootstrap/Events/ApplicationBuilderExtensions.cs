@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using sdLitica.Events.Abstractions;
-using sdLitica.Events.Integration;
-using sdLitica.Events.Bus;
 using sdLitica.AnalyticsManagementCore;
+using sdLitica.Events.Abstractions;
+using sdLitica.Events.Bus;
+using sdLitica.Events.Integration;
 using sdLitica.Relational.Repositories;
 
 namespace sdLitica.Bootstrap.Events
@@ -26,7 +24,7 @@ namespace sdLitica.Bootstrap.Events
             
             registry.Register<TimeSeriesAnalysisRequestEvent>(Exchanges.TimeSeries);
             registry.Register<DiagnosticsResponseEvent>(Exchanges.Diagnostics);
-            registry.Register<AnalyticModuleRegistrationRequestEvent>(Exchanges.ModuleRegistration);
+            registry.Register<AnalyticModuleRegistrationRequestEvent>(Exchanges.ModuleRegistrations);
 
             DiagnosticsListener.Services = app.ApplicationServices.GetRequiredService<IServiceProvider>();
             
