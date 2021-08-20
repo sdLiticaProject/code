@@ -1,4 +1,4 @@
-namespace sdLitica.Test.BaseApiTest
+namespace sdLitica.IntegrationTests.RestApiTestBase
 {
     public class BaseTestConfiguration
     {

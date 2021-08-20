@@ -1,25 +1,18 @@
-using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using sdLitica.Test.BaseApiTest;
-namespace sdLitica.Test.RestApiTests
+
+namespace RestApiTests
 {
     [TestFixture]
     public class ProfileApiTest: BaseAuthenticatedApiTest
     {
-        // Base path to Profile API's
-        private static string PROFILE_API_PATH = "/api/v1/Profile";
-        // Endpoint for login requests
-        private static string LOGIN_PATH = "/login";
+        private static string _apiKeysPath = "/apikeys";
 
-        private static string API_KEYS_PATH = "/apikeys";
-
-        private static int seed = (new Random()).Next();
-
-        StringContent givenLoginRequestWithBadCredentials()
+        StringContent GivenLoginRequestWithBadCredentials()
         {
             JObject credentialsRequestJObject = new JObject
             {
@@ -29,7 +22,7 @@ namespace sdLitica.Test.RestApiTests
             return new StringContent(credentialsRequestJObject.ToString(), Encoding.UTF8, "application/json");
         }
 
-        StringContent givenCreateApiKeyRequest()
+        StringContent GivenCreateApiKeyRequest()
         {
             JObject credentialsRequestJObject = new JObject
             {
@@ -41,30 +34,30 @@ namespace sdLitica.Test.RestApiTests
         [Test]
         public void TestServiceShouldReturnUnauthorizedWhenLoginWithWrongCredentials()
         {
-            StringContent content = givenLoginRequestWithBadCredentials();
+            StringContent content = GivenLoginRequestWithBadCredentials();
 
-            whenPostRequestWithoutAuthSent(configuration.RootUrl + PROFILE_API_PATH + LOGIN_PATH, content);
+            WhenPostRequestWithoutAuthSent(Configuration.RootUrl + ProfileApiPath + LoginPath, content);
             
-            thenResponseStatusIsUnauthorized();
+            ThenResponseStatusIsUnauthorized();
 
         }
 
 
 
         [Test]
-        public void TestUserShouldBeAbleToCreateAnAPIAccessToken()
+        public void TestUserShouldBeAbleToCreateAnApiAccessToken()
         {
-            string defaultUserToken = givenDefaultUserAccessToken();
-            whenRequestToCreateNewApiTokenSent(defaultUserToken);
-            thenResponseStatusIsCreated();
+            string defaultUserToken = GivenDefaultUserAccessToken();
+            WhenRequestToCreateNewApiTokenSent(defaultUserToken);
+            ThenResponseStatusIsCreated();
         }
 
-        private void whenRequestToCreateNewApiTokenSent(string token)
+        private void WhenRequestToCreateNewApiTokenSent(string token)
         {
-            AuthenticationHeaderValue header = givenAuthenticationHeaderFromToken(token);
-            StringContent newApiKeyRquest = givenCreateApiKeyRequest();
+            AuthenticationHeaderValue header = GivenAuthenticationHeaderFromToken(token);
+            StringContent newApiKeyRequest = GivenCreateApiKeyRequest();
 
-            whenPostRequestSent(configuration.RootUrl + PROFILE_API_PATH + API_KEYS_PATH, header, newApiKeyRquest);
+            WhenPostRequestSent(Configuration.RootUrl + ProfileApiPath + _apiKeysPath, header, newApiKeyRequest);
 
         }
     }

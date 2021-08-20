@@ -20,7 +20,7 @@
   <ItemGroup>
     <None Update="testsettings.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
-
+  
   <ItemGroup>
     <ProjectReference Include="..\RestApiTestBase\RestApiTestBase.csproj" />
   </ItemGroup>
