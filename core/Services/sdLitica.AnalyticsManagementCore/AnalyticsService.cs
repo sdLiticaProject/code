@@ -39,6 +39,9 @@ namespace sdLitica.AnalyticsManagementCore
             string routingKey = _analyticsRegistry.GetQueue(operation.OperationName);
             if (routingKey != null)
             {
+                System.Console.WriteLine("Kekekekkeke");
+                System.Console.WriteLine(routingKey);
+
                 _eventBus.PublishToTopic(@event, routingKey);
             }
             else

@@ -1,0 +1,1 @@
+here analytical functions are defined. inputs should already be given in some uniform format (python list or numpy array), to which they are transformed in callbacks
