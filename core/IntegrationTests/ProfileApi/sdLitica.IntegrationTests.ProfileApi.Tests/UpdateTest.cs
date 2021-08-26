@@ -16,8 +16,7 @@ namespace sdLitica.IntegrationTests.ProfileApi.Tests
         [Category(nameof(TestCategories.PriorityHigh))]
         public void TestSmokeUpdate()
         {
-            var oldProfile = JObject.Parse(_facade.GetMe(Session).AssertSuccess().Content.ReadAsStringAsync().Result)
-                .ToObject<TestUserModel>();
+            var oldProfile = _facade.GetMe(Session).AssertSuccess().MapAndLog<TestUserModel>();
 
             oldProfile.FirstName = TestStringHelper.RandomLatinString();
             oldProfile.LastName = TestStringHelper.RandomLatinString();
@@ -28,8 +27,7 @@ namespace sdLitica.IntegrationTests.ProfileApi.Tests
                 LastName = oldProfile.LastName
             }).AssertSuccess();
 
-            var newProfile = JObject.Parse(_facade.GetMe(Session).AssertSuccess().Content.ReadAsStringAsync().Result)
-                .ToObject<TestUserModel>();
+            var newProfile = _facade.GetMe(Session).AssertSuccess().MapAndLog<TestUserModel>();
 
             Assert.That(JObject.FromObject(newProfile), Is.EqualTo(JObject.FromObject(oldProfile)),
                 $"Expected to have '{oldProfile}' profile after update, but found '{newProfile}'");
@@ -39,8 +37,7 @@ namespace sdLitica.IntegrationTests.ProfileApi.Tests
         [Category(nameof(TestCategories.PriorityHigh))]
         public void TestDoubleUpdate()
         {
-            var oldProfile = JObject.Parse(_facade.GetMe(Session).AssertSuccess().Content.ReadAsStringAsync().Result)
-                .ToObject<TestUserModel>();
+            var oldProfile = _facade.GetMe(Session).AssertSuccess().MapAndLog<TestUserModel>();
 
             oldProfile.FirstName = TestStringHelper.RandomLatinString();
             oldProfile.LastName = TestStringHelper.RandomLatinString();
@@ -51,8 +48,7 @@ namespace sdLitica.IntegrationTests.ProfileApi.Tests
                 LastName = oldProfile.LastName
             }).AssertSuccess();
 
-            var newProfile = JObject.Parse(_facade.GetMe(Session).AssertSuccess().Content.ReadAsStringAsync().Result)
-                .ToObject<TestUserModel>();
+            var newProfile = _facade.GetMe(Session).AssertSuccess().MapAndLog<TestUserModel>();
 
             Assert.That(JObject.FromObject(newProfile), Is.EqualTo(JObject.FromObject(oldProfile)),
                 $"Expected to have '{oldProfile}' profile after update, but found '{newProfile}'");
@@ -65,8 +61,7 @@ namespace sdLitica.IntegrationTests.ProfileApi.Tests
                 LastName = oldProfile.LastName
             }).AssertSuccess();
 
-            newProfile = JObject.Parse(_facade.GetMe(Session).AssertSuccess().Content.ReadAsStringAsync().Result)
-                .ToObject<TestUserModel>();
+            newProfile = _facade.GetMe(Session).AssertSuccess().MapAndLog<TestUserModel>();
 
             Assert.That(JObject.FromObject(newProfile), Is.EqualTo(JObject.FromObject(oldProfile)),
                 $"Expected to have '{oldProfile}' profile after update, but found '{newProfile}'");
@@ -87,8 +82,7 @@ namespace sdLitica.IntegrationTests.ProfileApi.Tests
         [Category(nameof(TestCategories.PriorityMedium))]
         public void TestUpdateOnlyFirstName()
         {
-            var oldProfile = JObject.Parse(_facade.GetMe(Session).AssertSuccess().Content.ReadAsStringAsync().Result)
-                .ToObject<TestUserModel>();
+            var oldProfile = _facade.GetMe(Session).AssertSuccess().MapAndLog<TestUserModel>();
 
             _facade.PostUpdateProfileNames(Session, new TestUserUpdateModel
             {
@@ -96,8 +90,7 @@ namespace sdLitica.IntegrationTests.ProfileApi.Tests
                 LastName = String.Empty,
             }).AssertError(HttpStatusCode.BadRequest);
 
-            var newProfile = JObject.Parse(_facade.GetMe(Session).AssertSuccess().Content.ReadAsStringAsync().Result)
-                .ToObject<TestUserModel>();
+            var newProfile = _facade.GetMe(Session).AssertSuccess().MapAndLog<TestUserModel>();
 
             Assert.That(JObject.FromObject(newProfile), Is.EqualTo(JObject.FromObject(oldProfile)),
                 $"Expected to have '{oldProfile}' profile after update, but found '{newProfile}'");
@@ -107,8 +100,7 @@ namespace sdLitica.IntegrationTests.ProfileApi.Tests
         [Category(nameof(TestCategories.PriorityMedium))]
         public void TestUpdateOnlyLastName()
         {
-            var oldProfile = JObject.Parse(_facade.GetMe(Session).AssertSuccess().Content.ReadAsStringAsync().Result)
-                .ToObject<TestUserModel>();
+            var oldProfile = _facade.GetMe(Session).AssertSuccess().MapAndLog<TestUserModel>();
 
             _facade.PostUpdateProfileNames(Session, new TestUserUpdateModel
             {
@@ -116,8 +108,7 @@ namespace sdLitica.IntegrationTests.ProfileApi.Tests
                 FirstName = String.Empty,
             }).AssertError(HttpStatusCode.BadRequest);
 
-            var newProfile = JObject.Parse(_facade.GetMe(Session).AssertSuccess().Content.ReadAsStringAsync().Result)
-                .ToObject<TestUserModel>();
+            var newProfile = _facade.GetMe(Session).AssertSuccess().MapAndLog<TestUserModel>();
 
             Assert.That(JObject.FromObject(newProfile), Is.EqualTo(JObject.FromObject(oldProfile)),
                 $"Expected to have '{oldProfile}' profile after update, but found '{newProfile}'");
@@ -127,8 +118,7 @@ namespace sdLitica.IntegrationTests.ProfileApi.Tests
         [Category(nameof(TestCategories.PriorityMedium))]
         public void TestUpdateAllNulls()
         {
-            var oldProfile = JObject.Parse(_facade.GetMe(Session).AssertSuccess().Content.ReadAsStringAsync().Result)
-                .ToObject<TestUserModel>();
+            var oldProfile = _facade.GetMe(Session).AssertSuccess().MapAndLog<TestUserModel>();
 
             _facade.PostUpdateProfileNames(Session, new TestUserUpdateModel
             {
@@ -136,8 +126,7 @@ namespace sdLitica.IntegrationTests.ProfileApi.Tests
                 FirstName = null,
             }).AssertError(HttpStatusCode.BadRequest);
 
-            var newProfile = JObject.Parse(_facade.GetMe(Session).AssertSuccess().Content.ReadAsStringAsync().Result)
-                .ToObject<TestUserModel>();
+            var newProfile = _facade.GetMe(Session).AssertSuccess().MapAndLog<TestUserModel>();
 
             Assert.That(JObject.FromObject(newProfile), Is.EqualTo(JObject.FromObject(oldProfile)),
                 $"Expected to have '{oldProfile}' profile after update, but found '{newProfile}'");
@@ -147,8 +136,7 @@ namespace sdLitica.IntegrationTests.ProfileApi.Tests
         [Category(nameof(TestCategories.PriorityMedium))]
         public void TestUpdateExpiredSession()
         {
-            var oldProfile = JObject.Parse(_facade.GetMe(Session).AssertSuccess().Content.ReadAsStringAsync().Result)
-                .ToObject<TestUserModel>();
+            var oldProfile = _facade.GetMe(Session).AssertSuccess().MapAndLog<TestUserModel>();
 
             _facade.PostLogout(Session);
 
@@ -158,16 +146,13 @@ namespace sdLitica.IntegrationTests.ProfileApi.Tests
                 LastName = TestStringHelper.RandomLatinString()
             }).AssertError(HttpStatusCode.Unauthorized);
 
-            var response = _facade.PostLogin(new TestLoginModel
+            var session = _facade.PostLogin(new TestLoginModel
             {
                 Email = Configuration.UserName,
                 Password = Configuration.Password
-            }).AssertSuccess();
+            }).AssertSuccess().GetTokenFromResponse();
 
-            var session = _facade.GetTokenFromResponse(response);
-
-            var newProfile = JObject.Parse(_facade.GetMe(session).AssertSuccess().Content.ReadAsStringAsync().Result)
-                .ToObject<TestUserModel>();
+            var newProfile = _facade.GetMe(session).AssertSuccess().MapAndLog<TestUserModel>();
             
             _facade.PostLogout(session);
 

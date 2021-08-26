@@ -11,12 +11,11 @@ namespace sdLitica.IntegrationTests.ProfileApi.Tests
         [SetUp]
         public void Login()
         {
-            var response = _facade.PostLogin(new TestLoginModel
+            Session = _facade.PostLogin(new TestLoginModel
             {
                 Email = Configuration.UserName,
                 Password = Configuration.Password
-            }).AssertSuccess();
-            Session = _facade.GetTokenFromResponse(response);
+            }).AssertSuccess().GetTokenFromResponse();
         }
         [TearDown]
         public void Logout()

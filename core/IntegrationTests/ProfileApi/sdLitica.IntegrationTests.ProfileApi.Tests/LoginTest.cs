@@ -12,12 +12,11 @@ namespace sdLitica.IntegrationTests.ProfileApi.Tests
         [Category(nameof(TestCategories.PriorityHigh))]
         public void TestBasicLoginLogout()
         {
-            var response = _facade.PostLogin(new TestLoginModel
+            var session = _facade.PostLogin(new TestLoginModel
             {
                 Email = Configuration.UserName,
                 Password = Configuration.Password
-            }).AssertSuccess();
-            var session = _facade.GetTokenFromResponse(response);
+            }).AssertSuccess().GetTokenFromResponse();
             Assert.That(session, Is.Not.Empty);
             _facade.PostLogout(session);
         }
@@ -26,20 +25,18 @@ namespace sdLitica.IntegrationTests.ProfileApi.Tests
         [Category(nameof(TestCategories.PriorityHigh))]
         public void DoubleLoginTest()
         {
-            var response = _facade.PostLogin(new TestLoginModel
+            var session = _facade.PostLogin(new TestLoginModel
             {
                 Email = Configuration.UserName,
                 Password = Configuration.Password
-            }).AssertSuccess();
-            var session = _facade.GetTokenFromResponse(response);
+            }).AssertSuccess().GetTokenFromResponse();
             Assert.That(session, Is.Not.Empty);
 
-            response = _facade.PostLogin(new TestLoginModel
+           var newSession = _facade.PostLogin(new TestLoginModel
             {
                 Email = Configuration.UserName,
                 Password = Configuration.Password
-            }).AssertSuccess();
-            var newSession = _facade.GetTokenFromResponse(response);
+            }).AssertSuccess().GetTokenFromResponse();
             Assert.That(newSession, Is.Not.EqualTo(session), "Expected to have different session tokens");
             _facade.PostLogout(session).AssertSuccess();
             _facade.PostLogout(newSession).AssertSuccess();

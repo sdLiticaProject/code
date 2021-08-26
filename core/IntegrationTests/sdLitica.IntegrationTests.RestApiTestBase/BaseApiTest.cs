@@ -18,7 +18,7 @@ namespace sdLitica.IntegrationTests.RestApiTestBase
     public class BaseApiTest
     {
         protected BaseTestConfiguration Configuration;
-        
+
         // This object contains most recent API response
         protected HttpResponseMessage LastApiResponse;
         protected String CurrentApiAccessToken;
@@ -29,7 +29,7 @@ namespace sdLitica.IntegrationTests.RestApiTestBase
 
         // Methods to deal with tests configuration from file
         public static IConfigurationRoot GetIConfigurationRoot(string outputPath)
-        {            
+        {
             return new ConfigurationBuilder()
                 .SetBasePath(outputPath)
                 .AddJsonFile("testsettings.json", optional: true)
@@ -59,7 +59,8 @@ namespace sdLitica.IntegrationTests.RestApiTestBase
             Assert.NotNull(Configuration.UserName, "Default user name for tests executions is not set");
             Assert.NotNull(Configuration.Password, "Default password for tests executions is not set");
 
-            Logger = new LoggerConfiguration().CreateLogger();
+            Logger = new LoggerConfiguration().MinimumLevel.Verbose().WriteTo.Console().CreateLogger();
+            HttpResponseMessageExtension.Init(Logger);
         }
 
         // API base invocation methods
@@ -97,16 +98,19 @@ namespace sdLitica.IntegrationTests.RestApiTestBase
                 LastApiResponse = client.PostAsync(url, content).Result;
             }
         }
-       
-        protected void WhenPostRequestWithoutAuthSentWithoutContentType(string url, HttpContent content) {
+
+        protected void WhenPostRequestWithoutAuthSentWithoutContentType(string url, HttpContent content)
+        {
             WhenPostRequestWithoutAuthSentInternal(url, content, false);
         }
 
-        protected void WhenPostRequestWithoutAuthSent(string url, HttpContent content) {
+        protected void WhenPostRequestWithoutAuthSent(string url, HttpContent content)
+        {
             WhenPostRequestWithoutAuthSentInternal(url, content, true);
         }
 
-        private void WhenPostRequestWithoutAuthSentInternal(string url, HttpContent content, bool setContentType) {
+        private void WhenPostRequestWithoutAuthSentInternal(string url, HttpContent content, bool setContentType)
+        {
             Logger.Information("Sending POST request without authentication to " + url);
             Logger.Information("==== Request content (start) ====");
             Logger.Information(content.ReadAsStringAsync().Result);
@@ -117,11 +121,12 @@ namespace sdLitica.IntegrationTests.RestApiTestBase
 
             using (HttpClient client = HttpClientFactory.Create())
             {
-                if (setContentType) {
+                if (setContentType)
+                {
                     client.DefaultRequestHeaders
                         .Accept
                         .Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                } 
+                }
 
                 LastApiResponse = client.PostAsync(url, content).Result;
             }
@@ -140,7 +145,8 @@ namespace sdLitica.IntegrationTests.RestApiTestBase
                 {"UserName", userName},
                 {"Password", password}
             };
-            StringContent content = new StringContent(credentialsRequestJObject.ToString(), Encoding.UTF8, "application/json");
+            StringContent content =
+                new StringContent(credentialsRequestJObject.ToString(), Encoding.UTF8, "application/json");
 
             WhenPostRequestWithoutAuthSent(url, content);
         }
@@ -151,7 +157,8 @@ namespace sdLitica.IntegrationTests.RestApiTestBase
             ThenAccessTokenRetrieved();
         }
 
-        protected void ThenAccessTokenRetrieved() {
+        protected void ThenAccessTokenRetrieved()
+        {
             ThenResponseIsValidJson();
             JToken jToken = _lastApiJson.SelectToken("$.Entity.Token");
             Assert.NotNull(jToken);
@@ -190,7 +197,6 @@ namespace sdLitica.IntegrationTests.RestApiTestBase
         }
 
 
-
         // Default validations
         private Boolean CompareStatusesAndLog(HttpStatusCode received, HttpStatusCode expected)
         {
@@ -203,6 +209,7 @@ namespace sdLitica.IntegrationTests.RestApiTestBase
                     received);
                 return false;
             }
+
             return true;
         }
 
@@ -222,6 +229,7 @@ namespace sdLitica.IntegrationTests.RestApiTestBase
             {
                 content = LastApiResponse.Content.ReadAsStringAsync().Result;
             }
+
             Logger.Information("Content: '" + content + "'");
             Assert.IsTrue(CompareStatusesAndLog(LastApiResponse.StatusCode, HttpStatusCode.Accepted));
         }
@@ -237,6 +245,7 @@ namespace sdLitica.IntegrationTests.RestApiTestBase
             {
                 content = LastApiResponse.Content.ReadAsStringAsync().Result;
             }
+
             Logger.Information("Content: '" + content + "'");
             Assert.IsTrue(CompareStatusesAndLog(LastApiResponse.StatusCode, HttpStatusCode.Created));
         }
@@ -245,7 +254,7 @@ namespace sdLitica.IntegrationTests.RestApiTestBase
         {
             Assert.IsTrue(CompareStatusesAndLog(LastApiResponse.StatusCode, HttpStatusCode.BadRequest));
         }
-        
+
         protected void ThenResponseStatusIsConflict()
         {
             Assert.IsTrue(CompareStatusesAndLog(LastApiResponse.StatusCode, HttpStatusCode.Conflict));
@@ -270,10 +279,10 @@ namespace sdLitica.IntegrationTests.RestApiTestBase
         {
             Assert.True(CompareStatusesAndLog(LastApiResponse.StatusCode, HttpStatusCode.UnsupportedMediaType));
         }
-        
+
         protected void ThenResponseStatusIsUnprocessable()
         {
-            Assert.IsTrue(CompareStatusesAndLog(LastApiResponse.StatusCode, (HttpStatusCode)422));
+            Assert.IsTrue(CompareStatusesAndLog(LastApiResponse.StatusCode, (HttpStatusCode) 422));
         }
 
         protected void ThenResponseIsValidJson()
@@ -315,15 +324,15 @@ namespace sdLitica.IntegrationTests.RestApiTestBase
         protected void ThenResponseContainsArrayItemWithValue(string arrayPath, string filedName, string expectedValue)
         {
             Logger.Information(
-                    string.Format(
-                            "Looking for object with field name '{0}' in array '{1}' with value '{2}'", 
-                            filedName, 
-                            arrayPath, 
-                            expectedValue)
+                string.Format(
+                    "Looking for object with field name '{0}' in array '{1}' with value '{2}'",
+                    filedName,
+                    arrayPath,
+                    expectedValue)
             );
             Logger.Information(_lastApiResponseContent);
             ThenResponseContainsField(arrayPath);
-            
+
             JArray jArray = _lastApiJson.SelectToken("$." + arrayPath) as JArray;
             Logger.Information("Got array with size " + jArray.Count.ToString());
 
@@ -338,6 +347,7 @@ namespace sdLitica.IntegrationTests.RestApiTestBase
                     break;
                 }
             }
+
             Assert.True(itemFound);
         }
 
@@ -383,7 +393,8 @@ namespace sdLitica.IntegrationTests.RestApiTestBase
 
         protected AuthenticationHeaderValue GivenNotExistingUserCredentials()
         {
-            var byteArrayCredentials = Encoding.ASCII.GetBytes(Configuration.UserName + "lalala" + ":" + Configuration.Password + "dsds");
+            var byteArrayCredentials =
+                Encoding.ASCII.GetBytes(Configuration.UserName + "lalala" + ":" + Configuration.Password + "dsds");
             return new AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArrayCredentials));
         }
     }

@@ -1,6 +1,8 @@
-﻿namespace sdLitica.IntegrationTests.ProfileApi.Tools.Models
+﻿using sdLitica.IntegrationTests.TestUtils;
+
+namespace sdLitica.IntegrationTests.ProfileApi.Tools.Models
 {
-    public class TestUserModel
+    public class TestUserModel : TestModel
     {
         public string Id { get; set; }
 

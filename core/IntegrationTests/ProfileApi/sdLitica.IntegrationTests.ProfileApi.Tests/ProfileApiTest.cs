@@ -5,7 +5,6 @@ using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using sdLitica.IntegrationTests.ProfileApi.Tools;
 using sdLitica.IntegrationTests.RestApiTestBase;
-using Serilog;
 
 namespace sdLitica.IntegrationTests.ProfileApi.Tests
 {
@@ -22,7 +21,7 @@ namespace sdLitica.IntegrationTests.ProfileApi.Tests
             Assert.AreEqual("user@sdcliud.io", Configuration.UserName);
             // todo bootstrap it later
             _facade = new ProfileApiFacade(
-                new LoggerConfiguration().MinimumLevel.Verbose().WriteTo.Console().CreateLogger(),
+                Logger,
                 Configuration.RootUrl);
         }
 

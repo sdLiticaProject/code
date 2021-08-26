@@ -28,15 +28,7 @@ namespace sdLitica.IntegrationTests.ProfileApi.Tools
             Logger = logger;
         }
 
-        public string GetTokenFromResponse(HttpResponseMessage response)
-        {
-            var responseString = response.Content.ReadAsStringAsync().Result;
-            JToken jToken = JObject.Parse(responseString).SelectToken(CommonHttpConstants.AuthorizationTokenResponse);
-            Assert.NotNull(jToken, $"Got no token from response '{responseString}'");
-            return jToken.Value<string>();
-        }
-
-        public HttpResponseMessage PostCreateNewProfile(string tokenValue, TestUserModel user)
+        public HttpResponseMessage PostCreateNewProfile(TestUserModel user)
         {
             using (HttpClient client = HttpClientFactory.Create())
             {
@@ -44,14 +36,9 @@ namespace sdLitica.IntegrationTests.ProfileApi.Tools
                     .Accept
                     .Add(new MediaTypeWithQualityHeaderValue(CommonHttpConstants.ApplicationJsonMedia));
 
-                if (tokenValue != null)
-                {
-                    client.DefaultRequestHeaders.Authorization =
-                        new AuthenticationHeaderValue(CommonHttpConstants.AuthorizationHeader, tokenValue);
-                }
-
                 return client.LogAndPost($"{BaseApiRoute}",
-                    new StringContent(user.ToString(), Encoding.UTF8, CommonHttpConstants.ApplicationJsonMedia), Logger);
+                    new StringContent(user.ToString(), Encoding.UTF8, CommonHttpConstants.ApplicationJsonMedia),
+                    Logger);
             }
         }
 
@@ -62,15 +49,16 @@ namespace sdLitica.IntegrationTests.ProfileApi.Tools
                 client.DefaultRequestHeaders
                     .Accept
                     .Add(new MediaTypeWithQualityHeaderValue(CommonHttpConstants.ApplicationJsonMedia));
-                
+
                 if (tokenValue != null)
                 {
                     client.DefaultRequestHeaders.Authorization =
                         new AuthenticationHeaderValue(CommonHttpConstants.AuthorizationHeader, tokenValue);
                 }
-                
+
                 return client.LogAndPost($"{BaseApiRoute}/{UpdateNamesRoute}",
-                    new StringContent(updateUser.ToString(), Encoding.UTF8, CommonHttpConstants.ApplicationJsonMedia), Logger);
+                    new StringContent(updateUser.ToString(), Encoding.UTF8, CommonHttpConstants.ApplicationJsonMedia),
+                    Logger);
             }
         }
 
@@ -82,10 +70,11 @@ namespace sdLitica.IntegrationTests.ProfileApi.Tools
                     .Accept
                     .Add(new MediaTypeWithQualityHeaderValue(CommonHttpConstants.ApplicationJsonMedia));
                 return client.LogAndPost($"{BaseApiRoute}/{LoginRoute}",
-                    new StringContent(login.ToString(), Encoding.UTF8, CommonHttpConstants.ApplicationJsonMedia), Logger);
+                    new StringContent(login.ToString(), Encoding.UTF8, CommonHttpConstants.ApplicationJsonMedia),
+                    Logger);
             }
         }
-        
+
         public HttpResponseMessage PostLogout(string tokenValue)
         {
             using (HttpClient client = HttpClientFactory.Create())
@@ -93,18 +82,18 @@ namespace sdLitica.IntegrationTests.ProfileApi.Tools
                 client.DefaultRequestHeaders
                     .Accept
                     .Add(new MediaTypeWithQualityHeaderValue(CommonHttpConstants.ApplicationJsonMedia));
-                
+
                 if (tokenValue != null)
                 {
                     client.DefaultRequestHeaders.Authorization =
                         new AuthenticationHeaderValue(CommonHttpConstants.AuthorizationHeader, tokenValue);
                 }
-                
+
                 return client.LogAndPost($"{BaseApiRoute}/{LogoutRoute}",
                     new StringContent(String.Empty, Encoding.UTF8, CommonHttpConstants.ApplicationJsonMedia), Logger);
             }
         }
-        
+
         public HttpResponseMessage GetMe(string tokenValue)
         {
             using (HttpClient client = HttpClientFactory.Create())
@@ -112,14 +101,70 @@ namespace sdLitica.IntegrationTests.ProfileApi.Tools
                 client.DefaultRequestHeaders
                     .Accept
                     .Add(new MediaTypeWithQualityHeaderValue(CommonHttpConstants.ApplicationJsonMedia));
-                
+
                 if (tokenValue != null)
                 {
                     client.DefaultRequestHeaders.Authorization =
                         new AuthenticationHeaderValue(CommonHttpConstants.AuthorizationHeader, tokenValue);
                 }
-                
+
                 return client.LogAndGet($"{BaseApiRoute}/{MeRoute}", Logger);
+            }
+        }
+
+        public HttpResponseMessage GetApiKeys(string tokenValue)
+        {
+            using (HttpClient client = HttpClientFactory.Create())
+            {
+                client.DefaultRequestHeaders
+                    .Accept
+                    .Add(new MediaTypeWithQualityHeaderValue(CommonHttpConstants.ApplicationJsonMedia));
+
+                if (tokenValue != null)
+                {
+                    client.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue(CommonHttpConstants.AuthorizationHeader, tokenValue);
+                }
+
+                return client.LogAndGet($"{BaseApiRoute}/{GetApiKeysRoute}", Logger);
+            }
+        }
+
+        public HttpResponseMessage PostApiKeys(string tokenValue, TestUserApiKeyJsonEntity apiKeys)
+        {
+            using (HttpClient client = HttpClientFactory.Create())
+            {
+                client.DefaultRequestHeaders
+                    .Accept
+                    .Add(new MediaTypeWithQualityHeaderValue(CommonHttpConstants.ApplicationJsonMedia));
+
+                if (tokenValue != null)
+                {
+                    client.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue(CommonHttpConstants.AuthorizationHeader, tokenValue);
+                }
+
+                return client.LogAndPost($"{BaseApiRoute}/{PostApiKeysRoute}",
+                    new StringContent(apiKeys.ToString(), Encoding.UTF8, CommonHttpConstants.ApplicationJsonMedia),
+                    Logger);
+            }
+        }
+
+        public HttpResponseMessage DeleteApiKey(string tokenValue, string apiKey)
+        {
+            using (HttpClient client = HttpClientFactory.Create())
+            {
+                client.DefaultRequestHeaders
+                    .Accept
+                    .Add(new MediaTypeWithQualityHeaderValue(CommonHttpConstants.ApplicationJsonMedia));
+
+                if (tokenValue != null)
+                {
+                    client.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue(CommonHttpConstants.AuthorizationHeader, tokenValue);
+                }
+
+                return client.LogAndDelete($"{BaseApiRoute}/{PostApiKeysRoute}/{apiKey}", Logger);
             }
         }
     }

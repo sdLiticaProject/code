@@ -29,5 +29,15 @@ namespace sdLitica.IntegrationTests.RestApiTestBase
             logger.Debug("==== Request headers (end) ====");
             return client.GetAsync(url).Result;
         }
+        
+        public static HttpResponseMessage LogAndDelete(this HttpClient client, string url,
+            ILogger logger)
+        {
+            logger.Information("Sending GET request to " + url);
+            logger.Debug("==== Request headers (start) ====");
+            logger.Debug(client.DefaultRequestHeaders.ToString());
+            logger.Debug("==== Request headers (end) ====");
+            return client.DeleteAsync(url).Result;
+        }
     }
 }

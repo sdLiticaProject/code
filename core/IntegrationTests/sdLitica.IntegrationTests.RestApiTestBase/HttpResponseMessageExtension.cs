@@ -1,24 +1,60 @@
 ﻿using System.Net;
 using System.Net.Http;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json.Linq;
 using NUnit.Framework;
+using Serilog;
 
 namespace sdLitica.IntegrationTests.RestApiTestBase
 {
     public static class HttpResponseMessageExtension
     {
-        public static HttpResponseMessage AssertSuccess(this HttpResponseMessage response)
+        private static ILogger Logger;
+
+        public static void Init(ILogger logger)
         {
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK),
-                $"Expected to have status 200, but found {response.StatusCode}. Body was '{response.Content.ReadAsStringAsync().Result}'");
-            return response;
+            Logger = logger;
         }
         
+        public static HttpResponseMessage AssertSuccess(this HttpResponseMessage response)
+        {
+            Assert.That(response.StatusCode, Is.AnyOf(
+                    HttpStatusCode.OK,
+                    HttpStatusCode.Created,
+                    HttpStatusCode.Accepted,
+                    HttpStatusCode.NonAuthoritativeInformation,
+                    HttpStatusCode.NoContent,
+                    HttpStatusCode.ResetContent,
+                    HttpStatusCode.PartialContent,
+                    HttpStatusCode.MultiStatus,
+                    HttpStatusCode.AlreadyReported,
+                    HttpStatusCode.IMUsed
+                ),
+                $"Expected to have status 2XX, but found {response.StatusCode}. Body was '{response.Content.ReadAsStringAsync().Result}'");
+            return response;
+        }
+
         public static HttpResponseMessage AssertError(this HttpResponseMessage response, HttpStatusCode exitCode)
         {
             Assert.That(response.StatusCode, Is.EqualTo(exitCode),
                 $"Expected to have status {exitCode}, but found {response.StatusCode}. Body was {response.Content.ReadAsStringAsync().Result}");
             return response;
+        }
+
+        public static T MapAndLog<T>(this HttpResponseMessage response)
+        {
+            var responseString = response.Content.ReadAsStringAsync().Result;
+            Logger.Information($"Got response:\n{responseString}");
+            return JObject.Parse(responseString)
+                .ToObject<T>();
+        }
+        
+        public static string GetTokenFromResponse(this HttpResponseMessage response)
+        {
+            var responseString = response.Content.ReadAsStringAsync().Result;
+            JToken jToken = JObject.Parse(responseString).SelectToken(CommonHttpConstants.AuthorizationTokenResponse);
+            Assert.NotNull(jToken, $"Got no token from response '{responseString}'");
+            return jToken.Value<string>();
         }
     }
 }
