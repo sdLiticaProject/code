@@ -22,7 +22,22 @@ namespace sdLitica.IntegrationTests.ProfileApi.Tests
 
             _facade.GetMe(session).AssertError(HttpStatusCode.Unauthorized);
         }
-        
+
+        [Test]
+        [Category(nameof(TestCategories.PriorityMedium))]
+        public void TestDoubleLogout()
+        {
+            var session = _facade.PostLogin(new TestLoginModel
+            {
+                Email = Configuration.UserName,
+                Password = Configuration.Password
+            }).AssertSuccess().GetTokenFromResponse();
+            _facade.PostLogout(session).AssertSuccess();
+            _facade.PostLogout(session).AssertError(HttpStatusCode.Unauthorized);
+
+            _facade.GetMe(session).AssertError(HttpStatusCode.Unauthorized);
+        }
+
         [Test]
         [Category(nameof(TestCategories.PriorityLow))]
         [TestCaseSource(typeof(LogoutData), nameof(LogoutData.NegativeLogoutData))]

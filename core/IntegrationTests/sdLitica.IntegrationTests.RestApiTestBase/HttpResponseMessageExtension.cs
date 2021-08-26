@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Net.Http;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json.Linq;
@@ -55,6 +56,13 @@ namespace sdLitica.IntegrationTests.RestApiTestBase
             JToken jToken = JObject.Parse(responseString).SelectToken(CommonHttpConstants.AuthorizationTokenResponse);
             Assert.NotNull(jToken, $"Got no token from response '{responseString}'");
             return jToken.Value<string>();
+        }
+        
+        public static DateTimeOffset GetTokenExpirationDateFromResponse(this HttpResponseMessage response)
+        {
+            var responseString = response.Content.ReadAsStringAsync().Result;
+            JToken jToken = JObject.Parse(responseString).SelectToken(CommonHttpConstants.AuthorizationTokenExpirationDateResponse);
+            return DateTimeOffset.MinValue.AddTicks(jToken.Value<long>());
         }
     }
 }
