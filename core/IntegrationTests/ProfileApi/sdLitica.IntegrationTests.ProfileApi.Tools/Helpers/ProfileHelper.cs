@@ -2,7 +2,7 @@
 using System.Text;
 using sdLitica.IntegrationTests.ProfileApi.Tools.Models;
 
-namespace sdLitica.IntegrationTests.ProfileApi.Tools
+namespace sdLitica.IntegrationTests.ProfileApi.Tools.Helpers
 {
     public class ProfileHelper
     {

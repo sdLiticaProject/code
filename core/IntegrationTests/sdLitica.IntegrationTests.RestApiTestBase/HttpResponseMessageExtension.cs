@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net;
 using System.Net.Http;
-using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using Serilog;
@@ -16,7 +15,7 @@ namespace sdLitica.IntegrationTests.RestApiTestBase
         {
             Logger = logger;
         }
-        
+
         public static HttpResponseMessage AssertSuccess(this HttpResponseMessage response)
         {
             Assert.That(response.StatusCode, Is.AnyOf(
@@ -49,19 +48,25 @@ namespace sdLitica.IntegrationTests.RestApiTestBase
             return JObject.Parse(responseString)
                 .ToObject<T>();
         }
-        
+
         public static string GetTokenFromResponse(this HttpResponseMessage response)
         {
             var responseString = response.Content.ReadAsStringAsync().Result;
             JToken jToken = JObject.Parse(responseString).SelectToken(CommonHttpConstants.AuthorizationTokenResponse);
-            Assert.NotNull(jToken, $"Got no token from response '{responseString}'");
+
+            if (jToken == null)
+            {
+                throw new NullReferenceException($"Got no token from response '{responseString}'");
+            }
+
             return jToken.Value<string>();
         }
-        
+
         public static DateTimeOffset GetTokenExpirationDateFromResponse(this HttpResponseMessage response)
         {
             var responseString = response.Content.ReadAsStringAsync().Result;
-            JToken jToken = JObject.Parse(responseString).SelectToken(CommonHttpConstants.AuthorizationTokenExpirationDateResponse);
+            JToken jToken = JObject.Parse(responseString)
+                .SelectToken(CommonHttpConstants.AuthorizationTokenExpirationDateResponse);
             return DateTimeOffset.MinValue.AddTicks(jToken.Value<long>());
         }
     }

@@ -1,5 +1,4 @@
 ﻿using System.Net.Http;
-using Newtonsoft.Json.Linq;
 using Serilog;
 
 namespace sdLitica.IntegrationTests.RestApiTestBase
