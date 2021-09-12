@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using sdLitica.IntegrationTests.ProfileApi.Tools.Models;
 using sdLitica.IntegrationTests.TestUtils;
 
 namespace sdLitica.IntegrationTests.ProfileApi.Tests.TestData

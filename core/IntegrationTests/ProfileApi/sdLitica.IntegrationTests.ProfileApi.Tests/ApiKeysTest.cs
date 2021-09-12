@@ -16,16 +16,16 @@ namespace sdLitica.IntegrationTests.ProfileApi.Tests
         public void TestSmokeApiKeys()
         {
             var newKeyDescription = TestStringHelper.RandomLatinString();
-            _facade.PostApiKeys(Session, new TestUserApiKeyJsonEntity
+            Facade.PostApiKeys(Session, new TestUserApiKeyJsonEntity
             {
                 Description = newKeyDescription
             }).AssertSuccess();
 
-            var result = _facade.GetApiKeys(Session).AssertSuccess().MapAndLog<List<TestUserApiKeyJsonEntity>>();
+            var result = Facade.GetApiKeys(Session).AssertSuccess().MapAndLog<List<TestUserApiKeyJsonEntity>>();
             Assert.That(newKeyDescription, Is.SubsetOf(result.Select(e => e.Description)));
-            _facade.DeleteApiKey(Session, result.First(e => e.Description.Equals(newKeyDescription)).Id);
+            Facade.DeleteApiKey(Session, result.First(e => e.Description.Equals(newKeyDescription)).Id);
 
-            result = _facade.GetApiKeys(Session).AssertSuccess().MapAndLog<List<TestUserApiKeyJsonEntity>>();
+            result = Facade.GetApiKeys(Session).AssertSuccess().MapAndLog<List<TestUserApiKeyJsonEntity>>();
             Assert.That(newKeyDescription, Is.Not.SubsetOf(result.Select(e => e.Description)));
         }
 
@@ -34,7 +34,7 @@ namespace sdLitica.IntegrationTests.ProfileApi.Tests
         [TestCaseSource(typeof(ApiKeysData), nameof(ApiKeysData.NegativeGetApiKeysSessionData))]
         public void BaseNegativeGetApiKeysTest(string session)
         {
-            _facade.GetApiKeys(session).AssertError(HttpStatusCode.Unauthorized);
+            Facade.GetApiKeys(session).AssertError(HttpStatusCode.Unauthorized);
         }
 
         [Test]
@@ -42,7 +42,7 @@ namespace sdLitica.IntegrationTests.ProfileApi.Tests
         [TestCaseSource(typeof(ApiKeysData), nameof(ApiKeysData.NegativePostApiKeysSessionData))]
         public void BaseNegativePostApiKeyTest(string session)
         {
-            _facade.PostApiKeys(session, new TestUserApiKeyJsonEntity()).AssertError(HttpStatusCode.Unauthorized);
+            Facade.PostApiKeys(session, new TestUserApiKeyJsonEntity()).AssertError(HttpStatusCode.Unauthorized);
         }
 
         [Test]
@@ -50,7 +50,7 @@ namespace sdLitica.IntegrationTests.ProfileApi.Tests
         [TestCaseSource(typeof(ApiKeysData), nameof(ApiKeysData.NegativeDeleteApiKeysSessionData))]
         public void BaseNegativeDeleteApiKeyTest(string session)
         {
-            _facade.DeleteApiKey(session, "key-id").AssertError(HttpStatusCode.Unauthorized);
+            Facade.DeleteApiKey(session, "key-id").AssertError(HttpStatusCode.Unauthorized);
         }
     }
 }

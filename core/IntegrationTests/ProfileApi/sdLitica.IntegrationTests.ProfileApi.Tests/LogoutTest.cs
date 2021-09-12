@@ -13,29 +13,29 @@ namespace sdLitica.IntegrationTests.ProfileApi.Tests
         [Category(nameof(TestCategories.PriorityHigh))]
         public void TestSmokeLogout()
         {
-            var session = _facade.PostLogin(new TestLoginModel
+            var session = Facade.PostLogin(new TestLoginModel
             {
                 Email = Configuration.UserName,
                 Password = Configuration.Password
             }).AssertSuccess().GetTokenFromResponse();
-            _facade.PostLogout(session).AssertSuccess();
+            Facade.PostLogout(session).AssertSuccess();
 
-            _facade.GetMe(session).AssertError(HttpStatusCode.Unauthorized);
+            Facade.GetMe(session).AssertError(HttpStatusCode.Unauthorized);
         }
 
         [Test]
         [Category(nameof(TestCategories.PriorityMedium))]
         public void TestDoubleLogout()
         {
-            var session = _facade.PostLogin(new TestLoginModel
+            var session = Facade.PostLogin(new TestLoginModel
             {
                 Email = Configuration.UserName,
                 Password = Configuration.Password
             }).AssertSuccess().GetTokenFromResponse();
-            _facade.PostLogout(session).AssertSuccess();
-            _facade.PostLogout(session).AssertError(HttpStatusCode.Unauthorized);
+            Facade.PostLogout(session).AssertSuccess();
+            Facade.PostLogout(session).AssertError(HttpStatusCode.Unauthorized);
 
-            _facade.GetMe(session).AssertError(HttpStatusCode.Unauthorized);
+            Facade.GetMe(session).AssertError(HttpStatusCode.Unauthorized);
         }
 
         [Test]
@@ -43,7 +43,7 @@ namespace sdLitica.IntegrationTests.ProfileApi.Tests
         [TestCaseSource(typeof(LogoutData), nameof(LogoutData.NegativeLogoutData))]
         public void BaseNegativeMyUserTest(string session)
         {
-            _facade.PostLogout(session).AssertError(HttpStatusCode.Unauthorized);
+            Facade.PostLogout(session).AssertError(HttpStatusCode.Unauthorized);
         }
     }
 }

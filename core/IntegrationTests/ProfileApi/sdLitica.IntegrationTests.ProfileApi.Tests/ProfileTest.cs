@@ -4,6 +4,7 @@ using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using sdLitica.IntegrationTests.ProfileApi.Tests.TestData;
 using sdLitica.IntegrationTests.ProfileApi.Tools;
+using sdLitica.IntegrationTests.ProfileApi.Tools.Helpers;
 using sdLitica.IntegrationTests.ProfileApi.Tools.Models;
 using sdLitica.IntegrationTests.RestApiTestBase;
 using sdLitica.IntegrationTests.TestUtils;
@@ -24,16 +25,16 @@ namespace sdLitica.IntegrationTests.ProfileApi.Tests
                 LastName = TestStringHelper.RandomLatinString(),
             };
 
-            _facade.PostCreateNewProfile(profile).AssertSuccess();
+            Facade.PostCreateNewProfile(profile).AssertSuccess();
 
-            var session = _facade.PostLogin(new TestLoginModel
+            var session = Facade.PostLogin(new TestLoginModel
             {
                 Email = profile.Email,
                 Password = profile.Password
             }).AssertSuccess().GetTokenFromResponse();
 
-            var newProfile = _facade.GetMe(session).AssertSuccess().MapAndLog<TestUserModel>();
-            _facade.PostLogout(session).AssertSuccess();
+            var newProfile = Facade.GetMe(session).AssertSuccess().MapAndLog<TestUserModel>();
+            Facade.PostLogout(session).AssertSuccess();
 
             Logger.Information($"Got new profile: {newProfile}");
 
@@ -53,19 +54,19 @@ namespace sdLitica.IntegrationTests.ProfileApi.Tests
             };
 
             var createdProfile = JObject
-                .Parse(_facade.PostCreateNewProfile(profile).AssertSuccess().Content.ReadAsStringAsync().Result)
+                .Parse(Facade.PostCreateNewProfile(profile).AssertSuccess().Content.ReadAsStringAsync().Result)
                 .ToObject<TestUserModel>();
 
             Assert.IsEmpty(ProfileHelper.CompareUserProfiles(profile, createdProfile));
 
-            var session = _facade.PostLogin(new TestLoginModel
+            var session = Facade.PostLogin(new TestLoginModel
             {
                 Email = profile.Email,
                 Password = profile.Password
             }).AssertSuccess().GetTokenFromResponse();
 
-            var newProfile = _facade.GetMe(session).AssertSuccess().MapAndLog<TestUserModel>();
-            _facade.PostLogout(session).AssertSuccess();
+            var newProfile = Facade.GetMe(session).AssertSuccess().MapAndLog<TestUserModel>();
+            Facade.PostLogout(session).AssertSuccess();
 
             Assert.IsEmpty(ProfileHelper.CompareUserProfiles(profile, newProfile));
         }
@@ -75,7 +76,7 @@ namespace sdLitica.IntegrationTests.ProfileApi.Tests
         [TestCaseSource(typeof(CreateNewProfileData), nameof(CreateNewProfileData.NegativeNewProfileData))]
         public void BaseNegativeCreateUserTest(TestUserModel profile)
         {
-            _facade.PostCreateNewProfile(profile).AssertError(HttpStatusCode.BadRequest);
+            Facade.PostCreateNewProfile(profile).AssertError(HttpStatusCode.BadRequest);
         }
 
         [Test]
@@ -83,16 +84,16 @@ namespace sdLitica.IntegrationTests.ProfileApi.Tests
         [TestCaseSource(typeof(CreateNewProfileData), nameof(CreateNewProfileData.PositiveNewProfileData))]
         public void BasePositiveCreateUserTest(TestUserModel profile)
         {
-            _facade.PostCreateNewProfile(profile).AssertSuccess();
+            Facade.PostCreateNewProfile(profile).AssertSuccess();
 
-            var session = _facade.PostLogin(new TestLoginModel
+            var session = Facade.PostLogin(new TestLoginModel
             {
                 Email = profile.Email,
                 Password = profile.Password
             }).AssertSuccess().GetTokenFromResponse();
 
-            var newProfile = _facade.GetMe(session).AssertSuccess().MapAndLog<TestUserModel>();
-            _facade.PostLogout(session).AssertSuccess();
+            var newProfile = Facade.GetMe(session).AssertSuccess().MapAndLog<TestUserModel>();
+            Facade.PostLogout(session).AssertSuccess();
 
             Assert.IsEmpty(ProfileHelper.CompareUserProfiles(profile, newProfile));
         }

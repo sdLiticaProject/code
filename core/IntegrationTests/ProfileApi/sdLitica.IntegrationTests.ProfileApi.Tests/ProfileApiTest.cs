@@ -1,9 +1,6 @@
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
-using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using sdLitica.IntegrationTests.ProfileApi.Tools;
+using sdLitica.IntegrationTests.ProfileApi.Tools.Helpers;
 using sdLitica.IntegrationTests.RestApiTestBase;
 
 namespace sdLitica.IntegrationTests.ProfileApi.Tests
@@ -11,7 +8,7 @@ namespace sdLitica.IntegrationTests.ProfileApi.Tests
     [TestFixture]
     public class ProfileApiTest : BaseAuthenticatedApiTest
     {
-        protected ProfileApiFacade _facade;
+        protected ProfileApiFacade Facade;
 
         [OneTimeSetUp]
         public void InitFacade()
@@ -19,9 +16,12 @@ namespace sdLitica.IntegrationTests.ProfileApi.Tests
             // correct config
             Assert.AreEqual("user@sdcliud.io", Configuration.UserName);
             // todo bootstrap it later
-            _facade = new ProfileApiFacade(
+            Facade = new ProfileApiFacade(
                 Logger,
                 Configuration.RootUrl);
+
+            ProfileWhenExtension.Init(Logger, Configuration);
+            ProfileThenExtension.Init(Logger, Configuration);
         }
     }
 }

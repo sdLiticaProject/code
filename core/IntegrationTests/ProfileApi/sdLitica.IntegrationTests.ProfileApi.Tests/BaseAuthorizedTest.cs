@@ -11,7 +11,7 @@ namespace sdLitica.IntegrationTests.ProfileApi.Tests
         [SetUp]
         public void Login()
         {
-            Session = _facade.PostLogin(new TestLoginModel
+            Session = Facade.PostLogin(new TestLoginModel
             {
                 Email = Configuration.UserName,
                 Password = Configuration.Password
@@ -20,7 +20,7 @@ namespace sdLitica.IntegrationTests.ProfileApi.Tests
         [TearDown]
         public void Logout()
         { 
-            _facade.PostLogout(Session);
+            Facade.PostLogout(Session);
         }
     }
 }
