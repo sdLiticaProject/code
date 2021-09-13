@@ -10,7 +10,6 @@ namespace sdLitica.IntegrationTests.Tests
     /// This class represents a base test class for all other integration test
     /// classes
     /// </summary>
-    [TestFixture]
     public class BaseApiTest
     {
         protected BaseTestConfiguration Configuration;

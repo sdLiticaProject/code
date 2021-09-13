@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace sdLitica.IntegrationTests.TestUtils.Facades.ProfileApi.Models
 {
@@ -17,6 +18,7 @@ namespace sdLitica.IntegrationTests.TestUtils.Facades.ProfileApi.Models
         /// <summary>
         /// Key description
         /// </summary>
+        [JsonProperty(PropertyName = "description")]
         public string Description { get; set; }
 
         /// <summary>

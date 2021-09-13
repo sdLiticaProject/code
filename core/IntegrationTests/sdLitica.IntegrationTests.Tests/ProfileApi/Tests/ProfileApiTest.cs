@@ -6,7 +6,6 @@ using Serilog.Core;
 
 namespace sdLitica.IntegrationTests.Tests.ProfileApi.Tests
 {
-    [TestFixture]
     public class ProfileApiTest : BaseWithDefaultUserTest
     {
         protected ProfileApiFacade Facade;

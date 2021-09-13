@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Net;
 using NUnit.Framework;
+using NUnit.Framework.Constraints;
 using sdLitica.IntegrationTests.Tests.ProfileApi.TestData;
 using sdLitica.IntegrationTests.TestUtils;
 using sdLitica.IntegrationTests.TestUtils.Facades.ProfileApi.Models;
@@ -21,12 +22,12 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Tests
                 Description = newKeyDescription
             }).AssertSuccess();
 
-            var result = Facade.GetApiKeys(Session).AssertSuccess().MapAndLog<List<TestUserApiKeyJsonEntity>>();
-            Assert.That(newKeyDescription, Is.SubsetOf(result.Select(e => e.Description)));
-            Facade.DeleteApiKey(Session, result.First(e => e.Description.Equals(newKeyDescription)).Id);
+            var result = Facade.GetApiKeys(Session).AssertSuccess().MapAndLog<TestApiKeysList>();
+            Assert.That(result.Entities.Select(e => e.Description), Contains.Item(newKeyDescription));
+            Facade.DeleteApiKey(Session, result.Entities.First(e => e.Description.Equals(newKeyDescription)).Id);
 
-            result = Facade.GetApiKeys(Session).AssertSuccess().MapAndLog<List<TestUserApiKeyJsonEntity>>();
-            Assert.That(newKeyDescription, Is.Not.SubsetOf(result.Select(e => e.Description)));
+            result = Facade.GetApiKeys(Session).AssertSuccess().MapAndLog<TestApiKeysList>();
+            Assert.False(result.Entities.Select(e => e.Description).Contains(newKeyDescription));
         }
 
         [Test]
