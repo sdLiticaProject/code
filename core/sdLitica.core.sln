@@ -28,8 +28,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sdLitica.TimeSeries", "Data
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sdLitica.PlatformCore", "Services\sdLitica.PlatformCore\sdLitica.PlatformCore.csproj", "{3A63F9EA-A894-4247-9BE9-48606AF037A7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sdLitica.PlatformCore.Test", "Services\sdLitica.PlatformCore.Test\sdLitica.PlatformCore.Test.csproj", "{FB8A33AE-1840-4632-9046-E1D7676F537D}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sdLitica.AnalyticsManagementCore", "Services\sdLitica.AnalyticsManagementCore\sdLitica.AnalyticsManagementCore.csproj", "{F3FF1308-48B3-47E2-A001-E54186252354}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sdLitica.Events", "Domain\sdLitica.Events\sdLitica.Events.csproj", "{C3086682-C96E-4F69-9623-F8834D9FD8A9}"
@@ -38,15 +36,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sdLitica.Entities", "Domain
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IntegrationTests", "IntegrationTests", "{1AD32AC4-64B7-4F01-9B4F-4D257C956B4B}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ProfileApi", "ProfileApi", "{B3E61A97-AABA-4EA6-A1B9-AE664FADD274}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sdLitica.IntegrationTests.ProfileApi.Tests", "IntegrationTests\ProfileApi\sdLitica.IntegrationTests.ProfileApi.Tests\sdLitica.IntegrationTests.ProfileApi.Tests.csproj", "{16186A22-319C-4DE6-AB40-9ED960F0377D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sdLitica.IntegrationTests.ProfileApi.Tools", "IntegrationTests\ProfileApi\sdLitica.IntegrationTests.ProfileApi.Tools\sdLitica.IntegrationTests.ProfileApi.Tools.csproj", "{C5B22925-0B90-420C-BF2F-C4B2A505ABAA}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sdLitica.IntegrationTests.RestApiTestBase", "IntegrationTests\sdLitica.IntegrationTests.RestApiTestBase\sdLitica.IntegrationTests.RestApiTestBase.csproj", "{8A8AE7E1-88E5-4682-8149-DA09CE6F988E}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sdLitica.IntegrationTests.TestUtils", "IntegrationTests\sdLitica.IntegrationTests.TestUtils\sdLitica.IntegrationTests.TestUtils.csproj", "{EAE4D0F9-7EED-425A-8594-491772E1D30F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sdLitica.IntegrationTests.Tests", "IntegrationTests\sdLitica.IntegrationTests.Tests\sdLitica.IntegrationTests.Tests.csproj", "{FF230D44-7A10-4F21-B4BC-ABDDFE71A9B2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -90,10 +82,6 @@ Global
 		{3A63F9EA-A894-4247-9BE9-48606AF037A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3A63F9EA-A894-4247-9BE9-48606AF037A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3A63F9EA-A894-4247-9BE9-48606AF037A7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FB8A33AE-1840-4632-9046-E1D7676F537D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FB8A33AE-1840-4632-9046-E1D7676F537D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FB8A33AE-1840-4632-9046-E1D7676F537D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FB8A33AE-1840-4632-9046-E1D7676F537D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C7F6F87E-9571-4182-8A73-3873339CD75A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C7F6F87E-9571-4182-8A73-3873339CD75A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C7F6F87E-9571-4182-8A73-3873339CD75A}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -102,22 +90,14 @@ Global
 		{C3086682-C96E-4F69-9623-F8834D9FD8A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C3086682-C96E-4F69-9623-F8834D9FD8A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C3086682-C96E-4F69-9623-F8834D9FD8A9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{16186A22-319C-4DE6-AB40-9ED960F0377D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{16186A22-319C-4DE6-AB40-9ED960F0377D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{16186A22-319C-4DE6-AB40-9ED960F0377D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{16186A22-319C-4DE6-AB40-9ED960F0377D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C5B22925-0B90-420C-BF2F-C4B2A505ABAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C5B22925-0B90-420C-BF2F-C4B2A505ABAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C5B22925-0B90-420C-BF2F-C4B2A505ABAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C5B22925-0B90-420C-BF2F-C4B2A505ABAA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8A8AE7E1-88E5-4682-8149-DA09CE6F988E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8A8AE7E1-88E5-4682-8149-DA09CE6F988E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8A8AE7E1-88E5-4682-8149-DA09CE6F988E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8A8AE7E1-88E5-4682-8149-DA09CE6F988E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EAE4D0F9-7EED-425A-8594-491772E1D30F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EAE4D0F9-7EED-425A-8594-491772E1D30F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EAE4D0F9-7EED-425A-8594-491772E1D30F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EAE4D0F9-7EED-425A-8594-491772E1D30F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF230D44-7A10-4F21-B4BC-ABDDFE71A9B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF230D44-7A10-4F21-B4BC-ABDDFE71A9B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF230D44-7A10-4F21-B4BC-ABDDFE71A9B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF230D44-7A10-4F21-B4BC-ABDDFE71A9B2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{BBCA473A-1CAB-4C97-8D19-633C9DFF4969} = {8FE086CE-F36E-4C43-9FC9-AEDADB0DD7A6}
@@ -130,13 +110,9 @@ Global
 		{310DA70F-D266-46B5-A64E-2B990203A42E} = {B2AA3986-F9BE-4A5A-A512-363D01E980FB}
 		{F3FF1308-48B3-47E2-A001-E54186252354} = {C6232015-7650-4111-A276-BB1B947124F9}
 		{3A63F9EA-A894-4247-9BE9-48606AF037A7} = {C6232015-7650-4111-A276-BB1B947124F9}
-		{FB8A33AE-1840-4632-9046-E1D7676F537D} = {C6232015-7650-4111-A276-BB1B947124F9}
 		{C7F6F87E-9571-4182-8A73-3873339CD75A} = {E905C8FC-65C2-4200-9B71-594B5EA83BD4}
 		{C3086682-C96E-4F69-9623-F8834D9FD8A9} = {E905C8FC-65C2-4200-9B71-594B5EA83BD4}
-		{B3E61A97-AABA-4EA6-A1B9-AE664FADD274} = {1AD32AC4-64B7-4F01-9B4F-4D257C956B4B}
-		{16186A22-319C-4DE6-AB40-9ED960F0377D} = {B3E61A97-AABA-4EA6-A1B9-AE664FADD274}
-		{C5B22925-0B90-420C-BF2F-C4B2A505ABAA} = {B3E61A97-AABA-4EA6-A1B9-AE664FADD274}
-		{8A8AE7E1-88E5-4682-8149-DA09CE6F988E} = {1AD32AC4-64B7-4F01-9B4F-4D257C956B4B}
 		{EAE4D0F9-7EED-425A-8594-491772E1D30F} = {1AD32AC4-64B7-4F01-9B4F-4D257C956B4B}
+		{FF230D44-7A10-4F21-B4BC-ABDDFE71A9B2} = {1AD32AC4-64B7-4F01-9B4F-4D257C956B4B}
 	EndGlobalSection
 EndGlobal
