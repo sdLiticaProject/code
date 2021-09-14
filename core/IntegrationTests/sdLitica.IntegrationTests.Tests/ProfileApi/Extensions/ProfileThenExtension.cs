@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using System.Reflection.Metadata.Ecma335;
 using NUnit.Framework;
 using sdLitica.IntegrationTests.Tests.ProfileApi.Helpers;
 using sdLitica.IntegrationTests.TestUtils.BddUtils;
@@ -17,11 +18,9 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Extensions
     {
         private static ProfileApiFacade _facade;
 
-        public static void Init(ILogger logger, BaseTestConfiguration configuration)
+        public static void Init(ProfileApiFacade facade)
         {
-            _facade = new ProfileApiFacade(
-                logger,
-                configuration.RootUrl);
+            _facade = facade;
         }
 
         public static ThenStatement ResponseHasCode(this ThenStatement thenStatement, HttpStatusCode code)
@@ -34,8 +33,49 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Extensions
 
             return thenStatement;
         }
+        
+        public static ThenStatement CurrentUserIsEqualToExpected(this ThenStatement thenStatement)
+        {
+            thenStatement.GetStatementLogger()
+                .Information("[{ContextStatement}] Comparing given user credentials with response from 'GetMe'",
+                    thenStatement.GetType().Name);
+            
+            var currentUser = thenStatement.GetThenData<TestUserModel>(BddKeyConstants.CurrentUserResponse);
+            var expectedUser = thenStatement.GetGivenData<TestLoginModel>();
+            
+            Assert.That(currentUser.Email, Is.EqualTo(expectedUser.Email));
+            Assert.That(currentUser.Password, Is.Null, "Expected user password to be hidden");
+            Assert.That(currentUser.Id, Is.Not.Null, "Expected current user to have any Id");
+            
+            return thenStatement;
+        }
+        
+        public static ThenStatement CurrentUserIsEqualTo(this ThenStatement thenStatement, TestUserModel expectedUser)
+        {
+            thenStatement.GetStatementLogger()
+                .Information("[{ContextStatement}] Comparing 'GetMe' response with expected user model",
+                    thenStatement.GetType().Name);
+            
+            var currentUser = thenStatement.GetThenData<TestUserModel>(BddKeyConstants.CurrentUserResponse);
+            
+            Assert.IsEmpty(ProfileHelper.CompareUserProfiles(expectedUser, currentUser));
+            
+            return thenStatement;
+        }
 
+        public static ThenStatement SessionTokenIsInvalid(this ThenStatement thenStatement, string testKey = null)
+        {
+            thenStatement.GetStatementLogger()
+                .Information("[{ContextStatement}] Looking for session token in the 'When' dictionary",
+                    thenStatement.GetType().Name);
 
+            var session = thenStatement.GetThenData<string>(BddKeyConstants.SessionTokenKey + testKey);
+
+            _facade.GetMe(session).AssertError(HttpStatusCode.Unauthorized);
+
+            return thenStatement;
+        }
+        
         public static ThenStatement SessionTokenIsPresent(this ThenStatement thenStatement, string testKey = null)
         {
             thenStatement.GetStatementLogger()
@@ -72,24 +112,6 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Extensions
                     .Warning($"[{{ContextStatement}}] An error occured during logout. {e}",
                         thenStatement.GetType().Name);
             }
-
-            return thenStatement;
-        }
-
-        public static ThenStatement TestUserIsCreatedOrPresent(this ThenStatement thenStatement, string testKey = null)
-        {
-            var response = thenStatement.GetThenData<HttpResponseMessage>(BddKeyConstants.LastHttpResponse);
-            if (response.StatusCode == HttpStatusCode.Conflict)
-                return thenStatement;
-            if (response.StatusCode == HttpStatusCode.Created)
-            {
-                Assert.IsEmpty(ProfileHelper.CompareUserProfiles(
-                    thenStatement.GetGivenData<TestUserModel>(),
-                    thenStatement.GetThenData<TestUserModel>(BddKeyConstants.CreatedUserResponse)));
-                return thenStatement;
-            }
-
-            Assert.Fail("Test user was not created");
             return thenStatement;
         }
     }

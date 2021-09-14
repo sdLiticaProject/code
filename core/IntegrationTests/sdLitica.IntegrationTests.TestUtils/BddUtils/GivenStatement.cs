@@ -10,6 +10,7 @@ namespace sdLitica.IntegrationTests.TestUtils.BddUtils
         public GivenStatement(ILogger logger) : base(logger)
         {
         }
+
         public WhenStatement When => new WhenStatement(Logger, _givenData);
 
         public void AddData<T>(T data, string additionalKey = null)

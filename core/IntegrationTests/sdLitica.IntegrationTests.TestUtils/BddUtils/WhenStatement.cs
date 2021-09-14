@@ -19,10 +19,21 @@ namespace sdLitica.IntegrationTests.TestUtils.BddUtils
         {
             return _givenData[GetDictionaryKey(typeof(T), additionalKey)] as T;
         }
-        
+
+        public T GetResultData<T>(string additionalKey = null) where T : class
+        {
+            return _thenData[GetDictionaryKey(typeof(T), additionalKey)] as T;
+        }
+
         public void AddResultData<T>(T data, string additionalKey = null) where T : class
         {
-            _thenData.Add(GetDictionaryKey(typeof(T), additionalKey), data);
+            var key = GetDictionaryKey(typeof(T), additionalKey);
+            if (_thenData.ContainsKey(key))
+            {
+                _thenData.Remove(key);
+            }
+
+            _thenData.Add(key, data);
         }
     }
 }

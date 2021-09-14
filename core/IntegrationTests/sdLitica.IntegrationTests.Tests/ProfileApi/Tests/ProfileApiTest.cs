@@ -20,8 +20,9 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Tests
                 Logger,
                 Configuration.RootUrl);
 
-            ProfileWhenExtension.Init(Logger, Configuration);
-            ProfileThenExtension.Init(Logger, Configuration);
+            ProfileGivenExtension.Init(Configuration);
+            ProfileWhenExtension.Init(Facade);
+            ProfileThenExtension.Init(Facade);
         }
     }
 }

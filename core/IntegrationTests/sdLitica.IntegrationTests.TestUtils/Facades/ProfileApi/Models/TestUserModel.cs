@@ -11,5 +11,13 @@
         public string Email { get; set; }
 
         public string Password { get; set; }
+
+        public TestUserModel ApplyUpdate(TestUserUpdateModel updateModel)
+        {
+            FirstName = updateModel.FirstName;
+            LastName = updateModel.LastName;
+            return this;
+        }
+        
     }
 }

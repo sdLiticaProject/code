@@ -1,8 +1,11 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using NUnit.Framework;
+using sdLitica.IntegrationTests.Tests.CommonTestData;
+using sdLitica.IntegrationTests.Tests.ProfileApi.Extensions;
 using sdLitica.IntegrationTests.Tests.ProfileApi.Helpers;
-using sdLitica.IntegrationTests.Tests.ProfileApi.TestData;
 using sdLitica.IntegrationTests.TestUtils;
+using sdLitica.IntegrationTests.TestUtils.BddUtils;
 using sdLitica.IntegrationTests.TestUtils.Facades.ProfileApi.Models;
 using sdLitica.IntegrationTests.TestUtils.RestUtils.Extensions;
 
@@ -14,25 +17,21 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Tests
         [Category(nameof(TestCategories.PriorityHigh))]
         public void TestSmokeForConfigUserMe()
         {
-            var session = Facade.PostLogin(new TestLoginModel
-            {
-                Email = Configuration.UserName,
-                Password = Configuration.Password
-            }).AssertSuccess().GetTokenFromResponse();
-
-            var newProfile = Facade.GetMe(session).AssertSuccess().MapAndLog<TestUserModel>();
-            Facade.PostLogout(session).AssertSuccess();
-
-            Assert.That(newProfile.Email, Is.EqualTo(Configuration.UserName));
-            Assert.That(newProfile.Password, Is.Null);
-            Assert.That(newProfile.Id, Is.Not.Null);
+            new GivenStatement(Logger)
+                .DefaultUserLoginCredentials()
+                .When
+                .LoginRequestIsSend()
+                .GetCurrentUserRequestIsSend()
+                .Then
+                .CurrentUserIsEqualToExpected()
+                .LogoutIfSessionTokenIsPresent();
         }
 
         [Test]
         [Category(nameof(TestCategories.PriorityHigh))]
         public void TestSmokeForNewUserMe()
         {
-            var profile = new TestUserModel
+            var userModel = new TestUserModel()
             {
                 Email = $"{TestStringHelper.RandomLatinString()}@example.com",
                 Password = TestStringHelper.RandomLatinString(),
@@ -40,67 +39,72 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Tests
                 LastName = TestStringHelper.RandomLatinString(),
             };
 
-            Facade.PostCreateNewProfile(profile).AssertSuccess();
-
-            var session = Facade.PostLogin(new TestLoginModel
-            {
-                Email = profile.Email,
-                Password = profile.Password
-            }).AssertSuccess().GetTokenFromResponse();
-
-            var newProfile = Facade.GetMe(session).AssertSuccess().MapAndLog<TestUserModel>();
-            Facade.PostLogout(session).AssertSuccess();
-
-            Assert.IsEmpty(ProfileHelper.CompareUserProfiles(profile, newProfile));
+            new GivenStatement(Logger)
+                .NewUserData(userModel)
+                .UserLoginCredentials(new TestLoginModel
+                {
+                    Email = userModel.Email,
+                    Password = userModel.Password,
+                })
+                .When
+                .CreateUserRequestIsSend()
+                .LoginRequestIsSend()
+                .GetCurrentUserRequestIsSend()
+                .Then
+                .CurrentUserIsEqualTo(userModel)
+                .LogoutIfSessionTokenIsPresent();
         }
 
         [Test]
         [Category(nameof(TestCategories.PriorityHigh))]
         public void TestSmokeForNewUserAfterUpdateMe()
         {
-            var profile = new TestUserModel
+            var userModel = new TestUserModel()
             {
                 Email = $"{TestStringHelper.RandomLatinString()}@example.com",
                 Password = TestStringHelper.RandomLatinString(),
                 FirstName = TestStringHelper.RandomLatinString(),
                 LastName = TestStringHelper.RandomLatinString(),
             };
-
-            var createdProfile = Facade.PostCreateNewProfile(profile).AssertSuccess().MapAndLog<TestUserModel>();
-
-            Assert.IsEmpty(ProfileHelper.CompareUserProfiles(profile, createdProfile));
-
-            var session = Facade.PostLogin(new TestLoginModel
-            {
-                Email = profile.Email,
-                Password = profile.Password
-            }).AssertSuccess().GetTokenFromResponse();
-
-            var newProfile = Facade.GetMe(session).AssertSuccess().MapAndLog<TestUserModel>();
-
-            Assert.IsEmpty(ProfileHelper.CompareUserProfiles(profile, newProfile));
-
-            var updateProfile = new TestUserUpdateModel
+            
+            var updateModel = new TestUserUpdateModel
                 {FirstName = TestStringHelper.RandomLatinString(), LastName = TestStringHelper.RandomLatinString()};
 
-            Facade.PostUpdateProfileNames(session, updateProfile).AssertSuccess();
-
-            profile.FirstName = updateProfile.FirstName;
-            profile.LastName = updateProfile.LastName;
-
-            var updatedProfile = Facade.GetMe(session).AssertSuccess().MapAndLog<TestUserModel>();
-
-            Facade.PostLogout(session).AssertSuccess();
-
-            Assert.IsEmpty(ProfileHelper.CompareUserProfiles(profile, updatedProfile));
+            var whenLoggedIn = new GivenStatement(Logger)
+                .NewUserData(userModel)
+                .UserLoginCredentials(new TestLoginModel
+                {
+                    Email = userModel.Email,
+                    Password = userModel.Password,
+                })
+                .When
+                .CreateUserRequestIsSend()
+                .LoginRequestIsSend();
+            
+            whenLoggedIn
+                .GetCurrentUserRequestIsSend()
+                .Then
+                .CurrentUserIsEqualTo(userModel);
+            
+            whenLoggedIn
+                .UpdateUserRequestIsSend(updateModel)
+                .GetCurrentUserRequestIsSend()
+                .Then
+                .CurrentUserIsEqualTo(userModel.ApplyUpdate(updateModel))
+                .LogoutIfSessionTokenIsPresent();
         }
 
         [Test]
         [Category(nameof(TestCategories.PriorityLow))]
-        [TestCaseSource(typeof(MeData), nameof(MeData.NegativeMyProfileData))]
+        [TestCaseSource(typeof(CommonSessionData), nameof(CommonSessionData.NegativeSessionData))]
         public void BaseNegativeMyUserTest(string session)
         {
-            Facade.GetMe(session).AssertError(HttpStatusCode.Unauthorized);
+            new GivenStatement(Logger)
+                .UserSession(session)
+                .When
+                .GetCurrentUserRequestIsSend()
+                .Then
+                .ResponseHasCode(HttpStatusCode.Unauthorized);
         }
     }
 }

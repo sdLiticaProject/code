@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Net;
 using NUnit.Framework;
-using NUnit.Framework.Constraints;
+using sdLitica.IntegrationTests.Tests.CommonTestData;
 using sdLitica.IntegrationTests.Tests.ProfileApi.TestData;
 using sdLitica.IntegrationTests.TestUtils;
 using sdLitica.IntegrationTests.TestUtils.Facades.ProfileApi.Models;
@@ -32,7 +31,7 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Tests
 
         [Test]
         [Category(nameof(TestCategories.PriorityLow))]
-        [TestCaseSource(typeof(ApiKeysData), nameof(ApiKeysData.NegativeGetApiKeysSessionData))]
+        [TestCaseSource(typeof(CommonSessionData), nameof(CommonSessionData.NegativeSessionData))]
         public void BaseNegativeGetApiKeysTest(string session)
         {
             Facade.GetApiKeys(session).AssertError(HttpStatusCode.Unauthorized);
@@ -40,7 +39,7 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Tests
 
         [Test]
         [Category(nameof(TestCategories.PriorityLow))]
-        [TestCaseSource(typeof(ApiKeysData), nameof(ApiKeysData.NegativePostApiKeysSessionData))]
+        [TestCaseSource(typeof(CommonSessionData), nameof(CommonSessionData.NegativeSessionData))]
         public void BaseNegativePostApiKeyTest(string session)
         {
             Facade.PostApiKeys(session, new TestUserApiKeyJsonEntity()).AssertError(HttpStatusCode.Unauthorized);
@@ -48,7 +47,7 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Tests
 
         [Test]
         [Category(nameof(TestCategories.PriorityLow))]
-        [TestCaseSource(typeof(ApiKeysData), nameof(ApiKeysData.NegativeDeleteApiKeysSessionData))]
+        [TestCaseSource(typeof(CommonSessionData), nameof(CommonSessionData.NegativeSessionData))]
         public void BaseNegativeDeleteApiKeyTest(string session)
         {
             Facade.DeleteApiKey(session, "key-id").AssertError(HttpStatusCode.Unauthorized);
