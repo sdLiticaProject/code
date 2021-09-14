@@ -1,8 +1,10 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
+using sdLitica.IntegrationTests.Tests.CommonTestData;
+using sdLitica.IntegrationTests.Tests.ProfileApi.Extensions;
 using sdLitica.IntegrationTests.TestUtils;
+using sdLitica.IntegrationTests.TestUtils.BddUtils;
 using sdLitica.IntegrationTests.TestUtils.Facades.ProfileApi.Models;
 using sdLitica.IntegrationTests.TestUtils.RestUtils.Extensions;
 
@@ -14,148 +16,192 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Tests
         [Category(nameof(TestCategories.PriorityHigh))]
         public void TestSmokeUpdate()
         {
-            var oldProfile = Facade.GetMe(Session).AssertSuccess().MapAndLog<TestUserModel>();
+            var oldProfile = Given
+                .UserSession(Session)
+                .When
+                .GetCurrentUserRequestIsSend()
+                .GetResultData<TestUserModel>(BddKeyConstants.CurrentUserResponse);
 
-            oldProfile.FirstName = TestStringHelper.RandomLatinString();
-            oldProfile.LastName = TestStringHelper.RandomLatinString();
-
-            Facade.PostUpdateProfileNames(Session, new TestUserUpdateModel
+            var updateModel = new TestUserUpdateModel
             {
-                FirstName = oldProfile.FirstName,
-                LastName = oldProfile.LastName
-            }).AssertSuccess();
+                FirstName = TestStringHelper.RandomLatinString(),
+                LastName = TestStringHelper.RandomLatinString()
+            };
+            oldProfile.ApplyUpdate(updateModel);
 
-            var newProfile = Facade.GetMe(Session).AssertSuccess().MapAndLog<TestUserModel>();
-
-            Assert.That(JObject.FromObject(newProfile), Is.EqualTo(JObject.FromObject(oldProfile)),
-                $"Expected to have '{oldProfile}' profile after update, but found '{newProfile}'");
+            Given
+                .UserSession(Session)
+                .When
+                .UpdateUserRequestIsSend(updateModel)
+                .GetCurrentUserRequestIsSend()
+                .Then
+                .CurrentUserIsEqualTo(oldProfile);
         }
 
         [Test]
         [Category(nameof(TestCategories.PriorityHigh))]
         public void TestDoubleUpdate()
         {
-            var oldProfile = Facade.GetMe(Session).AssertSuccess().MapAndLog<TestUserModel>();
+            var oldProfile = Given
+                .UserSession(Session)
+                .When
+                .GetCurrentUserRequestIsSend()
+                .GetResultData<TestUserModel>(BddKeyConstants.CurrentUserResponse);
 
-            oldProfile.FirstName = TestStringHelper.RandomLatinString();
-            oldProfile.LastName = TestStringHelper.RandomLatinString();
-
-            Facade.PostUpdateProfileNames(Session, new TestUserUpdateModel
-            {
-                FirstName = oldProfile.FirstName,
-                LastName = oldProfile.LastName
-            }).AssertSuccess();
-
-            var newProfile = Facade.GetMe(Session).AssertSuccess().MapAndLog<TestUserModel>();
-
-            Assert.That(JObject.FromObject(newProfile), Is.EqualTo(JObject.FromObject(oldProfile)),
-                $"Expected to have '{oldProfile}' profile after update, but found '{newProfile}'");
-
-            oldProfile = newProfile;
-
-            Facade.PostUpdateProfileNames(Session, new TestUserUpdateModel
-            {
-                FirstName = oldProfile.FirstName,
-                LastName = oldProfile.LastName
-            }).AssertSuccess();
-
-            newProfile = Facade.GetMe(Session).AssertSuccess().MapAndLog<TestUserModel>();
-
-            Assert.That(JObject.FromObject(newProfile), Is.EqualTo(JObject.FromObject(oldProfile)),
-                $"Expected to have '{oldProfile}' profile after update, but found '{newProfile}'");
-        }
-
-        [Test]
-        [Category(nameof(TestCategories.PriorityMedium))]
-        public void TestUpdateWithSessionEmpty()
-        {
-            Facade.PostUpdateProfileNames(string.Empty, new TestUserUpdateModel
+            var updateModel = new TestUserUpdateModel
             {
                 FirstName = TestStringHelper.RandomLatinString(),
                 LastName = TestStringHelper.RandomLatinString()
-            }).AssertError(HttpStatusCode.Unauthorized);
+            };
+            oldProfile.ApplyUpdate(updateModel);
+
+            Given
+                .UserSession(Session)
+                .When
+                .UpdateUserRequestIsSend(updateModel)
+                .GetCurrentUserRequestIsSend()
+                .Then
+                .CurrentUserIsEqualTo(oldProfile);
+            
+            updateModel = new TestUserUpdateModel
+            {
+                FirstName = TestStringHelper.RandomLatinString(),
+                LastName = TestStringHelper.RandomLatinString()
+            };
+            oldProfile.ApplyUpdate(updateModel);
+            
+            Given
+                .UserSession(Session)
+                .When
+                .UpdateUserRequestIsSend(updateModel)
+                .GetCurrentUserRequestIsSend()
+                .Then
+                .CurrentUserIsEqualTo(oldProfile);
+        }
+
+        [Test]
+        [Category(nameof(TestCategories.PriorityLow))]
+        [TestCaseSource(typeof(CommonSessionData), nameof(CommonSessionData.NegativeSessionData))]
+        public void TestUpdateWithSessionEmpty(string session)
+        {
+            Given
+                .UserSession(session)
+                .When
+                .UpdateUserRequestIsSend(new TestUserUpdateModel
+                {
+                    FirstName = TestStringHelper.RandomLatinString(),
+                    LastName = TestStringHelper.RandomLatinString()
+                })
+                .Then
+                .ResponseHasCode(HttpStatusCode.Unauthorized);
         }
 
         [Test]
         [Category(nameof(TestCategories.PriorityMedium))]
         public void TestUpdateOnlyFirstName()
         {
-            var oldProfile = Facade.GetMe(Session).AssertSuccess().MapAndLog<TestUserModel>();
+            var oldProfile = Given
+                .UserSession(Session)
+                .When
+                .GetCurrentUserRequestIsSend()
+                .GetResultData<TestUserModel>(BddKeyConstants.CurrentUserResponse);
 
-            Facade.PostUpdateProfileNames(Session, new TestUserUpdateModel
+            var updateModel = new TestUserUpdateModel
             {
                 FirstName = TestStringHelper.RandomLatinString(),
-                LastName = String.Empty,
-            }).AssertError(HttpStatusCode.BadRequest);
+                LastName = string.Empty
+            };
 
-            var newProfile = Facade.GetMe(Session).AssertSuccess().MapAndLog<TestUserModel>();
-
-            Assert.That(JObject.FromObject(newProfile), Is.EqualTo(JObject.FromObject(oldProfile)),
-                $"Expected to have '{oldProfile}' profile after update, but found '{newProfile}'");
+            Given
+                .UserSession(Session)
+                .When
+                .UpdateUserRequestIsSend(updateModel)
+                .WithCode(HttpStatusCode.BadRequest)
+                .GetCurrentUserRequestIsSend()
+                .Then
+                .CurrentUserIsEqualTo(oldProfile);
         }
 
         [Test]
         [Category(nameof(TestCategories.PriorityMedium))]
         public void TestUpdateOnlyLastName()
         {
-            var oldProfile = Facade.GetMe(Session).AssertSuccess().MapAndLog<TestUserModel>();
+            var oldProfile = Given
+                .UserSession(Session)
+                .When
+                .GetCurrentUserRequestIsSend()
+                .GetResultData<TestUserModel>(BddKeyConstants.CurrentUserResponse);
 
-            Facade.PostUpdateProfileNames(Session, new TestUserUpdateModel
+            var updateModel = new TestUserUpdateModel
             {
-                LastName = TestStringHelper.RandomLatinString(),
-                FirstName = String.Empty,
-            }).AssertError(HttpStatusCode.BadRequest);
+                FirstName = string.Empty,
+                LastName = TestStringHelper.RandomLatinString()
+            };
 
-            var newProfile = Facade.GetMe(Session).AssertSuccess().MapAndLog<TestUserModel>();
-
-            Assert.That(JObject.FromObject(newProfile), Is.EqualTo(JObject.FromObject(oldProfile)),
-                $"Expected to have '{oldProfile}' profile after update, but found '{newProfile}'");
+            Given
+                .UserSession(Session)
+                .When
+                .UpdateUserRequestIsSend(updateModel)
+                .WithCode(HttpStatusCode.BadRequest)
+                .GetCurrentUserRequestIsSend()
+                .Then
+                .CurrentUserIsEqualTo(oldProfile);
         }
 
         [Test]
         [Category(nameof(TestCategories.PriorityMedium))]
         public void TestUpdateAllNulls()
         {
-            var oldProfile = Facade.GetMe(Session).AssertSuccess().MapAndLog<TestUserModel>();
+            var oldProfile = Given
+                .UserSession(Session)
+                .When
+                .GetCurrentUserRequestIsSend()
+                .GetResultData<TestUserModel>(BddKeyConstants.CurrentUserResponse);
 
-            Facade.PostUpdateProfileNames(Session, new TestUserUpdateModel
+            var updateModel = new TestUserUpdateModel
             {
-                LastName = null,
                 FirstName = null,
-            }).AssertError(HttpStatusCode.BadRequest);
+                LastName = null
+            };
 
-            var newProfile = Facade.GetMe(Session).AssertSuccess().MapAndLog<TestUserModel>();
-
-            Assert.That(JObject.FromObject(newProfile), Is.EqualTo(JObject.FromObject(oldProfile)),
-                $"Expected to have '{oldProfile}' profile after update, but found '{newProfile}'");
+            Given
+                .UserSession(Session)
+                .When
+                .UpdateUserRequestIsSend(updateModel)
+                .WithCode(HttpStatusCode.BadRequest)
+                .GetCurrentUserRequestIsSend()
+                .Then
+                .CurrentUserIsEqualTo(oldProfile);
         }
 
         [Test]
         [Category(nameof(TestCategories.PriorityMedium))]
         public void TestUpdateExpiredSession()
         {
-            var oldProfile = Facade.GetMe(Session).AssertSuccess().MapAndLog<TestUserModel>();
-
-            Facade.PostLogout(Session);
-
-            Facade.PostUpdateProfileNames(Session, new TestUserUpdateModel
-            {
-                FirstName = TestStringHelper.RandomLatinString(),
-                LastName = TestStringHelper.RandomLatinString()
-            }).AssertError(HttpStatusCode.Unauthorized);
-
-            var session = Facade.PostLogin(new TestLoginModel
-            {
-                Email = Configuration.UserName,
-                Password = Configuration.Password
-            }).AssertSuccess().GetTokenFromResponse();
-
-            var newProfile = Facade.GetMe(session).AssertSuccess().MapAndLog<TestUserModel>();
+            var oldProfile = Given
+                .UserSession(Session)
+                .When
+                .GetCurrentUserRequestIsSend()
+                .GetResultData<TestUserModel>(BddKeyConstants.CurrentUserResponse);
             
-            Facade.PostLogout(session);
+            var updateModel = new TestUserUpdateModel
+            {
+                FirstName = null,
+                LastName = null
+            };
 
-            Assert.That(JObject.FromObject(newProfile), Is.EqualTo(JObject.FromObject(oldProfile)),
-                $"Expected to have '{oldProfile}' profile after update, but found '{newProfile}'");
+            Given
+                .DefaultUserLoginCredentials()
+                .UserSession(Session)
+                .When
+                .LogoutRequestIsSend()
+                .UpdateUserRequestIsSend(updateModel)
+                .WithCode(HttpStatusCode.Unauthorized)
+                .LoginRequestIsSend()
+                .GetCurrentUserRequestIsSend()
+                .Then
+                .CurrentUserIsEqualTo(oldProfile)
+                .LogoutIfSessionTokenIsPresent();
         }
     }
 }

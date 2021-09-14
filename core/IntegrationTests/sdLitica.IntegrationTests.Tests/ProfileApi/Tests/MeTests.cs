@@ -17,7 +17,7 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Tests
         [Category(nameof(TestCategories.PriorityHigh))]
         public void TestSmokeForConfigUserMe()
         {
-            new GivenStatement(Logger)
+            Given
                 .DefaultUserLoginCredentials()
                 .When
                 .LoginRequestIsSend()
@@ -39,7 +39,7 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Tests
                 LastName = TestStringHelper.RandomLatinString(),
             };
 
-            new GivenStatement(Logger)
+            Given
                 .NewUserData(userModel)
                 .UserLoginCredentials(new TestLoginModel
                 {
@@ -59,7 +59,7 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Tests
         [Category(nameof(TestCategories.PriorityHigh))]
         public void TestSmokeForNewUserAfterUpdateMe()
         {
-            var userModel = new TestUserModel()
+            var userModel = new TestUserModel
             {
                 Email = $"{TestStringHelper.RandomLatinString()}@example.com",
                 Password = TestStringHelper.RandomLatinString(),
@@ -70,7 +70,7 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Tests
             var updateModel = new TestUserUpdateModel
                 {FirstName = TestStringHelper.RandomLatinString(), LastName = TestStringHelper.RandomLatinString()};
 
-            var whenLoggedIn = new GivenStatement(Logger)
+            var whenLoggedIn = Given
                 .NewUserData(userModel)
                 .UserLoginCredentials(new TestLoginModel
                 {
@@ -99,7 +99,7 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Tests
         [TestCaseSource(typeof(CommonSessionData), nameof(CommonSessionData.NegativeSessionData))]
         public void BaseNegativeMyUserTest(string session)
         {
-            new GivenStatement(Logger)
+            Given
                 .UserSession(session)
                 .When
                 .GetCurrentUserRequestIsSend()

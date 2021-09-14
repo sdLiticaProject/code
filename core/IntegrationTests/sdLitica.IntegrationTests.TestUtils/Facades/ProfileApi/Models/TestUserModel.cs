@@ -14,10 +14,9 @@
 
         public TestUserModel ApplyUpdate(TestUserUpdateModel updateModel)
         {
-            FirstName = updateModel.FirstName;
-            LastName = updateModel.LastName;
+            FirstName = updateModel.FirstName.Equals(string.Empty) ? FirstName : updateModel.FirstName;
+            LastName = updateModel.LastName.Equals(string.Empty) ? LastName : updateModel.LastName;
             return this;
         }
-        
     }
 }

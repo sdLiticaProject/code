@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using sdLitica.IntegrationTests.Tests.ProfileApi.Extensions;
+using sdLitica.IntegrationTests.TestUtils.BddUtils;
 using sdLitica.IntegrationTests.TestUtils.Facades.ProfileApi;
 using sdLitica.IntegrationTests.TestUtils.RestUtils;
 using Serilog.Core;
@@ -9,6 +10,8 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Tests
     public class ProfileApiTest : BaseWithDefaultUserTest
     {
         protected ProfileApiFacade Facade;
+        
+        protected GivenStatement Given => new GivenStatement(Logger);
 
         [OneTimeSetUp]
         public void InitFacade()

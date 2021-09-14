@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
 using sdLitica.IntegrationTests.TestUtils.BddUtils;
@@ -153,6 +154,17 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Extensions
 
             var response = _facade.PostUpdateProfileNames(session, updateModel);
             whenStatement.AddResultData(response, BddKeyConstants.LastHttpResponse + testKey);
+
+            return whenStatement;
+        }
+        
+        public static WhenStatement WithCode(this WhenStatement whenStatement, HttpStatusCode code)
+        {
+            whenStatement.GetStatementLogger()
+                .Information($"[{{ContextStatement}}] Expecting last response to have code '{code}'",
+                    whenStatement.GetType().Name);
+
+            whenStatement.GetResultData<HttpResponseMessage>(BddKeyConstants.LastHttpResponse).AssertError(code);
 
             return whenStatement;
         }

@@ -13,7 +13,7 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Tests
         [Category(nameof(TestCategories.PriorityHigh))]
         public void TestBasicLoginLogout()
         {
-            new GivenStatement(Logger)
+            Given
                 .UserLoginCredentials(new TestLoginModel
                 {
                     Email = Configuration.UserName,
@@ -33,7 +33,7 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Tests
             var userKey1 = "user1";
             var userKey2 = "user2";
 
-            new GivenStatement(Logger)
+            Given
                 .UserLoginCredentials(new TestLoginModel
                 {
                     Email = Configuration.UserName,
@@ -58,7 +58,7 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Tests
         [Category(nameof(TestCategories.PriorityMedium))]
         public void LoginWithNullCredentials()
         {
-            new GivenStatement(Logger)
+            Given
                 .UserLoginCredentials(new TestLoginModel())
                 .When
                 .LoginRequestIsSend()
@@ -70,7 +70,7 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Tests
         [Category(nameof(TestCategories.PriorityMedium))]
         public void LoginWithPasswordOnly()
         {
-            new GivenStatement(Logger)
+            Given
                 .UserLoginCredentials(new TestLoginModel
                 {
                     Password = Configuration.Password
@@ -85,7 +85,7 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Tests
         [Category(nameof(TestCategories.PriorityMedium))]
         public void LoginWithLoginOnly()
         {
-            new GivenStatement(Logger)
+            Given
                 .UserLoginCredentials(new TestLoginModel
                 {
                     Email = Configuration.UserName
@@ -100,7 +100,7 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Tests
         [Category(nameof(TestCategories.PriorityMedium))]
         public void LoginWithBadCredentials()
         {
-            new GivenStatement(Logger)
+            Given
                 .UserLoginCredentials(new TestLoginModel
                 {
                     Email = TestStringHelper.RandomLatinString(),
@@ -116,7 +116,7 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Tests
         [Category(nameof(TestCategories.PriorityMedium))]
         public void LoginWithBadPassword()
         {
-            new GivenStatement(Logger)
+            Given
                 .UserLoginCredentials(new TestLoginModel
                 {
                     Email = Configuration.UserName,
@@ -132,7 +132,7 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Tests
         [Category(nameof(TestCategories.PriorityMedium))]
         public void LoginWithBadLogin()
         {
-            new GivenStatement(Logger)
+            Given
                 .UserLoginCredentials(new TestLoginModel
                 {
                     Email = TestStringHelper.RandomLatinString(),

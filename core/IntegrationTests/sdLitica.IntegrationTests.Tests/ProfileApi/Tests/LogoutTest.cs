@@ -16,7 +16,7 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Tests
         [Category(nameof(TestCategories.PriorityHigh))]
         public void TestSmokeLogout()
         {
-            new GivenStatement(Logger)
+            Given
                 .DefaultUserLoginCredentials()
                 .When
                 .LoginRequestIsSend()
@@ -30,7 +30,7 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Tests
         [Category(nameof(TestCategories.PriorityMedium))]
         public void TestDoubleLogout()
         {
-            new GivenStatement(Logger)
+            Given
                 .DefaultUserLoginCredentials()
                 .When
                 .LoginRequestIsSend()
@@ -45,7 +45,7 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Tests
         [TestCaseSource(typeof(CommonSessionData), nameof(CommonSessionData.NegativeSessionData))]
         public void BaseNegativeLogoutTest(string session)
         {
-            new GivenStatement(Logger)
+            Given
                 .UserSession(session)
                 .When
                 .LogoutRequestIsSend()
