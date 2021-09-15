@@ -2,10 +2,10 @@
 using System.Net;
 using NUnit.Framework;
 using sdLitica.IntegrationTests.Tests.CommonTestData;
-using sdLitica.IntegrationTests.Tests.ProfileApi.TestData;
+using sdLitica.IntegrationTests.Tests.ProfileApi.Extensions;
 using sdLitica.IntegrationTests.TestUtils;
+using sdLitica.IntegrationTests.TestUtils.BddUtils;
 using sdLitica.IntegrationTests.TestUtils.Facades.ProfileApi.Models;
-using sdLitica.IntegrationTests.TestUtils.RestUtils.Extensions;
 
 namespace sdLitica.IntegrationTests.Tests.ProfileApi.Tests
 {
@@ -16,17 +16,31 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Tests
         public void TestSmokeApiKeys()
         {
             var newKeyDescription = TestStringHelper.RandomLatinString();
-            Facade.PostApiKeys(Session, new TestUserApiKeyJsonEntity
-            {
-                Description = newKeyDescription
-            }).AssertSuccess();
 
-            var result = Facade.GetApiKeys(Session).AssertSuccess().MapAndLog<TestApiKeysList>();
-            Assert.That(result.Entities.Select(e => e.Description), Contains.Item(newKeyDescription));
-            Facade.DeleteApiKey(Session, result.Entities.First(e => e.Description.Equals(newKeyDescription)).Id);
+            var userKeys =
+                Given
+                    .UserSession(Session)
+                    .NewApiKey(new TestUserApiKeyJsonEntity
+                    {
+                        Description = newKeyDescription
+                    })
+                    .When
+                    .CreateNewApiKeyRequestIsSend()
+                    .GetApiKeysRequestIsSend()
+                    .Then
+                    .UsersApiKeysContainGiven()
+                    .GetResultData<TestApiKeysList>(BddKeyConstants.UserApiKeys);
 
-            result = Facade.GetApiKeys(Session).AssertSuccess().MapAndLog<TestApiKeysList>();
-            Assert.False(result.Entities.Select(e => e.Description).Contains(newKeyDescription));
+            var apiKeyId = userKeys.Entities.First(e => e.Description.Equals(newKeyDescription)).Id;
+            
+            Given
+                .UserSession(Session)
+                .ApiKeyToRemove(apiKeyId)
+                .When
+                .DeleteApiKeyRequestIsSend()
+                .GetApiKeysRequestIsSend()
+                .Then
+                .UsersApiKeysDoNotContainGiven();
         }
 
         [Test]
@@ -34,7 +48,12 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Tests
         [TestCaseSource(typeof(CommonSessionData), nameof(CommonSessionData.NegativeSessionData))]
         public void BaseNegativeGetApiKeysTest(string session)
         {
-            Facade.GetApiKeys(session).AssertError(HttpStatusCode.Unauthorized);
+            Given
+                .UserSession(session)
+                .When
+                .GetApiKeysRequestIsSend()
+                .Then
+                .ResponseHasCode(HttpStatusCode.Unauthorized);
         }
 
         [Test]
@@ -42,7 +61,13 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Tests
         [TestCaseSource(typeof(CommonSessionData), nameof(CommonSessionData.NegativeSessionData))]
         public void BaseNegativePostApiKeyTest(string session)
         {
-            Facade.PostApiKeys(session, new TestUserApiKeyJsonEntity()).AssertError(HttpStatusCode.Unauthorized);
+            Given
+                .UserSession(session)
+                .NewApiKey(new TestUserApiKeyJsonEntity())
+                .When
+                .CreateNewApiKeyRequestIsSend()
+                .Then
+                .ResponseHasCode(HttpStatusCode.Unauthorized);
         }
 
         [Test]
@@ -50,7 +75,13 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Tests
         [TestCaseSource(typeof(CommonSessionData), nameof(CommonSessionData.NegativeSessionData))]
         public void BaseNegativeDeleteApiKeyTest(string session)
         {
-            Facade.DeleteApiKey(session, "key-id").AssertError(HttpStatusCode.Unauthorized);
+            Given
+                .UserSession(session)
+                .ApiKeyToRemove("some-key")
+                .When
+                .DeleteApiKeyRequestIsSend()
+                .Then
+                .ResponseHasCode(HttpStatusCode.Unauthorized);
         }
     }
 }

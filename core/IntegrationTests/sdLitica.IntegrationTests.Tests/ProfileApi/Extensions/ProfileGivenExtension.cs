@@ -53,5 +53,23 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Extensions
             givenStatement.AddData(userModel, testKey);
             return givenStatement;
         }
+
+        public static GivenStatement NewApiKey(this GivenStatement givenStatement,
+            TestUserApiKeyJsonEntity apiKey, string testKey = null)
+        {
+            givenStatement.GetStatementLogger()
+                .Information($"[{{ContextStatement}}] Saving api keys {apiKey}", givenStatement.GetType().Name);
+            givenStatement.AddData(apiKey, BddKeyConstants.NewApiKey + testKey);
+            return givenStatement;
+        }
+
+        public static GivenStatement ApiKeyToRemove(this GivenStatement givenStatement,
+            string apiKey, string testKey = null)
+        {
+            givenStatement.GetStatementLogger()
+                .Information($"[{{ContextStatement}}] Saving api key description to remove {apiKey}", givenStatement.GetType().Name);
+            givenStatement.AddData(apiKey, BddKeyConstants.ApiKeyToRemove + testKey);
+            return givenStatement;
+        }
     }
 }

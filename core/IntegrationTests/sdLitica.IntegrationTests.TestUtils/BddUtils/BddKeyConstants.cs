@@ -7,5 +7,8 @@
         public static string CurrentUserResponse = nameof(CurrentUserResponse);
         public static string CurrentUserExpected = nameof(CurrentUserExpected);
         public static string LastHttpResponse = nameof(LastHttpResponse);
+        public static string NewApiKey = nameof(NewApiKey);
+        public static string UserApiKeys = nameof(UserApiKeys);
+        public static string ApiKeyToRemove = nameof(ApiKeyToRemove);
     }
 }

@@ -48,7 +48,7 @@ namespace sdLitica.IntegrationTests.Tests
             Assert.NotNull(Configuration.UserName, "Default user name for tests executions is not set");
             Assert.NotNull(Configuration.Password, "Default password for tests executions is not set");
 
-            Logger = new LoggerConfiguration().MinimumLevel.Verbose().WriteTo.Console().CreateLogger();
+            Logger = new LoggerConfiguration().MinimumLevel.Information().WriteTo.Console().CreateLogger();
             HttpResponseMessageExtension.Init(Logger);
         }
     }

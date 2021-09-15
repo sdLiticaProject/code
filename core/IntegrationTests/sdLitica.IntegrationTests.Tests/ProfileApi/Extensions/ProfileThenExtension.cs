@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Reflection.Metadata.Ecma335;
@@ -29,7 +30,7 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Extensions
                 .Information($"[{{ContextStatement}}] Expecting last response to have code '{code}'",
                     thenStatement.GetType().Name);
 
-            thenStatement.GetThenData<HttpResponseMessage>(BddKeyConstants.LastHttpResponse).AssertError(code);
+            thenStatement.GetResultData<HttpResponseMessage>(BddKeyConstants.LastHttpResponse).AssertError(code);
 
             return thenStatement;
         }
@@ -40,7 +41,7 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Extensions
                 .Information("[{ContextStatement}] Comparing given user credentials with response from 'GetMe'",
                     thenStatement.GetType().Name);
             
-            var currentUser = thenStatement.GetThenData<TestUserModel>(BddKeyConstants.CurrentUserResponse);
+            var currentUser = thenStatement.GetResultData<TestUserModel>(BddKeyConstants.CurrentUserResponse);
             var expectedUser = thenStatement.GetGivenData<TestLoginModel>();
             
             Assert.That(currentUser.Email, Is.EqualTo(expectedUser.Email));
@@ -56,7 +57,7 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Extensions
                 .Information("[{ContextStatement}] Comparing 'GetMe' response with expected user model",
                     thenStatement.GetType().Name);
             
-            var currentUser = thenStatement.GetThenData<TestUserModel>(BddKeyConstants.CurrentUserResponse);
+            var currentUser = thenStatement.GetResultData<TestUserModel>(BddKeyConstants.CurrentUserResponse);
             
             Assert.IsEmpty(ProfileHelper.CompareUserProfiles(expectedUser, currentUser));
             
@@ -69,7 +70,7 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Extensions
                 .Information("[{ContextStatement}] Looking for session token in the 'When' dictionary",
                     thenStatement.GetType().Name);
 
-            var session = thenStatement.GetThenData<string>(BddKeyConstants.SessionTokenKey + testKey);
+            var session = thenStatement.GetResultData<string>(BddKeyConstants.SessionTokenKey + testKey);
 
             _facade.GetMe(session).AssertError(HttpStatusCode.Unauthorized);
 
@@ -82,8 +83,34 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Extensions
                 .Information("[{ContextStatement}] Looking for session token in the 'When' dictionary",
                     thenStatement.GetType().Name);
 
-            Assert.That(thenStatement.GetThenData<string>(BddKeyConstants.SessionTokenKey + testKey), Is.Not.Empty,
+            Assert.That(thenStatement.GetResultData<string>(BddKeyConstants.SessionTokenKey + testKey), Is.Not.Empty,
                 "Expected to have session token, but found none.");
+
+            return thenStatement;
+        }
+        
+        public static ThenStatement UsersApiKeysContainGiven(this ThenStatement thenStatement, string testKey = null)
+        {
+            thenStatement.GetStatementLogger()
+                .Information("[{ContextStatement}] Looking for given apiKey in the 'When' dictionary",
+                    thenStatement.GetType().Name);
+            
+            var givenApiKey = thenStatement.GetGivenData<TestUserApiKeyJsonEntity>(BddKeyConstants.NewApiKey + testKey);
+            var userApiKeys = thenStatement.GetResultData<TestApiKeysList>(BddKeyConstants.UserApiKeys + testKey);
+            Assert.That(userApiKeys.Entities.Select(e => e.Description), Contains.Item(givenApiKey.Description));
+
+            return thenStatement;
+        }
+        
+        public static ThenStatement UsersApiKeysDoNotContainGiven(this ThenStatement thenStatement, string testKey = null)
+        {
+            thenStatement.GetStatementLogger()
+                .Information("[{ContextStatement}] Looking for given apiKey in the 'When' dictionary",
+                    thenStatement.GetType().Name);
+            
+            var givenApiKeyId = thenStatement.GetGivenData<string>(BddKeyConstants.ApiKeyToRemove + testKey);
+            var userApiKeys = thenStatement.GetResultData<TestApiKeysList>(BddKeyConstants.UserApiKeys + testKey);
+            Assert.False(userApiKeys.Entities.Select(e => e.Id).Contains(givenApiKeyId), $"Expected '{givenApiKeyId}' api key to be absent in user keys.");
 
             return thenStatement;
         }
@@ -97,7 +124,7 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Extensions
                     .Information(
                         "[{ContextStatement}] Trying to logout" + (testKey != null ? $" with test key {testKey}" : ""),
                         thenStatement.GetType().Name);
-                var session = thenStatement.GetThenData<string>(BddKeyConstants.SessionTokenKey + testKey);
+                var session = thenStatement.GetResultData<string>(BddKeyConstants.SessionTokenKey + testKey);
                 _facade.PostLogout(session).AssertSuccess();
             }
             catch (KeyNotFoundException e)

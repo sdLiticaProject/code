@@ -17,12 +17,28 @@ namespace sdLitica.IntegrationTests.TestUtils.BddUtils
 
         public T GetGivenData<T>(string additionalKey = null) where T : class
         {
-            return _givenData[GetDictionaryKey(typeof(T), additionalKey)] as T;
+            try
+            {
+                return _givenData[GetDictionaryKey(typeof(T), additionalKey)] as T;
+            }
+            catch
+            {
+                throw new KeyNotFoundException(
+                    $"Could not find '{GetDictionaryKey(typeof(T), additionalKey)}' key in 'Given' data");
+            }
         }
 
         public T GetResultData<T>(string additionalKey = null) where T : class
         {
-            return _thenData[GetDictionaryKey(typeof(T), additionalKey)] as T;
+            try
+            {
+                return _thenData[GetDictionaryKey(typeof(T), additionalKey)] as T;
+            }
+            catch
+            {
+                throw new KeyNotFoundException(
+                    $"Could not find '{GetDictionaryKey(typeof(T), additionalKey)}' key in 'Result' data");
+            }
         }
 
         public void AddResultData<T>(T data, string additionalKey = null) where T : class

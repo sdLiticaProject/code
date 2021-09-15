@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
@@ -33,6 +34,7 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Extensions
             try
             {
                 session = whenStatement.GetGivenData<string>(BddKeyConstants.SessionTokenKey + testKey);
+                return session;
             }
             catch
             {
@@ -40,11 +42,23 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Extensions
                     .Information(
                         "[{ContextStatement}] Could not find user session in 'Given' data, looking in last response data",
                         whenStatement.GetType().Name);
-                session = whenStatement.GetResultData<HttpResponseMessage>(BddKeyConstants.LastHttpResponse + testKey)
-                    .GetTokenFromResponse();
             }
 
-            return session;
+            try
+            {
+                session = whenStatement.GetResultData<HttpResponseMessage>(BddKeyConstants.LastHttpResponse + testKey)
+                    .GetTokenFromResponse();
+                return session;
+            }
+            catch (Exception e)
+            {
+                whenStatement.GetStatementLogger()
+                    .Information(
+                        "[{ContextStatement}] Could not find user session in 'LastResponse' data, terminating",
+                        whenStatement.GetType().Name);
+            }
+
+            throw new KeyNotFoundException("Could not find user session. Probably you should login your user or provide session itself");
         }
 
         public static void Init(ProfileApiFacade facade)
@@ -165,6 +179,58 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Extensions
                     whenStatement.GetType().Name);
 
             whenStatement.GetResultData<HttpResponseMessage>(BddKeyConstants.LastHttpResponse).AssertError(code);
+
+            return whenStatement;
+        }
+        
+        public static WhenStatement CreateNewApiKeyRequestIsSend(this WhenStatement whenStatement, string testKey = null)
+        {
+            var apiKey = whenStatement.GetGivenData<TestUserApiKeyJsonEntity>(BddKeyConstants.NewApiKey + testKey);
+            
+            whenStatement.GetStatementLogger()
+                .Information($"[{{ContextStatement}}] Creating new api key '{apiKey}'",
+                    whenStatement.GetType().Name);
+
+            var response = _facade.PostApiKeys(whenStatement.GetSessionFromData(testKey), apiKey);
+            
+            whenStatement.AddResultData(response, BddKeyConstants.LastHttpResponse);
+
+            return whenStatement;
+        }
+        
+        public static WhenStatement DeleteApiKeyRequestIsSend(this WhenStatement whenStatement, string testKey = null)
+        {
+            var apiKey = whenStatement.GetGivenData<string>(BddKeyConstants.ApiKeyToRemove + testKey);
+            
+            whenStatement.GetStatementLogger()
+                .Information($"[{{ContextStatement}}] Removing api key '{apiKey}'",
+                    whenStatement.GetType().Name);
+
+            var response = _facade.DeleteApiKey(whenStatement.GetSessionFromData(testKey), apiKey);
+            
+            whenStatement.AddResultData(response, BddKeyConstants.LastHttpResponse);
+
+            return whenStatement;
+        }
+        
+        public static WhenStatement GetApiKeysRequestIsSend(this WhenStatement whenStatement, string testKey = null)
+        {
+            var response = _facade.GetApiKeys(whenStatement.GetSessionFromData(testKey));
+            
+            whenStatement.AddResultData(response, BddKeyConstants.LastHttpResponse);
+            try
+            {
+                var apiKeys = response.MapAndLog<TestApiKeysList>();
+                whenStatement.GetStatementLogger()
+                    .Information($"[{{ContextStatement}}] Got api keys {apiKeys}", whenStatement.GetType().Name);
+
+                whenStatement.AddResultData(apiKeys, BddKeyConstants.UserApiKeys + testKey);
+            }
+            catch
+            {
+                whenStatement.GetStatementLogger()
+                    .Information("[{ContextStatement}] Could not find api keys in response", whenStatement.GetType().Name);
+            }
 
             return whenStatement;
         }
