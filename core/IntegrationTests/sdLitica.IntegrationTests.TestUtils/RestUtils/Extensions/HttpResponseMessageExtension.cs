@@ -45,8 +45,16 @@ namespace sdLitica.IntegrationTests.TestUtils.RestUtils.Extensions
         {
             var responseString = response.Content.ReadAsStringAsync().Result;
             Logger.Information($"Got response:\n{responseString}");
-            return JObject.Parse(responseString)
-                .ToObject<T>();
+            try
+            {
+                return JObject.Parse(responseString)
+                    .ToObject<T>();
+            }
+            catch
+            {
+                return JArray.Parse(responseString)
+                    .ToObject<T>();
+            }
         }
 
         public static string GetTokenFromResponse(this HttpResponseMessage response)
