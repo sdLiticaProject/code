@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using sdLitica.IntegrationTests.Tests.TimeSeriesApi.Extensions;
 using sdLitica.IntegrationTests.TestUtils.BddUtils;
 using sdLitica.IntegrationTests.TestUtils.Facades.ProfileApi;
 using sdLitica.IntegrationTests.TestUtils.Facades.TimeSeriesApi;
@@ -24,6 +25,8 @@ namespace sdLitica.IntegrationTests.Tests.TimeSeriesApi.Tests
 			ProfileFacade = new ProfileApiFacade(
 				Logger,
 				Configuration.RootUrl);
+			TimeSeriesWhenExtension.Init(Facade);
+			TimeSeriesThenExtension.Init(Facade, ProfileFacade);
 		}
 	}
 }

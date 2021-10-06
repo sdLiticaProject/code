@@ -1,4 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Net;
+using System.Net.Http;
+using sdLitica.IntegrationTests.TestUtils.RestUtils.Extensions;
 using Serilog;
 
 namespace sdLitica.IntegrationTests.TestUtils.BddUtils
@@ -39,6 +42,16 @@ namespace sdLitica.IntegrationTests.TestUtils.BddUtils
                 throw new KeyNotFoundException(
                     $"Could not find '{GetDictionaryKey(typeof(T), additionalKey)}' key in 'Result' data");
             }
+        }
+
+        public ThenStatement ResponseHasCode(HttpStatusCode code)
+        {
+            GetStatementLogger()
+                .Information($"[{{ContextStatement}}] Expecting last response to have code '{code}'",
+                    GetType().Name);
+
+            GetResultData<HttpResponseMessage>(BddKeyConstants.LastHttpResponse).AssertError(code);
+            return this;
         }
     }
 }

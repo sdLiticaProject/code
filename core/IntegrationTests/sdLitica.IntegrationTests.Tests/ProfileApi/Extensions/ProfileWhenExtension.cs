@@ -16,7 +16,7 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Extensions
     {
         private static ProfileApiFacade _facade;
 
-        private static string GetSessionFromData(this WhenStatement whenStatement, string testKey = null)
+        public static string GetSessionFromData(this WhenStatement whenStatement, string testKey = null)
         {
             string session;
             try
@@ -58,7 +58,7 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Extensions
                         whenStatement.GetType().Name);
             }
 
-            throw new KeyNotFoundException("Could not find user session. Probably you should login your user or provide session itself");
+            throw new KeyNotFoundException("Could not find user session. Probably you should login as a user or provide session itself");
         }
 
         public static void Init(ProfileApiFacade facade)
