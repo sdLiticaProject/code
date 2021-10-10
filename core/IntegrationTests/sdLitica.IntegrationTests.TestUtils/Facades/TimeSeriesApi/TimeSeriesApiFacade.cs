@@ -53,14 +53,13 @@ namespace sdLitica.IntegrationTests.TestUtils.Facades.TimeSeriesApi
 
 				if (tokenValue != null)
 				{
-					client.DefaultRequestHeaders.Add("Content-Disposition", "form-data; name=\"file\"");
 					client.DefaultRequestHeaders.Authorization =
 						new AuthenticationHeaderValue(CommonHttpConstants.AuthorizationHeader, tokenValue);
 				}
 
 				var form =
 					new MultipartFormDataContent(DateTimeOffset.UtcNow.ToString());
-				form.Add(new StringContent(fileContent));
+				form.Add(new StringContent(fileContent), "file", "testFile");
 
 				return client.LogAndPost($"{BaseApiRoute}/{metadataId}/{DataApiSuffix}",
 					form,

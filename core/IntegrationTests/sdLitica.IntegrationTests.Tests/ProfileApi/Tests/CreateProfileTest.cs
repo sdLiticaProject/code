@@ -28,7 +28,9 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Tests
             Given
                 .NewUserData(profile)
                 .When
-                .CreateUserRequestIsSend();
+                .CreateUserRequestIsSend()
+                .Then
+                .LastRequestSuccessful();
 
             Given
                 .UserLoginCredentials(new TestLoginModel
@@ -59,7 +61,9 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Tests
             Given
                 .NewUserData(profile)
                 .When
-                .CreateUserRequestIsSend();
+                .CreateUserRequestIsSend()
+                .Then
+                .LastRequestSuccessful();
 
             Given
                 .UserLoginCredentials(new TestLoginModel
@@ -96,7 +100,9 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Tests
             Given
                 .NewUserData(profile)
                 .When
-                .CreateUserRequestIsSend();
+                .CreateUserRequestIsSend()
+                .Then
+                .LastRequestSuccessful();
 
             Given
                 .UserLoginCredentials(new TestLoginModel

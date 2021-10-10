@@ -16,7 +16,7 @@ namespace sdLitica.IntegrationTests.TestUtils.RestUtils.Extensions
             logger.Debug("==== Request content (start) ====");
             logger.Debug(content.ReadAsStringAsync().Result);
             logger.Debug("==== Request content (end) ====");
-            return client.PostAsync(url, content).Result;
+            return client.PostAsync(url, content).Result.Log();
         }
         
         public static HttpResponseMessage LogAndGet(this HttpClient client, string url,
@@ -26,7 +26,7 @@ namespace sdLitica.IntegrationTests.TestUtils.RestUtils.Extensions
             logger.Debug("==== Request headers (start) ====");
             logger.Debug(client.DefaultRequestHeaders.ToString());
             logger.Debug("==== Request headers (end) ====");
-            return client.GetAsync(url).Result;
+            return client.GetAsync(url).Result.Log();
         }
         
         public static HttpResponseMessage LogAndDelete(this HttpClient client, string url,
@@ -36,7 +36,7 @@ namespace sdLitica.IntegrationTests.TestUtils.RestUtils.Extensions
             logger.Debug("==== Request headers (start) ====");
             logger.Debug(client.DefaultRequestHeaders.ToString());
             logger.Debug("==== Request headers (end) ====");
-            return client.DeleteAsync(url).Result;
+            return client.DeleteAsync(url).Result.Log();
         }
     }
 }

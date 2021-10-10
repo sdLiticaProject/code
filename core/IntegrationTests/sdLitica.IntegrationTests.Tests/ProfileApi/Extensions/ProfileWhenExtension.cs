@@ -118,7 +118,7 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Extensions
             whenStatement.AddResultData(response, BddKeyConstants.LastHttpResponse + testKey);
             try
             {
-                var createdUser = response.MapAndLog<TestUserModel>();
+                var createdUser = response.Map<TestUserModel>();
                 whenStatement.GetStatementLogger()
                     .Information($"[{{ContextStatement}}] Got new user {createdUser}", whenStatement.GetType().Name);
 
@@ -144,7 +144,7 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Extensions
             whenStatement.AddResultData(response, BddKeyConstants.LastHttpResponse + testKey);
             try
             {
-                var currentUser = response.MapAndLog<TestUserModel>();
+                var currentUser = response.Map<TestUserModel>();
                 whenStatement.GetStatementLogger()
                     .Information($"[{{ContextStatement}}] Got user {currentUser}", whenStatement.GetType().Name);
 
@@ -220,7 +220,7 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Extensions
             whenStatement.AddResultData(response, BddKeyConstants.LastHttpResponse);
             try
             {
-                var apiKeys = response.MapAndLog<TestApiKeysList>();
+                var apiKeys = response.Map<TestApiKeysList>();
                 whenStatement.GetStatementLogger()
                     .Information($"[{{ContextStatement}}] Got api keys {apiKeys}", whenStatement.GetType().Name);
 

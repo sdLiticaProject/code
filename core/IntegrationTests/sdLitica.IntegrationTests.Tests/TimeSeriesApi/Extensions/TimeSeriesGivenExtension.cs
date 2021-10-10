@@ -14,5 +14,15 @@ namespace sdLitica.IntegrationTests.Tests.TimeSeriesApi.Extensions
 			givenStatement.AddData(timeSeries, BddKeyConstants.TimeSeriesToCreate + testKey);
 			return givenStatement;
 		}
+
+		public static GivenStatement UpdateTimeSeries(this GivenStatement givenStatement,
+			TestTimeSeriesMetadataModel timeSeries, string testKey = null)
+		{
+			givenStatement.GetStatementLogger()
+				.Information($"[{{ContextStatement}}] Saving time-series to update {timeSeries}",
+					givenStatement.GetType().Name);
+			givenStatement.AddData(timeSeries, BddKeyConstants.TimeSeriesToUpdate + testKey);
+			return givenStatement;
+		}
 	}
 }

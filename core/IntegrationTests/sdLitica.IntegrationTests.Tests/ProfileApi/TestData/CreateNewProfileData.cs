@@ -116,6 +116,14 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.TestData
 
                 yield return new TestCaseData(new TestUserModel
                 {
+                    Email = $"{TestStringHelper.RandomLatinString()}@example.com",
+                    Password = TestStringHelper.RandomLatinString(),
+                    FirstName = String.Empty,
+                    LastName = TestStringHelper.RandomCyrillicString(),
+                }).SetName("TestCreateNewProfileWithCyrillicFirstName");
+
+                yield return new TestCaseData(new TestUserModel
+                {
                     Password = TestStringHelper.RandomLatinString(),
                     Email = $"{TestStringHelper.RandomLatinString()}@example.com",
                     FirstName = TestStringHelper.RandomLatinString(),

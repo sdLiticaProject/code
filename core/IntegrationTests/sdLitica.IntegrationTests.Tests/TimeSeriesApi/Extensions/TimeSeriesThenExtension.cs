@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using NUnit.Framework;
 using sdLitica.IntegrationTests.TestUtils.BddUtils;
@@ -29,7 +30,7 @@ namespace sdLitica.IntegrationTests.Tests.TimeSeriesApi.Extensions
 				thenStatement.GetGivenData<TestTimeSeriesMetadataModel>(BddKeyConstants.TimeSeriesToCreate + testKey);
 
 			TestTimeSeriesMetadataModel actual = null;
-			
+
 			try
 			{
 				actual =
@@ -43,10 +44,9 @@ namespace sdLitica.IntegrationTests.Tests.TimeSeriesApi.Extensions
 
 			var currentUser =
 				_profileApiFacade.GetMe(thenStatement.GetGivenData<string>(BddKeyConstants.SessionTokenKey + testKey))
-					.MapAndLog<TestUserModel>();
+					.Map<TestUserModel>();
 
-			Assert.That(actual.Description, Is.EqualTo(expected.Description));
-			Assert.That(actual.Name, Is.EqualTo(expected.Name));
+			Assert.That(actual, Is.EqualTo(expected));
 			Assert.That(actual.DateCreated, Is.Not.Empty);
 			Assert.That(actual.DateModified, Is.EqualTo(actual.DateCreated));
 			Assert.That(actual.InfluxId, Is.Not.Empty);
@@ -62,6 +62,72 @@ namespace sdLitica.IntegrationTests.Tests.TimeSeriesApi.Extensions
 			{
 				Assert.Fail($"Could not parse createdDate {actual.DateCreated}");
 			}
+
+			return thenStatement;
+		}
+
+		public static ThenStatement TimeSeriesIsPresentInUserTimeSeries(this ThenStatement thenStatement,
+			TestTimeSeriesMetadataModel expected,
+			string testKey = null)
+		{
+			List<TestTimeSeriesMetadataModel> actual = null;
+
+			try
+			{
+				actual =
+					thenStatement.GetResultData<List<TestTimeSeriesMetadataModel>>(
+						BddKeyConstants.UserTimeSeries + testKey);
+			}
+			catch (KeyNotFoundException e)
+			{
+				Assert.Fail("Was unable to get user time-series due to request failure.");
+			}
+
+			Assert.Contains(expected, actual);
+
+			return thenStatement;
+		}
+
+		public static ThenStatement TimeSeriesIsNotPresentInUserTimeSeries(this ThenStatement thenStatement,
+			TestTimeSeriesMetadataModel expected,
+			string testKey = null)
+		{
+			List<TestTimeSeriesMetadataModel> actual = null;
+
+			try
+			{
+				actual =
+					thenStatement.GetResultData<List<TestTimeSeriesMetadataModel>>(
+						BddKeyConstants.UserTimeSeries + testKey);
+			}
+			catch (KeyNotFoundException e)
+			{
+				Assert.Fail("Was unable to get user time-series due to request failure.");
+			}
+
+			Assert.That(!actual.Any(model => Equals(model, expected)), $"Expected {expected} to be removed from user time-series");
+
+			return thenStatement;
+		}
+
+		public static ThenStatement TimeSeriesByIdIsEqualTo(this ThenStatement thenStatement,
+			TestTimeSeriesMetadataModel expected,
+			string testKey = null)
+		{
+			TestTimeSeriesMetadataModel actual = null;
+
+			try
+			{
+				actual =
+					thenStatement.GetResultData<TestTimeSeriesMetadataModel>(
+						BddKeyConstants.UserTimeSeriesById + testKey);
+			}
+			catch (KeyNotFoundException e)
+			{
+				Assert.Fail("Was unable to get user time-series due to request failure.");
+			}
+
+			Assert.That(actual, Is.EqualTo(expected));
 
 			return thenStatement;
 		}

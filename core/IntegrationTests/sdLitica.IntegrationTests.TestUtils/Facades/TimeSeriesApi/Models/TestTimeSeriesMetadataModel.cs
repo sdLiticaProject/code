@@ -11,5 +11,22 @@
 		public string DateModified { get; set; }
 		public string UserId { get; set; }
 		public string InfluxId { get; set; }
+
+		public override bool Equals(object? obj)
+		{
+			return Equals(obj as TestTimeSeriesMetadataModel);
+		}
+
+		public bool Equals(TestTimeSeriesMetadataModel obj)
+		{
+			if (obj == null)
+			{
+				return false;
+			}
+
+			//todo uncomment after https://github.com/sdLiticaProject/code/issues/66 fix
+			return //Equals(obj.Description, Description) &&
+			       Equals(obj.Name, Name);
+		}
 	}
 }

@@ -53,5 +53,15 @@ namespace sdLitica.IntegrationTests.TestUtils.BddUtils
             GetResultData<HttpResponseMessage>(BddKeyConstants.LastHttpResponse).AssertError(code);
             return this;
         }
+
+        public ThenStatement LastRequestSuccessful()
+        {
+            GetStatementLogger()
+                .Information($"[{{ContextStatement}}] Expecting last response to be 2XX",
+                    GetType().Name);
+
+            GetResultData<HttpResponseMessage>(BddKeyConstants.LastHttpResponse).AssertSuccess();
+            return this;
+        }
     }
 }

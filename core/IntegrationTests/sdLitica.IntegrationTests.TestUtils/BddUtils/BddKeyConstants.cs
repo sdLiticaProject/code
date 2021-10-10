@@ -12,6 +12,9 @@
         public static string ApiKeyToRemove = nameof(ApiKeyToRemove);
 
         public static string TimeSeriesToCreate = nameof(TimeSeriesToCreate);
+        public static string TimeSeriesToUpdate = nameof(TimeSeriesToUpdate);
         public static string CreatedTimeSeries = nameof(CreatedTimeSeries);
+        public static string UserTimeSeries = nameof(UserTimeSeries);
+        public static string UserTimeSeriesById = nameof(UserTimeSeriesById);
     }
 }

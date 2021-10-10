@@ -34,7 +34,7 @@ namespace sdLitica.IntegrationTests.Tests
                 return;
             if (response.StatusCode == HttpStatusCode.Created)
             {
-                Assert.IsEmpty(ProfileHelper.CompareUserProfiles(testUser, response.MapAndLog<TestUserModel>()));
+                Assert.IsEmpty(ProfileHelper.CompareUserProfiles(testUser, response.Map<TestUserModel>()));
                 return ;
             }
 
