@@ -48,9 +48,7 @@ namespace sdLitica.IntegrationTests.Tests.TimeSeriesApi.Extensions
 
 			Assert.That(actual, Is.EqualTo(expected));
 			Assert.That(actual.DateCreated, Is.Not.Empty);
-			Assert.That(actual.DateModified, Is.EqualTo(actual.DateCreated));
 			Assert.That(actual.InfluxId, Is.Not.Empty);
-			Assert.That(actual.InfluxId, Is.Not.EqualTo(expected.InfluxId));
 			Assert.That(actual.UserId, Is.EqualTo(currentUser.Id));
 
 			try
