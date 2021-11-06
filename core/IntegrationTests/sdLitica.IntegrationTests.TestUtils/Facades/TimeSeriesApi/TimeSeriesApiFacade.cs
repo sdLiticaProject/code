@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -59,7 +60,7 @@ namespace sdLitica.IntegrationTests.TestUtils.Facades.TimeSeriesApi
 
 				var form =
 					new MultipartFormDataContent(DateTimeOffset.UtcNow.ToString());
-				form.Add(new StringContent(fileContent), "file", "testFile");
+				form.Add(new StringContent(fileContent), "formFile", "testFile");
 
 				return client.LogAndPost($"{BaseApiRoute}/{metadataId}/{DataApiSuffix}",
 					form,

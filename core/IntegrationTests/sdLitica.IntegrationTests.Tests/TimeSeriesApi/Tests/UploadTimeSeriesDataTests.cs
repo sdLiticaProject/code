@@ -22,7 +22,7 @@ namespace sdLitica.IntegrationTests.Tests.TimeSeriesApi.Tests
 				.UserSession(Session)
 				.When
 				.CreateNewTimeSeriesRequestIsSend()
-				.UploadTimeSeriesDataRequestIsSend("1,2,3\n2,3,4")
+				.UploadTimeSeriesDataRequestIsSend("2021-01-10 11:14,1\n2021-01-10 11:16,3")
 				.Then
 				.LastRequestSuccessful();
 		}
