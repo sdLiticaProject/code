@@ -34,7 +34,7 @@ namespace sdLitica.IntegrationTests.Tests.TimeSeriesApi.Tests
 
 		[Test]
 		[Category(nameof(TestCategories.PriorityHigh))]
-		public void TestRemoveRemovedTimeSeriesMetadataByIdSessionToken()
+		public void TestRemoveRemovedTimeSeriesMetadataById()
 		{
 			var timeSeries = new TestTimeSeriesMetadataModel
 			{
@@ -48,7 +48,7 @@ namespace sdLitica.IntegrationTests.Tests.TimeSeriesApi.Tests
 				.When
 				.CreateNewTimeSeriesRequestIsSend()
 				.RemoveTimeSeriesRequestIsSend(timeSeries.Id)
-				.WithCode(HttpStatusCode.OK)
+				.WithCode(HttpStatusCode.NoContent)
 				.RemoveTimeSeriesRequestIsSend(timeSeries.Id)
 				.Then
 				.ResponseHasCode(HttpStatusCode.NotFound);

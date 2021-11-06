@@ -57,7 +57,7 @@ namespace sdLitica.IntegrationTests.Tests.TimeSeriesApi.Tests
 
 		[Test]
 		[Category(nameof(TestCategories.PriorityMedium))]
-		[TestCaseSource(typeof(CommonStringData), nameof(CommonStringData.PositiveStringData))]
+		[TestCaseSource(typeof(CreateTestsSeriesStringData), nameof(CreateTestsSeriesStringData.PositiveStringData))]
 		public void TestCreateNewTimeSeriesName(string name)
 		{
 			var timeSeries = new TestTimeSeriesMetadataModel
@@ -71,6 +71,24 @@ namespace sdLitica.IntegrationTests.Tests.TimeSeriesApi.Tests
 				.CreateNewTimeSeriesRequestIsSend()
 				.Then
 				.CreatedTimeSeriesIsEqualToExpected();
+		}
+
+		[Test]
+		[Category(nameof(TestCategories.PriorityMedium))]
+		[TestCaseSource(typeof(CreateTestsSeriesStringData), nameof(CreateTestsSeriesStringData.NegativeStringData))]
+		public void TestNegativeCreateNewTimeSeriesName(string name)
+		{
+			var timeSeries = new TestTimeSeriesMetadataModel
+			{
+				Name = name,
+			};
+			Given
+				.NewTimeSeries(timeSeries)
+				.UserSession(Session)
+				.When
+				.CreateNewTimeSeriesRequestIsSend()
+				.Then
+				.ResponseHasCode(HttpStatusCode.BadRequest);
 		}
 
 		[Test]
