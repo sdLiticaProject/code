@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;
 using sdLitica.Exceptions.Abstractions;
@@ -24,12 +25,16 @@ namespace sdLitica.Filters
 
             if (context.Exception is BaseExceptionModel exceptionModel)
             {
+                // todo to proper logger
+                Console.WriteLine(exceptionModel.ToJson());
                 response.StatusCode = (int)exceptionModel.StatusCode;
                 response.WriteAsync(exceptionModel.ToJson());
             }
             else
             {
                 response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                Console.WriteLine(context.Exception.Message);
+                Console.WriteLine(context.Exception.StackTrace);
                 response.WriteAsync(context.Exception.Message);
             }
         }

@@ -15,9 +15,10 @@ namespace sdLitica.TimeSeries.Services
         /// Create new time-series metadata object
         /// </summary>
         /// <param name="name"></param>
+        /// <param name="description"></param>
         /// <param name="userId"></param>
         /// <returns></returns>
-        Task<TimeSeriesMetadata> AddTimeseriesMetadata(string name, string userId);
+        Task<TimeSeriesMetadata> AddTimeseriesMetadata(string name, string description, string userId);
 
         /// <summary>
         /// Get time-series metadata object by user-id

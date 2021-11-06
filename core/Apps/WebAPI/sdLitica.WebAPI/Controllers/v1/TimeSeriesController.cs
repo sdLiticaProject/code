@@ -59,7 +59,7 @@ namespace sdLitica.WebAPI.Controllers.v1
         [HttpPost]
         public IActionResult AddTimeSeries([FromBody] TimeSeriesMetadataModel timeSeriesModel)
         {
-            Task<TimeSeriesMetadata> t = _timeSeriesMetadataService.AddTimeseriesMetadata(timeSeriesModel.Name, UserId);
+            Task<TimeSeriesMetadata> t = _timeSeriesMetadataService.AddTimeseriesMetadata(timeSeriesModel.Name, timeSeriesModel.Description, UserId);
             _timeSeriesService.AddRandomTimeSeries(t.Result.InfluxId.ToString());
             return Ok(new TimeSeriesMetadataModel(t.Result));
         }
@@ -72,7 +72,7 @@ namespace sdLitica.WebAPI.Controllers.v1
         /// <returns></returns>
         [HttpPost]
         [Route("{timeSeriesMetadataId}/data")]
-        public IActionResult UploadCsvData([FromRoute] string timeSeriesMetadataId, [FromForm] IFormFile formFile)
+        public async Task<IActionResult> UploadCsvData([FromRoute] string timeSeriesMetadataId, [FromForm] IFormFile formFile)
         {
             // todo: update rows and columns metadata after extraction
             TimeSeriesMetadata timeSeriesMetadata = _timeSeriesMetadataService.GetTimeSeriesMetadata(timeSeriesMetadataId);
@@ -81,8 +81,8 @@ namespace sdLitica.WebAPI.Controllers.v1
                 return NotFound("this user does not have timeseries given by this id");
             }
             string measurementId = timeSeriesMetadata.InfluxId.ToString();
-            List<string> fileContent = ReadAsStringAsync(formFile).Result;
-            _timeSeriesService.UploadDataFromCsv(measurementId, fileContent);
+            List<string> fileContent = await ReadAsStringAsync(formFile);
+            await _timeSeriesService.UploadDataFromCsv(measurementId, fileContent);
             return Ok();
         }
 

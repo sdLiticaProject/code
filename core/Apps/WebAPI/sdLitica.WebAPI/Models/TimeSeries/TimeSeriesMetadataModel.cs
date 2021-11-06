@@ -19,6 +19,7 @@ namespace sdLitica.WebAPI.Models.TimeSeries
         /// <summary>
         /// Name of time-series
         /// </summary>
+        [Required]
         public string Name { get; set; }
         /// <summary>
         /// Description of time-series

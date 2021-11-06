@@ -86,6 +86,7 @@ namespace sdLitica.Entities.TimeSeries
         /// </summary>
         /// <param name="name"></param>
         /// <param name="owner"></param>
+        /// <param name="description"></param>
         /// <returns></returns>
         public static TimeSeriesMetadata Create(string name, User owner, string description = "")
         {
