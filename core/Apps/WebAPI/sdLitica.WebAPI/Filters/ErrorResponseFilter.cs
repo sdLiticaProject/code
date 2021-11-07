@@ -26,15 +26,14 @@ namespace sdLitica.Filters
             if (context.Exception is BaseExceptionModel exceptionModel)
             {
                 // todo to proper logger
-                Console.WriteLine(exceptionModel.ToJson());
+                Console.WriteLine($"[{DateTimeOffset.UtcNow}] {exceptionModel.ToJson()}");
                 response.StatusCode = (int)exceptionModel.StatusCode;
                 response.WriteAsync(exceptionModel.ToJson());
             }
             else
             {
                 response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                Console.WriteLine(context.Exception.Message);
-                Console.WriteLine(context.Exception.StackTrace);
+                Console.WriteLine($"[{DateTimeOffset.UtcNow}] {context.Exception}");
                 response.WriteAsync(context.Exception.Message);
             }
         }
