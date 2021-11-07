@@ -4,9 +4,7 @@
 	{
 		public string Id { get; set; }
 		public string Name { get; set; }
-
-		//todo remove after https://github.com/sdLiticaProject/code/issues/66 fix
-		public string Description { get; set; } = string.Empty;
+		public string Description { get; set; }
 		public string DateCreated { get; set; }
 		public string DateModified { get; set; }
 		public string UserId { get; set; }
@@ -24,8 +22,7 @@
 				return false;
 			}
 
-			//todo uncomment after https://github.com/sdLiticaProject/code/issues/66 fix
-			return //Equals(obj.Description, Description) &&
+			return Equals(obj.Description, Description) &&
 			       Equals(obj.Name, Name);
 		}
 	}
