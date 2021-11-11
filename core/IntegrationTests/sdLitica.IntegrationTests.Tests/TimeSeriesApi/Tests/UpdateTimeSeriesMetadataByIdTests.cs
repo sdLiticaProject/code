@@ -106,7 +106,7 @@ namespace sdLitica.IntegrationTests.Tests.TimeSeriesApi.Tests
 				.UpdateGivenUpdateTimeSeriesIdsFromModel(timeSeries)
 				.UpdateTimeSeriesRequestIsSend()
 				.RemoveTimeSeriesRequestIsSend(timeSeries.Id)
-				.WithCode(HttpStatusCode.OK)
+				.WithSuccess()
 				.UpdateTimeSeriesRequestIsSend()
 				.Then
 				.ResponseHasCode(HttpStatusCode.NotFound);
