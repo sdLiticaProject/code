@@ -28,7 +28,9 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Tests
             Given
                 .NewUserData(profile)
                 .When
-                .CreateUserRequestIsSend();
+                .CreateUserRequestIsSend()
+                .Then
+                .LastRequestSuccessful();
 
             Given
                 .UserLoginCredentials(new TestLoginModel
@@ -45,7 +47,7 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Tests
         }
 
         [Test]
-        [Category(nameof(TestCategories.PriorityHigh))]
+        [Category(nameof(TestCategories.PriorityMedium))]
         public void TestCreateNewProfileWithGuid()
         {
             var profile = new TestUserModel
@@ -59,20 +61,9 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Tests
             Given
                 .NewUserData(profile)
                 .When
-                .CreateUserRequestIsSend();
-
-            Given
-                .UserLoginCredentials(new TestLoginModel
-                {
-                    Email = profile.Email,
-                    Password = profile.Password
-                })
-                .When
-                .LoginRequestIsSend()
-                .GetCurrentUserRequestIsSend()
+                .CreateUserRequestIsSend()
                 .Then
-                .CurrentUserIsEqualTo(profile)
-                .LogoutIfSessionTokenIsPresent();
+                .ResponseHasCode(HttpStatusCode.BadRequest);
         }
 
         [Test]
@@ -96,7 +87,9 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Tests
             Given
                 .NewUserData(profile)
                 .When
-                .CreateUserRequestIsSend();
+                .CreateUserRequestIsSend()
+                .Then
+                .LastRequestSuccessful();
 
             Given
                 .UserLoginCredentials(new TestLoginModel

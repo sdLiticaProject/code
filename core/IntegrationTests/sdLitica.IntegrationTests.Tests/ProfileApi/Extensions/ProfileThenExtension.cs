@@ -24,17 +24,6 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Extensions
             _facade = facade;
         }
 
-        public static ThenStatement ResponseHasCode(this ThenStatement thenStatement, HttpStatusCode code)
-        {
-            thenStatement.GetStatementLogger()
-                .Information($"[{{ContextStatement}}] Expecting last response to have code '{code}'",
-                    thenStatement.GetType().Name);
-
-            thenStatement.GetResultData<HttpResponseMessage>(BddKeyConstants.LastHttpResponse).AssertError(code);
-
-            return thenStatement;
-        }
-        
         public static ThenStatement CurrentUserIsEqualToExpected(this ThenStatement thenStatement)
         {
             thenStatement.GetStatementLogger()

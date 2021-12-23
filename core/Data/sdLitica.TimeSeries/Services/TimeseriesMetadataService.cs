@@ -36,12 +36,13 @@ namespace sdLitica.TimeSeries.Services
         /// Creates new time-series metadata entity owned by user given by userId
         /// </summary>
         /// <param name="name"></param>
+        /// <param name="description"></param>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public async Task<TimeSeriesMetadata> AddTimeseriesMetadata(string name, string userId)
+        public async Task<TimeSeriesMetadata> AddTimeseriesMetadata(string name, string description, string userId)
         {
             User user = _userService.GetUser(new Guid(userId));
-            TimeSeriesMetadata t = TimeSeriesMetadata.Create(name, user);
+            TimeSeriesMetadata t = TimeSeriesMetadata.Create(name, user, description);
             _timeSeriesMetadataRepository.Add(t);
             await _timeSeriesMetadataRepository.SaveChangesAsync();
             return t;

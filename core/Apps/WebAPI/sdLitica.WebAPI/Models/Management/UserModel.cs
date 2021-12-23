@@ -12,20 +12,24 @@ namespace sdLitica.WebAPI.Models.Management
         /// <summary>
         /// Unique user identifier, read-only
         /// </summary>
+        [MaxLength(36)]
         public string Id { get; set; }
         /// <summary>
         /// User first name
         /// </summary>
+        [MaxLength(45)]
         public string FirstName { get; set; }
         /// <summary>
         /// User last name
         /// </summary>
+        [MaxLength(45)]
         public string LastName { get; set; }
         /// <summary>
         /// User email
         /// </summary>
         [Required]
         [EmailAddress]
+        [MaxLength(45)]
         public string Email { get; set; }
         /// <summary>
         /// User password

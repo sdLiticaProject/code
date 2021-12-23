@@ -41,12 +41,27 @@ namespace sdLitica.IntegrationTests.TestUtils.RestUtils.Extensions
             return response;
         }
 
-        public static T MapAndLog<T>(this HttpResponseMessage response)
+        public static T Map<T>(this HttpResponseMessage response)
         {
             var responseString = response.Content.ReadAsStringAsync().Result;
-            Logger.Information($"Got response:\n{responseString}");
-            return JObject.Parse(responseString)
-                .ToObject<T>();
+            try
+            {
+                return JObject.Parse(responseString)
+                    .ToObject<T>();
+            }
+            catch
+            {
+                return JArray.Parse(responseString)
+                    .ToObject<T>();
+            }
+        }
+
+        public static HttpResponseMessage Log(this HttpResponseMessage response)
+        {
+            var responseString = response.Content.ReadAsStringAsync().Result;
+            Logger.Debug($"Got response code: {response.StatusCode}");
+            Logger.Debug($"Got response:\n{responseString}");
+            return response;
         }
 
         public static string GetTokenFromResponse(this HttpResponseMessage response)
