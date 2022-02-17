@@ -71,6 +71,25 @@ namespace sdLitica.TimeSeries.Services
             return t;
         }
 
+
+        /// <summary>
+        /// Update time-series metadata object given by guid
+        /// </summary>
+        /// <param name="newMetadata">Metadata to update</param>
+        /// <returns></returns>
+        public async Task<TimeSeriesMetadata> UpdateTimeSeriesMetadataColumns(string guid, IReadOnlyCollection<string> columns)
+        {
+            TimeSeriesMetadata t = _timeSeriesMetadataRepository.GetById(Guid.Parse(guid));
+            if (t == null)
+            {
+                throw new NotFoundException("this time-series is not found");
+            }
+            t.AddColumns(columns);
+            _timeSeriesMetadataRepository.Update(t);
+            await _timeSeriesMetadataRepository.SaveChangesAsync();
+            return t;
+        }
+
         /// <summary>
         /// Gets list of time-series metadata objects owned by user given by userId
         /// </summary>

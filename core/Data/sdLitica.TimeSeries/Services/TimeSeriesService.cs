@@ -1,7 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
+using sdLitica.Exceptions.Http;
 using sdLitica.Utils.Abstractions;
 using sdLitica.Utils.Settings;
 using Vibrant.InfluxDB.Client;
@@ -14,13 +19,17 @@ namespace sdLitica.TimeSeries.Services
         private TimeSeriesSettings TimeSeriesSettings { set; get; }
 
         private readonly InfluxClient _influxClient;
+        private readonly ITimeSeriesMetadataService _metadataService;
         private readonly IAppSettings _settings;
+        private readonly ILogger _logger;
 
-        public TimeSeriesService(IAppSettings settings)
+        public TimeSeriesService(IAppSettings settings, ITimeSeriesMetadataService metadataService, ILoggerFactory logger)
         {
             TimeSeriesSettings = settings.TimeSeriesSettings;
             _influxClient = new InfluxClient(new Uri(TimeSeriesSettings.InfluxHostName));
             _settings = settings;
+            _metadataService = metadataService;
+            _logger = logger.CreateLogger(nameof(TimeSeriesService));
         }
 
 
@@ -90,7 +99,6 @@ namespace sdLitica.TimeSeries.Services
 
             // resultSet will contain 1 result in the Results collection (or multiple if you execute multiple queries at once)
             InfluxResult<DynamicInfluxRow> result = resultSet.Results[0];
-
             return result;
         }
 
@@ -144,10 +152,10 @@ namespace sdLitica.TimeSeries.Services
             }
         }
 
-        public async Task<string> UploadDataFromCsv(string measurementId, List<string> lines)
+        public async Task<IReadOnlyCollection<string>> UploadDataFromCsv(string measurementId, List<string> lines)
         {
             await DeleteMeasurementById(measurementId);
-            string[] headers = lines[0].Split(',');
+            string[] headers = lines[0].Split(',').Select(h => h.Trim()).ToArray();
             NamedDynamicInfluxRow[] influxRows = new NamedDynamicInfluxRow[lines.Count - 1];
             for (int i = 1; i < lines.Count; i++)
             {
@@ -158,13 +166,89 @@ namespace sdLitica.TimeSeries.Services
                 {
                     row.Fields.Add(headers[j], rowValues[j]);
                 }
+
                 row.Timestamp = DateTime.Parse(rowValues[0]);
                 row.MeasurementName = measurementId;
                 influxRows[i - 1] = row;
             }
 
             await _influxClient.WriteAsync(TimeSeriesSettings.InfluxDatabase, influxRows);
-            return "?";
+            return headers;
+        }
+
+        public async Task AppendDataFromJson(string measurementId, JArray newRowsArray, string columns)
+        {
+            if (newRowsArray.Count == 0)
+            {
+                return;
+            }
+
+            var columnsArray = columns.Split(',');
+            var timeHeaderName = columnsArray[0];
+            var influxRows = new List<NamedDynamicInfluxRow>();
+
+            if (!newRowsArray.All(obj => IsObjectSchemaValid(obj as JObject, columnsArray)))
+            {
+                throw new InvalidRequestException($"Some object has incorrect schema. Expected {{{string.Join(',', columnsArray)}}}");
+            }
+
+            foreach (var jToken in newRowsArray)
+            {
+                var rowObject = (JObject) jToken;
+                _logger.LogWarning("Processing new row {Row}", rowObject.ToString());
+
+                var newRow = new NamedDynamicInfluxRow();
+                if (rowObject.Value<string>(timeHeaderName) == null)
+                {
+                    continue;
+                }
+                newRow.Timestamp = DateTime.Parse(rowObject.Value<string>(timeHeaderName));
+                _logger.LogWarning("Got Timestamp {Timestamp}", newRow.Timestamp);
+
+                newRow.MeasurementName = measurementId;
+
+                foreach (var propertyName in columnsArray)
+                {
+                    try
+                    {
+                        if (!propertyName.Equals(timeHeaderName))
+                        {
+                            newRow.Fields[propertyName] = rowObject[propertyName]?.Value<string>() ?? "NULL";
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        _logger.LogWarning("Got exception {Exception} while adding row {@Row}", e, rowObject);
+                    }
+                }
+                influxRows.Add(newRow);
+            }
+
+            _logger.LogWarning("Got rows to write {RowCount}", influxRows.Count);
+
+            foreach (var row in influxRows)
+            {
+                _logger.LogWarning("Got row to write {@Row}", JsonSerializer.Serialize(row));
+            }
+
+            await _influxClient.WriteAsync(TimeSeriesSettings.InfluxDatabase, influxRows);
+        }
+
+        public bool IsObjectSchemaValid(JObject newRow, IReadOnlyCollection<string> columns)
+        {
+            foreach (var column in columns)
+            {
+                if (newRow[column] == null)
+                {
+                    return false;
+                }
+            }
+
+            if (newRow.Count != columns.Count)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

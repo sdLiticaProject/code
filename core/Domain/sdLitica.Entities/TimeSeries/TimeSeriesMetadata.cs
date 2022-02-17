@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 using sdLitica.Entities.Abstractions;
 using sdLitica.Entities.Management;
 
@@ -80,6 +82,13 @@ namespace sdLitica.Entities.TimeSeries
             Description = description;
             DateModified = DateTime.Now;
         }
+
+        public void AddColumns(IReadOnlyCollection<string> columns)
+        {
+            Columns = string.Join(",", columns).ToLower();
+            ColumnsCount = columns.Count;
+        }
+
 
         /// <summary>
         /// Create new time-series metadata entity

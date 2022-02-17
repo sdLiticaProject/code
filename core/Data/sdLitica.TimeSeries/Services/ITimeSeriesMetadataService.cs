@@ -37,6 +37,14 @@ namespace sdLitica.TimeSeries.Services
         Task<TimeSeriesMetadata> UpdateTimeSeriesMetadata(string guid, string name, string description);
 
         /// <summary>
+        /// Update time-series metadata object given by guid
+        /// </summary>
+        /// <param name="guid"></param>
+        /// <param name="columns"></param>
+        /// <returns></returns>
+        Task<TimeSeriesMetadata> UpdateTimeSeriesMetadataColumns(string guid, IReadOnlyCollection<string> columns);
+
+        /// <summary>
         /// Delete time-series metadata object given by guid
         /// </summary>
         /// <param name="guid"></param>

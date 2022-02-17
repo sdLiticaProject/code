@@ -2,10 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
 using sdLitica.Entities.TimeSeries;
 using sdLitica.TimeSeries.Services;
 using sdLitica.WebAPI.Entities.Common;
@@ -25,11 +28,13 @@ namespace sdLitica.WebAPI.Controllers.v1
     {
         private readonly ITimeSeriesService _timeSeriesService;
         private readonly ITimeSeriesMetadataService _timeSeriesMetadataService;
+        private readonly ILogger _logger;
 
-        public TimeSeriesController(ITimeSeriesService timeSeriesService, ITimeSeriesMetadataService timeSeriesMetadataService)
+        public TimeSeriesController(ITimeSeriesService timeSeriesService, ITimeSeriesMetadataService timeSeriesMetadataService, ILoggerFactory logger)
         {
             _timeSeriesService = timeSeriesService;
             _timeSeriesMetadataService = timeSeriesMetadataService;
+            _logger = logger.CreateLogger(nameof(TimeSeriesController));
         }
 
         /// <summary>
@@ -82,7 +87,32 @@ namespace sdLitica.WebAPI.Controllers.v1
             }
             string measurementId = timeSeriesMetadata.InfluxId.ToString();
             List<string> fileContent = await ReadAsStringAsync(formFile);
-            await _timeSeriesService.UploadDataFromCsv(measurementId, fileContent);
+            var headers = await _timeSeriesService.UploadDataFromCsv(measurementId, fileContent);
+            await _timeSeriesMetadataService.UpdateTimeSeriesMetadataColumns(timeSeriesMetadataId, headers);
+            return Ok();
+        }
+
+        /// <summary>
+        /// This REST API handler uploads a data from json file to the timeseries given by timeSeriesMetadataId
+        /// </summary>
+        /// <param name="timeSeriesMetadataId"></param>
+        /// <param name="newDataArray"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("{timeSeriesMetadataId}/data/append")]
+        public async Task<IActionResult> AppendJsonData([FromRoute] string timeSeriesMetadataId, [FromBody] object[] newDataArrayParams)
+        {
+            // todo: update rows and columns metadata after extraction
+            TimeSeriesMetadata timeSeriesMetadata = _timeSeriesMetadataService.GetTimeSeriesMetadata(timeSeriesMetadataId);
+            if (!(timeSeriesMetadata != null && timeSeriesMetadata.UserId.ToString().Equals(UserId)))
+            {
+                return NotFound("this user does not have timeseries given by this id");
+            }
+            string measurementId = timeSeriesMetadata.InfluxId.ToString();
+
+            var newDataArray = JArray.Parse(JsonSerializer.Serialize(newDataArrayParams));
+            _logger.LogDebug(newDataArray.ToString());
+            await _timeSeriesService.AppendDataFromJson(measurementId, newDataArray, timeSeriesMetadata.Columns);
             return Ok();
         }
 
