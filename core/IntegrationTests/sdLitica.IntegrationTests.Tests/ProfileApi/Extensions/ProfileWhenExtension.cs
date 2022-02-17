@@ -186,7 +186,7 @@ namespace sdLitica.IntegrationTests.Tests.ProfileApi.Extensions
 		public static WhenStatement WithSuccess(this WhenStatement whenStatement)
 		{
 			whenStatement.GetStatementLogger()
-				.Information("[{{ContextStatement}}] Expecting last response to have 2XX code",
+				.Information("[{ContextStatement}] Expecting last response to have 2XX code",
 					whenStatement.GetType().Name);
 
 			whenStatement.GetResultData<HttpResponseMessage>(BddKeyConstants.LastHttpResponse).AssertSuccess();

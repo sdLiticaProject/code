@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 using sdLitica.IntegrationTests.Tests.ProfileApi.Extensions;
 using sdLitica.IntegrationTests.TestUtils.BddUtils;
 using sdLitica.IntegrationTests.TestUtils.Facades.TimeSeriesApi;
@@ -112,6 +113,21 @@ namespace sdLitica.IntegrationTests.Tests.TimeSeriesApi.Extensions
 			return whenStatement;
 		}
 
+		public static WhenStatement AppendTimeSeriesDataRequestIsSend(this WhenStatement whenStatement, JArray fileContent,
+			string testKey = null)
+		{
+			whenStatement.GetStatementLogger()
+				.Information("[{ContextStatement}] Appending JSON data to time-series", whenStatement.GetType().Name);
+
+			var session = whenStatement.GetSessionFromData(testKey);
+			var newTimeSeries = whenStatement.GetTimeSeriesFromDatas(testKey);
+
+			var response = _facade.PostAppendTimeSeriesData(session, newTimeSeries.Id, fileContent);
+			whenStatement.AddResultData(response, BddKeyConstants.LastHttpResponse + testKey);
+
+			return whenStatement;
+		}
+
 		public static WhenStatement GetAllTimeSeriesRequestIsSend(this WhenStatement whenStatement,
 			string testKey = null)
 		{
@@ -137,6 +153,36 @@ namespace sdLitica.IntegrationTests.Tests.TimeSeriesApi.Extensions
 				whenStatement.GetStatementLogger()
 					.Information("[{ContextStatement}] Could not find list of time-series in response",
 						whenStatement.GetType().Name);
+			}
+			return whenStatement;
+		}
+
+		public static WhenStatement GetTimeSeriesDataRequestIsSend(this WhenStatement whenStatement,
+			string testKey = null)
+		{
+			whenStatement.GetStatementLogger()
+				.Information("[{ContextStatement}] Getting user time-series data", whenStatement.GetType().Name);
+
+			var session = whenStatement.GetSessionFromData(testKey);
+			var newTimeSeries = whenStatement.GetTimeSeriesFromDatas(testKey);
+
+			var response = _facade.GetAllTimeSeriesDataById(session, newTimeSeries.Id);
+			whenStatement.AddResultData(response, BddKeyConstants.LastHttpResponse + testKey);
+
+			try
+			{
+				var timeSeriesData = response.Map<TestGetTimeSeriesDataModel>();
+				whenStatement.GetStatementLogger()
+					.Information($"[{{ContextStatement}}] Got time-series data {timeSeriesData}",
+						whenStatement.GetType().Name);
+
+				whenStatement.AddResultData(timeSeriesData, BddKeyConstants.UserTimeSeriesData + testKey);
+			}
+			catch (Exception e)
+			{
+				whenStatement.GetStatementLogger()
+					.Information("[{ContextStatement}] Could not find time-series data in response {Exception}",
+						whenStatement.GetType().Name, e);
 			}
 			return whenStatement;
 		}

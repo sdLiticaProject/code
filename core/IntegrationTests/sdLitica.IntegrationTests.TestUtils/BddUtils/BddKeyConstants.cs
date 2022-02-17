@@ -15,6 +15,7 @@
         public static string TimeSeriesToUpdate = nameof(TimeSeriesToUpdate);
         public static string CreatedTimeSeries = nameof(CreatedTimeSeries);
         public static string UserTimeSeries = nameof(UserTimeSeries);
+        public static string UserTimeSeriesData = nameof(UserTimeSeriesData);
         public static string UserTimeSeriesById = nameof(UserTimeSeriesById);
     }
 }

@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Web;
+using Newtonsoft.Json.Linq;
 using sdLitica.IntegrationTests.TestUtils.Facades.TimeSeriesApi.Models;
 using sdLitica.IntegrationTests.TestUtils.RestUtils;
 using sdLitica.IntegrationTests.TestUtils.RestUtils.Extensions;
@@ -16,6 +17,7 @@ namespace sdLitica.IntegrationTests.TestUtils.Facades.TimeSeriesApi
 		protected readonly ILogger Logger;
 		protected readonly string BaseApiRoute;
 		protected readonly string DataApiSuffix = "data";
+		protected readonly string AppendDataApiSuffix = "data/append";
 		protected readonly string AllDataApiSuffix = "data/all";
 
 		public TimeSeriesApiFacade(ILogger logger, string rootUrl)
@@ -64,6 +66,28 @@ namespace sdLitica.IntegrationTests.TestUtils.Facades.TimeSeriesApi
 
 				return client.LogAndPost($"{BaseApiRoute}/{metadataId}/{DataApiSuffix}",
 					form,
+					Logger);
+			}
+		}
+
+		public HttpResponseMessage PostAppendTimeSeriesData(string tokenValue, string metadataId, JArray jsonRows)
+		{
+			using (HttpClient client = HttpClientFactory.Create())
+			{
+				client.DefaultRequestHeaders
+					.Accept
+					.Add(new MediaTypeWithQualityHeaderValue(CommonHttpConstants.ApplicationJsonMedia));
+
+				if (tokenValue != null)
+				{
+					client.DefaultRequestHeaders.Authorization =
+						new AuthenticationHeaderValue(CommonHttpConstants.AuthorizationHeader, tokenValue);
+				}
+
+				var content = new StringContent(jsonRows.ToString(), Encoding.UTF8, CommonHttpConstants.ApplicationJsonMedia);
+
+				return client.LogAndPost($"{BaseApiRoute}/{metadataId}/{AppendDataApiSuffix}",
+					content,
 					Logger);
 			}
 		}
