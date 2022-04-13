@@ -110,6 +110,11 @@ namespace sdLitica.TimeSeries.Services
             return _timeSeriesMetadataRepository.GetByIdReadonly(new Guid(guid));
         }
 
+        public bool HasUserTimeSeriesMetadata(string userId, string metadataGuid)
+        {
+            return _timeSeriesMetadataRepository.GetByIdWithUserId(Guid.Parse(metadataGuid), Guid.Parse(userId));
+        }
+
         /// <summary>
         /// Deletes time-series metadata object.
         /// </summary>

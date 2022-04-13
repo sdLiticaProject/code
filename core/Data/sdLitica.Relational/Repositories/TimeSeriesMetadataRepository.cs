@@ -34,6 +34,17 @@ namespace sdLitica.Relational.Repositories
         }
 
         /// <summary>
+        /// Gets time-series metadata owned bu id and by user given by userId
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public bool GetByIdWithUserId(Guid id, Guid userId)
+        {
+            return Entity.Include(e => e.User).Any(e => e.UserId.Equals(userId) && e.Id.Equals(id));
+        }
+
+        /// <summary>
         /// Gets untracked time-series metadata object
         /// </summary>
         /// <param name="guid"></param>

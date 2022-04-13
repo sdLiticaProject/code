@@ -57,5 +57,13 @@ namespace sdLitica.TimeSeries.Services
         /// <param name="guid"></param>
         /// <returns></returns>
         TimeSeriesMetadata GetTimeSeriesMetadata(string guid);
+
+        /// <summary>
+        /// Checks existence of given metadata for the user
+        /// </summary>
+        /// <param name="userId">Possible owner of the metadata</param>
+        /// <param name="metadataGuid">Metadata id</param>
+        /// <returns></returns>
+        bool HasUserTimeSeriesMetadata(string userId, string metadataGuid);
     }
 }

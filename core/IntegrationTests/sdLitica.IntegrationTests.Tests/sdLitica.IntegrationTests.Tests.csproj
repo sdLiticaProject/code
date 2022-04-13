@@ -35,4 +35,9 @@
     <ItemGroup>
         <ProjectReference Include="..\sdLitica.IntegrationTests.TestUtils\sdLitica.IntegrationTests.TestUtils.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="SchedulerApi\Extensions" />
+      <Folder Include="SchedulerApi\TestData" />
+    </ItemGroup>
 </Project>

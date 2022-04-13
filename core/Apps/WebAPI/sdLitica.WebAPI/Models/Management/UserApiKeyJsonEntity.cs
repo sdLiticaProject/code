@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
+using sdLitica.CommonApiServices.ApiVersion.JsonAPI;
 using sdLitica.Entities.Management;
-using sdLitica.WebAPI.Entities.Common;
 
 namespace sdLitica.WebAPI.Models.Management
 {
