@@ -39,9 +39,11 @@ namespace sdLitica.SchedulerAPI.Controllers.v1
 		[HttpPost]
 		public void AddNewTrigger([FromBody] CreateNewTriggerDto dto)
 		{
-			if (_seriesMetadataService.HasUserTimeSeriesMetadata(UserId, dto.MetadataId.ToString()))
+			if (_seriesMetadataService.HasUserTimeSeriesMetadata(UserId, dto.MetadataId.ToString()) &&
+			    Uri.TryCreate(dto.FetchUrl, UriKind.Absolute, out var uriResult) &&
+			    (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps))
 			{
-				_triggerService.AddNewTrigger(dto.MetadataId, dto.CronSchedule);
+				_triggerService.AddNewTrigger(dto.MetadataId, dto.CronSchedule, dto.FetchUrl);
 			}
 			else
 			{
@@ -57,9 +59,11 @@ namespace sdLitica.SchedulerAPI.Controllers.v1
 		[HttpPost("{id}")]
 		public void EditTrigger([FromRoute] Guid id, [FromBody] EditTriggerDto dto)
 		{
-			if (_seriesMetadataService.HasUserTimeSeriesMetadata(UserId, id.ToString()))
+			if (_seriesMetadataService.HasUserTimeSeriesMetadata(UserId, id.ToString()) &&
+			    Uri.TryCreate(dto.FetchUrl, UriKind.Absolute, out var uriResult) &&
+			    (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps))
 			{
-				_triggerService.EditTrigger(id, dto.CronSchedule);
+				_triggerService.EditTrigger(id, dto.CronSchedule, dto.FetchUrl);
 			}
 			else
 			{

@@ -10,31 +10,37 @@ namespace sdLitica.Triggers.Services
 	public class TriggerService : ITriggersService
 	{
 		private readonly ILogger _logger;
-		private readonly IScheduler _scheduler;
+		private readonly ISchedulerFactory  _schedulerFactory;
+		private IScheduler Scheduler => _schedulerFactory.GetScheduler().Result;
 		private readonly IServiceProvider _provider;
 
-		public TriggerService(ILoggerFactory logger, IServiceProvider provider)
+		public TriggerService(ILoggerFactory logger, IServiceProvider provider, ISchedulerFactory schedulerFactory)
 		{
 			_provider = provider;
-			_scheduler = new StdSchedulerFactory().GetScheduler().Result;
+			_schedulerFactory = schedulerFactory;
+			// _scheduler = new StdSchedulerFactory().GetScheduler().Result;
 			// _scheduler.JobFactory = new DiJobFactory(provider);
-			_scheduler.Start();
+			// _scheduler.Start();
 
 			_logger = logger.CreateLogger(nameof(TriggerService));
 		}
 
-		public void AddNewTrigger(Guid metadataId, string cronSchedule)
+		public void AddNewTrigger(Guid metadataId, string cronSchedule, string fetchUrl)
 		{
 			_logger.LogDebug("Adding new trigger. Id: {MetadataId}, cron: {CronSchedule}",
 				metadataId,
 				cronSchedule);
 
-			if (_scheduler.GetJobDetail(new JobKey(metadataId.ToString())).Result != null)
+			if (Scheduler.GetJobDetail(new JobKey(metadataId.ToString())).Result != null)
 			{
 				throw new InvalidRequestException($"Trigger with id {metadataId} already exists");
 			}
 
-			var job = JobBuilder.Create<AppendDataJob>().WithIdentity(metadataId.ToString()).UsingJobData("metadataId", metadataId.ToString()).Build();
+			var job = JobBuilder.Create<AppendDataJob>()
+				.WithIdentity(metadataId.ToString())
+				.UsingJobData("metadataId", metadataId.ToString())
+				.UsingJobData("fetchUrl", fetchUrl)
+				.Build();
 
 			try
 			{
@@ -43,7 +49,7 @@ namespace sdLitica.Triggers.Services
 					.WithCronSchedule(cronSchedule)
 					.Build();
 
-				_scheduler.ScheduleJob(job, trigger);
+				Scheduler.ScheduleJob(job, trigger);
 			}
 			catch (SchedulerException e)
 			{
@@ -55,16 +61,19 @@ namespace sdLitica.Triggers.Services
 			}
 		}
 
-		public void EditTrigger(Guid metadataId, string cronSchedule)
+		public void EditTrigger(Guid metadataId, string cronSchedule, string fetchUrl)
 		{
 			try
 			{
-				var trigger = TriggerBuilder.Create().WithIdentity(metadataId.ToString())
+				var trigger = TriggerBuilder.Create()
+					.WithIdentity(metadataId.ToString())
 					.ForJob(metadataId.ToString())
+					.UsingJobData("fetchUrl", fetchUrl)
 					.StartNow()
 					.WithCronSchedule(cronSchedule)
 					.Build();
-				_scheduler.RescheduleJob(new TriggerKey(metadataId.ToString()), trigger);
+
+				Scheduler.RescheduleJob(new TriggerKey(metadataId.ToString()), trigger);
 			}
 			catch (SchedulerException e)
 			{
@@ -78,7 +87,7 @@ namespace sdLitica.Triggers.Services
 
 		public void RemoveTrigger(Guid metadataId)
 		{
-			var success = _scheduler.DeleteJob(new JobKey(metadataId.ToString())).Result;
+			var success = Scheduler.DeleteJob(new JobKey(metadataId.ToString())).Result;
 			if (!success)
 			{
 				throw new NotFoundException($"Could not find job with id {metadataId}");
@@ -87,22 +96,22 @@ namespace sdLitica.Triggers.Services
 
 		public void PauseJob(Guid metadataId)
 		{
-			_scheduler.PauseJob(new JobKey(metadataId.ToString()));
+			Scheduler.PauseJob(new JobKey(metadataId.ToString()));
 		}
 
 		public void ResumeJob(Guid metadataId)
 		{
-			_scheduler.ResumeJob(new JobKey(metadataId.ToString()));
+			Scheduler.ResumeJob(new JobKey(metadataId.ToString()));
 		}
 
 		public IJobDetail? GetJobInfo(Guid metadataId)
 		{
-			return _scheduler.GetJobDetail(new JobKey(metadataId.ToString())).Result;
+			return Scheduler.GetJobDetail(new JobKey(metadataId.ToString())).Result;
 		}
 
 		public ITrigger? GetTrigger(Guid metadataId)
 		{
-			return _scheduler.GetTrigger(new TriggerKey(metadataId.ToString())).Result;
+			return Scheduler.GetTrigger(new TriggerKey(metadataId.ToString())).Result;
 		}
 	}
 }

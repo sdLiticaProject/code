@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Quartz;
 using sdLitica.TimeSeries.Services;
-using sdLitica.Triggers.Services;
 
 namespace sdLitica.Triggers.Jobs
 {
@@ -13,11 +15,11 @@ namespace sdLitica.Triggers.Jobs
 		private ITimeSeriesMetadataService SeriesMetadataService { get; }
 		private ITimeSeriesService TimeSeriesService { get; }
 
-		public AppendDataJob(ILogger logger,
+		public AppendDataJob(ILoggerFactory logger,
 			ITimeSeriesMetadataService seriesMetadataService,
 			ITimeSeriesService timeSeriesService)
 		{
-			Logger = logger;
+			Logger = logger.CreateLogger(nameof(AppendDataJob));
 			SeriesMetadataService = seriesMetadataService;
 			TimeSeriesService = timeSeriesService;
 		}
@@ -26,11 +28,13 @@ namespace sdLitica.Triggers.Jobs
 		{
 			try
 			{
-				Logger.LogDebug("Stub job execution started");
+				Logger.LogDebug("Append job execution started");
 				var metaId = context.MergedJobDataMap.GetString("metadataId");
+				var url = context.MergedJobDataMap.GetString("fetchUrl");
 				Logger.LogDebug("Id of metadata is {MetadataId}", metaId);
-				Logger.LogDebug("InfluxId is {InfluxId}",
-					SeriesMetadataService.GetTimeSeriesMetadata(metaId).InfluxId);
+				var metadata = SeriesMetadataService.GetTimeSeriesMetadata(metaId);
+				Logger.LogDebug("InfluxId is {InfluxId}", metadata.InfluxId);
+				await TimeSeriesService.AppendDataFromJson(metaId, FetchJsonData(url!), metadata.Columns);
 				// some job execution
 				Logger.LogDebug("Stub job execution ended");
 			}
@@ -40,5 +44,12 @@ namespace sdLitica.Triggers.Jobs
 			}
 		}
 
+		private JArray FetchJsonData(string url)
+		{
+			var client = new HttpClient();
+			var data = client.GetStringAsync(url).Result;
+			Logger.LogDebug("Gor from {Url} response {Data}", url, data);
+			return JArray.Parse(data);
+		}
 	}
 }

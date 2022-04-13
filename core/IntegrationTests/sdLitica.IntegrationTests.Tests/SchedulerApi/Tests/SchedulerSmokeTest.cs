@@ -47,7 +47,8 @@ namespace sdLitica.IntegrationTests.Tests.SchedulerApi.Tests
 			Facade.PostCreateTrigger(session, new TestCreateNewTriggerModel()
 			{
 				CronSchedule = "0 0/1 * * * ?",
-				MetadataId = Guid.Parse(metaId)
+				MetadataId = Guid.Parse(metaId),
+				FetchUrl = "https://example.com"
 			}).AssertSuccess();
 
 			Thread.Sleep(TimeSpan.FromMinutes(1));
@@ -93,13 +94,15 @@ namespace sdLitica.IntegrationTests.Tests.SchedulerApi.Tests
 			Facade.PostCreateTrigger(session, new TestCreateNewTriggerModel()
 			{
 				CronSchedule = "0 0/1 * * * ? * ",
-				MetadataId = Guid.Parse(metaId)
+				MetadataId = Guid.Parse(metaId),
+				FetchUrl = "https://example.com"
 			}).AssertSuccess();
 
 			Facade.PostCreateTrigger(session, new TestCreateNewTriggerModel()
 			{
 				CronSchedule = "0 0/1 * 1/1 * ? * ",
-				MetadataId = Guid.Parse(metaId)
+				MetadataId = Guid.Parse(metaId),
+				FetchUrl = "https://example.com"
 			}).AssertError(HttpStatusCode.BadRequest);
 
 			var triggers = Facade.GetAllTriggers(session).AssertSuccess().Map<List<TestGetTriggerModel>>();
