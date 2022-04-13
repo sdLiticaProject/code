@@ -36,6 +36,8 @@ namespace sdLitica.IntegrationTests.Tests.SchedulerApi.Tests
 				.UserSession(session)
 				.When
 				.CreateNewTimeSeriesRequestIsSend()
+				.UploadTimeSeriesDataRequestIsSend("timestamp,value\n2021-01-10 11:14,1\n2021-01-10 11:16,3")
+				.WithSuccess()
 				.Then
 				.CreatedTimeSeriesIsEqualToExpected()
 				.GetResultData<TestTimeSeriesMetadataModel>(BddKeyConstants.CreatedTimeSeries);
@@ -48,7 +50,7 @@ namespace sdLitica.IntegrationTests.Tests.SchedulerApi.Tests
 			{
 				CronSchedule = "0 0/1 * * * ?",
 				MetadataId = Guid.Parse(metaId),
-				FetchUrl = "https://example.com"
+				FetchUrl = "https://pastebin.com/raw/b6CUnVDf"
 			}).AssertSuccess();
 
 			Thread.Sleep(TimeSpan.FromMinutes(1));
@@ -95,14 +97,14 @@ namespace sdLitica.IntegrationTests.Tests.SchedulerApi.Tests
 			{
 				CronSchedule = "0 0/1 * * * ? * ",
 				MetadataId = Guid.Parse(metaId),
-				FetchUrl = "https://example.com"
+				FetchUrl = "https://pastebin.com/raw/b6CUnVDf"
 			}).AssertSuccess();
 
 			Facade.PostCreateTrigger(session, new TestCreateNewTriggerModel()
 			{
 				CronSchedule = "0 0/1 * 1/1 * ? * ",
 				MetadataId = Guid.Parse(metaId),
-				FetchUrl = "https://example.com"
+				FetchUrl = "https://pastebin.com/raw/b6CUnVDf"
 			}).AssertError(HttpStatusCode.BadRequest);
 
 			var triggers = Facade.GetAllTriggers(session).AssertSuccess().Map<List<TestGetTriggerModel>>();

@@ -36,7 +36,7 @@ namespace sdLitica.Triggers.Jobs
 				Logger.LogDebug("InfluxId is {InfluxId}", metadata.InfluxId);
 				await TimeSeriesService.AppendDataFromJson(metaId, FetchJsonData(url!), metadata.Columns);
 				// some job execution
-				Logger.LogDebug("Stub job execution ended");
+				Logger.LogDebug("Append job execution ended");
 			}
 			catch (Exception e)
 			{
