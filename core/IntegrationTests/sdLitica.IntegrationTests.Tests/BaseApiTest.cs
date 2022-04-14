@@ -46,6 +46,7 @@ namespace sdLitica.IntegrationTests.Tests
             Configuration = GetApplicationConfiguration(TestContext.CurrentContext.TestDirectory);
             Assert.NotNull(Configuration.RootUrl, "Server URL for tests executions is not set");
             Assert.NotNull(Configuration.SchedulerUrl, "Scheduler URL for tests executions is not set");
+            Assert.NotNull(Configuration.SchedulerTestDataUrl, "Scheduler URL for tests executions is not set");
             Assert.NotNull(Configuration.UserName, "Default user name for tests executions is not set");
             Assert.NotNull(Configuration.Password, "Default password for tests executions is not set");
 

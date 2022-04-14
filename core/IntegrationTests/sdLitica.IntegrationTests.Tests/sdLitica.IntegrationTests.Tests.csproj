@@ -37,7 +37,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="SchedulerApi\Extensions" />
       <Folder Include="SchedulerApi\TestData" />
     </ItemGroup>
 </Project>

@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using sdLitica.IntegrationTests.Tests.SchedulerApi.Extensions;
 using sdLitica.IntegrationTests.Tests.TimeSeriesApi.Extensions;
 using sdLitica.IntegrationTests.TestUtils.BddUtils;
 using sdLitica.IntegrationTests.TestUtils.Facades.ProfileApi;
@@ -32,6 +33,8 @@ namespace sdLitica.IntegrationTests.Tests.SchedulerApi.Tests
 				Configuration.RootUrl);
 			TimeSeriesWhenExtension.Init(TimeSeriesFacade);
 			TimeSeriesThenExtension.Init(TimeSeriesFacade, ProfileFacade);
+			SchedulerWhenExtension.Init(Facade);
+			SchedulerThenExtension.Init(Facade, ProfileFacade);
 		}
 	}
 }

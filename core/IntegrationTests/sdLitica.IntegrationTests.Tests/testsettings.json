@@ -1,8 +1,9 @@
 {
-    "Server": {
-        "UserName": "user@sdcliud.io",
-        "Password": "Password123",
-        "RootUrl": "http://sdlitica.sdcloud.io:5050",
-        "SchedulerUrl": "http://sdlitica.sdcloud.io:5000"
-    }
+  "Server": {
+    "UserName": "user@sdcliud.io",
+    "Password": "Password123",
+    "RootUrl": "http://sdlitica.sdcloud.io:5050",
+    "SchedulerUrl": "http://sdlitica.sdcloud.io:5000",
+    "SchedulerTestDataUrl": "https://pastebin.com/raw/b6CUnVDf"
+  }
 }
