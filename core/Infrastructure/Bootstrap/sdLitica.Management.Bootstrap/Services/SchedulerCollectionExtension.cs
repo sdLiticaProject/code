@@ -1,11 +1,12 @@
-﻿using System.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Quartz;
-using Quartz.Impl;
-using sdLitica.TimeSeries.Services;
+using Quartz.Impl.AdoJobStore ;
+using Quartz.Simpl;
+using sdLitica.Bootstrap.Settings;
 using sdLitica.Triggers.Jobs;
 using sdLitica.Triggers.Services;
+using sdLitica.Utils.Settings;
 
 namespace sdLitica.Bootstrap.Services
 {
@@ -28,7 +29,18 @@ namespace sdLitica.Bootstrap.Services
 			{
 				q.UseMicrosoftDependencyInjectionJobFactory();
 				q.UseSimpleTypeLoader();
-				q.UseInMemoryStore();
+				q.UsePersistentStore(opt =>
+				{
+					opt.UseProperties = true;
+					opt.UseSerializer<JsonObjectSerializer>();
+					opt.UseGenericDatabase("MySql", dbOpt =>
+					{
+						dbOpt.TablePrefix = "QRTZ_";
+						dbOpt.ConnectionString = BootstrapSettings.AppSettings.GetConnectionString("MySql");
+						dbOpt.UseDriverDelegate<MySQLDelegate>();
+					});
+				});
+				// q.UseInMemoryStore();
 				q.UseDefaultThreadPool(tp =>
 				{
 					tp.MaxConcurrency = 5;
