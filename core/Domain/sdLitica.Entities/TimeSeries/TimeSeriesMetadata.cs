@@ -72,6 +72,12 @@ namespace sdLitica.Entities.TimeSeries
         public string Columns { get; protected set; }
 
         /// <summary>
+        /// Comma-separated list of columns' names, updates when loading the time-series
+        /// </summary>
+        [Column("TIMESTAMP_COLUMN")]
+        public string TimeStampColumn { get; protected set; }
+
+        /// <summary>
         /// Modify time-series
         /// </summary>
         /// <param name="name"></param>
@@ -83,9 +89,10 @@ namespace sdLitica.Entities.TimeSeries
             DateModified = DateTime.Now;
         }
 
-        public void AddColumns(IReadOnlyCollection<string> columns)
+        public void SetColumns(IReadOnlyCollection<string> columns, string timeStampColumn)
         {
             Columns = string.Join(",", columns).ToLower();
+            TimeStampColumn = timeStampColumn;
             ColumnsCount = columns.Count;
         }
 

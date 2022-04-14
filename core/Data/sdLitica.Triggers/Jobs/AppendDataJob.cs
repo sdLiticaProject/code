@@ -34,7 +34,7 @@ namespace sdLitica.Triggers.Jobs
 				Logger.LogDebug("Id of metadata is {MetadataId}", metaId);
 				var metadata = SeriesMetadataService.GetTimeSeriesMetadata(metaId);
 				Logger.LogDebug("InfluxId is {InfluxId}", metadata.InfluxId);
-				await TimeSeriesService.AppendDataFromJson(metaId, FetchJsonData(url!), metadata.Columns);
+				await TimeSeriesService.AppendDataFromJson(metaId, FetchJsonData(url!), metadata.Columns, metadata.TimeStampColumn);
 				// some job execution
 				Logger.LogDebug("Append job execution ended");
 			}

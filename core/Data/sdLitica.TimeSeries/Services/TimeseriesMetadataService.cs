@@ -77,14 +77,14 @@ namespace sdLitica.TimeSeries.Services
         /// </summary>
         /// <param name="newMetadata">Metadata to update</param>
         /// <returns></returns>
-        public async Task<TimeSeriesMetadata> UpdateTimeSeriesMetadataColumns(string guid, IReadOnlyCollection<string> columns)
+        public async Task<TimeSeriesMetadata> AddTimeSeriesMetadataColumns(string guid, IReadOnlyCollection<string> columns, string timeStampColumn)
         {
             TimeSeriesMetadata t = _timeSeriesMetadataRepository.GetById(Guid.Parse(guid));
             if (t == null)
             {
                 throw new NotFoundException("this time-series is not found");
             }
-            t.AddColumns(columns);
+            t.SetColumns(columns, timeStampColumn);
             _timeSeriesMetadataRepository.Update(t);
             await _timeSeriesMetadataRepository.SaveChangesAsync();
             return t;

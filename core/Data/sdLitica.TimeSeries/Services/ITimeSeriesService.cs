@@ -18,8 +18,8 @@ namespace sdLitica.TimeSeries.Services
         Task<InfluxResult<DynamicInfluxRow>> ReadMeasurementById(string measurementId, string from, string to, string step);
         Task<InfluxResult> DeleteMeasurementById(string measurementId);
 
-        Task<IReadOnlyCollection<string>> UploadDataFromCsv(string measurementId, List<string> file);
+        Task<List<string>> UploadDataFromCsv(string measurementId, List<string> file);
 
-        Task AppendDataFromJson(string measurementId, JArray newRowsArray, string columns);
+        Task AppendDataFromJson(string measurementId, JArray newRowsArray, string columns, string timeColumn);
     }
 }

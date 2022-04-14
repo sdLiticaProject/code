@@ -88,7 +88,9 @@ namespace sdLitica.WebAPI.Controllers.v1
             string measurementId = timeSeriesMetadata.InfluxId.ToString();
             List<string> fileContent = await ReadAsStringAsync(formFile);
             var headers = await _timeSeriesService.UploadDataFromCsv(measurementId, fileContent);
-            await _timeSeriesMetadataService.UpdateTimeSeriesMetadataColumns(timeSeriesMetadataId, headers);
+            var timeHeader = headers[0];
+            headers.RemoveAt(0);
+            await _timeSeriesMetadataService.AddTimeSeriesMetadataColumns(timeSeriesMetadataId, headers, timeHeader);
             return Ok();
         }
 
@@ -112,7 +114,7 @@ namespace sdLitica.WebAPI.Controllers.v1
 
             var newDataArray = JArray.Parse(JsonSerializer.Serialize(newDataArrayParams));
             _logger.LogDebug(newDataArray.ToString());
-            await _timeSeriesService.AppendDataFromJson(measurementId, newDataArray, timeSeriesMetadata.Columns);
+            await _timeSeriesService.AppendDataFromJson(measurementId, newDataArray, timeSeriesMetadata.Columns, timeSeriesMetadata.TimeStampColumn);
             return Ok();
         }
 
