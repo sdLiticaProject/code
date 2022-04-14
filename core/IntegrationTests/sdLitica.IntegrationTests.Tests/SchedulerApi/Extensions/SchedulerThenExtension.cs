@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using sdLitica.IntegrationTests.TestUtils.BddUtils;
 using sdLitica.IntegrationTests.TestUtils.Facades.ProfileApi;
 using sdLitica.IntegrationTests.TestUtils.Facades.SchedulerApi;
 using sdLitica.IntegrationTests.TestUtils.Facades.SchedulerApi.Models;
-using sdLitica.IntegrationTests.TestUtils.Facades.TimeSeriesApi.Models;
 using sdLitica.IntegrationTests.TestUtils.RestUtils.Extensions;
 
 namespace sdLitica.IntegrationTests.Tests.SchedulerApi.Extensions
@@ -45,6 +45,48 @@ namespace sdLitica.IntegrationTests.Tests.SchedulerApi.Extensions
 
 			Assert.That(newCount, Is.EqualTo(oldCount + count),
 				$"Expected {oldCount + count} triggers to be present, but found {newCount}");
+
+			return thenStatement;
+		}
+
+		public static ThenStatement TriggerFiredInTime(this ThenStatement thenStatement,
+			string triggerId,
+			TimeSpan time,
+			string testKey = null)
+		{
+			var triggers = _facade.GetAllTriggers(
+					thenStatement.GetGivenData<string>(BddKeyConstants.SessionTokenKey + testKey))
+				.Map<List<TestGetTriggerModel>>();
+
+			var trigger = triggers.First(e => e.TriggerKey.Equals(triggerId.ToString()));
+
+			if (!trigger.LastFireTime.HasValue)
+			{
+				Assert.Fail("Trigger didn't fire");
+			}
+
+			Assert.That(trigger.LastFireTime, Is.GreaterThan(DateTimeOffset.UtcNow - time),
+				$"Expected {triggerId} trigger to fire at {DateTimeOffset.UtcNow - time}, but found {trigger.LastFireTime}");
+
+			return thenStatement;
+		}
+
+		public static ThenStatement TriggerNotFiredInTime(this ThenStatement thenStatement,
+			string triggerId,
+			TimeSpan time,
+			string testKey = null)
+		{
+			var triggers = _facade.GetAllTriggers(
+					thenStatement.GetGivenData<string>(BddKeyConstants.SessionTokenKey + testKey))
+				.Map<List<TestGetTriggerModel>>();
+
+			var trigger = triggers.First(e => e.TriggerKey.Equals(triggerId.ToString()));
+
+			if(trigger.LastFireTime.HasValue)
+			{
+				Assert.That(trigger.LastFireTime, Is.LessThan(DateTimeOffset.UtcNow - time),
+					$"Expected {triggerId} trigger to fire at {DateTimeOffset.UtcNow - time}, but found {trigger.LastFireTime}");
+			}
 
 			return thenStatement;
 		}

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
 using Serilog;
 
 namespace sdLitica.IntegrationTests.TestUtils.BddUtils
@@ -50,6 +52,12 @@ namespace sdLitica.IntegrationTests.TestUtils.BddUtils
 			}
 
 			_thenData.Add(key, data);
+		}
+
+		public WhenStatement TimePassed(TimeSpan time)
+		{
+			Thread.Sleep(time);
+			return this;
 		}
 	}
 }

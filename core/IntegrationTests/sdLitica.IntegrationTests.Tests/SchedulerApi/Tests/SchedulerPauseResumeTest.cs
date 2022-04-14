@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net;
 using NUnit.Framework;
 using sdLitica.IntegrationTests.Tests.ProfileApi.Extensions;
 using sdLitica.IntegrationTests.Tests.SchedulerApi.Extensions;
@@ -11,10 +10,10 @@ using sdLitica.IntegrationTests.TestUtils.Facades.TimeSeriesApi.Models;
 
 namespace sdLitica.IntegrationTests.Tests.SchedulerApi.Tests
 {
-	public class SchedulerSmokeTest : BaseAuthorizedSchedulerTest
+	public class SchedulerPauseResumeTest : BaseAuthorizedSchedulerTest
 	{
 		[Test]
-		public void SmokePositiveTest()
+		public void PausePositiveTest()
 		{
 			var createdTs = Given
 				.NewTimeSeries(new TestTimeSeriesMetadataModel
@@ -40,16 +39,17 @@ namespace sdLitica.IntegrationTests.Tests.SchedulerApi.Tests
 					FetchUrl = Configuration.SchedulerTestDataUrl
 				})
 				.When
-				.GetCurrentTriggersCount()
-				.WithSuccess()
 				.CreateNewTriggerRequestIsSend()
 				.WithSuccess()
+				.PauseCreatedTrigger()
+				.WithSuccess()
+				.TimePassed(TimeSpan.FromMinutes(1))
 				.Then
-				.TriggersCountIncreasedBy(1);
+				.TriggerNotFiredInTime(metaId, TimeSpan.FromMinutes(1));
 		}
 
 		[Test]
-		public void SmokeTriggerFiredPositiveTest()
+		public void DoublePausePositiveTest()
 		{
 			var createdTs = Given
 				.NewTimeSeries(new TestTimeSeriesMetadataModel
@@ -76,6 +76,48 @@ namespace sdLitica.IntegrationTests.Tests.SchedulerApi.Tests
 				})
 				.When
 				.CreateNewTriggerRequestIsSend()
+				.WithSuccess()
+				.PauseCreatedTrigger()
+				.WithSuccess()
+				.PauseCreatedTrigger()
+				.WithSuccess()
+				.TimePassed(TimeSpan.FromMinutes(1))
+				.Then
+				.TriggerNotFiredInTime(metaId, TimeSpan.FromMinutes(1));
+		}
+
+		[Test]
+		public void ResumePositiveTest()
+		{
+			var createdTs = Given
+				.NewTimeSeries(new TestTimeSeriesMetadataModel
+				{
+					Description = TestStringHelper.RandomLatinString(),
+					Name = TestStringHelper.RandomLatinString(),
+				})
+				.UserSession(Session)
+				.When
+				.CreateNewTimeSeriesRequestIsSend()
+				.WithSuccess()
+				.Then
+				.CreatedTimeSeriesIsEqualToExpected()
+				.GetResultData<TestTimeSeriesMetadataModel>(BddKeyConstants.CreatedTimeSeries);
+
+			var metaId = createdTs.Id;
+			Given
+				.UserSession(Session)
+				.NewTrigger(new TestCreateNewTriggerModel()
+				{
+					CronSchedule = "0 0/1 * * * ?",
+					MetadataId = Guid.Parse(metaId),
+					FetchUrl = Configuration.SchedulerTestDataUrl
+				})
+				.When
+				.CreateNewTriggerRequestIsSend()
+				.WithSuccess()
+				.PauseCreatedTrigger()
+				.WithSuccess()
+				.ResumeCreatedTrigger()
 				.WithSuccess()
 				.TimePassed(TimeSpan.FromMinutes(1))
 				.Then
@@ -83,7 +125,7 @@ namespace sdLitica.IntegrationTests.Tests.SchedulerApi.Tests
 		}
 
 		[Test]
-		public void SmokeDoubleCreateTriggerNegativeTest()
+		public void DoubleResumePositiveTest()
 		{
 			var createdTs = Given
 				.NewTimeSeries(new TestTimeSeriesMetadataModel
@@ -109,14 +151,17 @@ namespace sdLitica.IntegrationTests.Tests.SchedulerApi.Tests
 					FetchUrl = Configuration.SchedulerTestDataUrl
 				})
 				.When
-				.GetCurrentTriggersCount()
-				.WithSuccess()
 				.CreateNewTriggerRequestIsSend()
 				.WithSuccess()
-				.CreateNewTriggerRequestIsSend()
-				.WithCode(HttpStatusCode.BadRequest)
+				.PauseCreatedTrigger()
+				.WithSuccess()
+				.ResumeCreatedTrigger()
+				.WithSuccess()
+				.ResumeCreatedTrigger()
+				.WithSuccess()
+				.TimePassed(TimeSpan.FromMinutes(1))
 				.Then
-				.TriggersCountIncreasedBy(1);
+				.TriggerFiredInTime(metaId, TimeSpan.FromMinutes(1));
 		}
 	}
 }

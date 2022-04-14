@@ -58,5 +58,31 @@ namespace sdLitica.IntegrationTests.Tests.SchedulerApi.Extensions
 			}
 			return whenStatement;
 		}
+
+		public static WhenStatement PauseCreatedTrigger(this WhenStatement whenStatement,
+			string testKey = null)
+		{
+			whenStatement.GetStatementLogger()
+				.Information("[{ContextStatement}] Pausing trigger", whenStatement.GetType().Name);
+
+			var session = whenStatement.GetSessionFromData(testKey);
+			var trigger = whenStatement.GetGivenData<TestCreateNewTriggerModel>(BddKeyConstants.TriggerToCreate + testKey);
+			var response = _facade.PostPauseTrigger(session, trigger.MetadataId.ToString());
+			whenStatement.AddResultData(response, BddKeyConstants.LastHttpResponse + testKey);
+			return whenStatement;
+		}
+
+		public static WhenStatement ResumeCreatedTrigger(this WhenStatement whenStatement,
+			string testKey = null)
+		{
+			whenStatement.GetStatementLogger()
+				.Information("[{ContextStatement}] Resuming trigger", whenStatement.GetType().Name);
+
+			var session = whenStatement.GetSessionFromData(testKey);
+			var trigger = whenStatement.GetGivenData<TestCreateNewTriggerModel>(BddKeyConstants.TriggerToCreate + testKey);
+			var response = _facade.PostResumeTrigger(session, trigger.MetadataId.ToString());
+			whenStatement.AddResultData(response, BddKeyConstants.LastHttpResponse + testKey);
+			return whenStatement;
+		}
 	}
 }
