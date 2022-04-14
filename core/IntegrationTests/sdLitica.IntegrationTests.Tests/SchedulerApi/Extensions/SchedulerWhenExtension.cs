@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using sdLitica.IntegrationTests.Tests.ProfileApi.Extensions;
 using sdLitica.IntegrationTests.TestUtils.BddUtils;
 using sdLitica.IntegrationTests.TestUtils.Facades.SchedulerApi;
@@ -27,6 +28,22 @@ namespace sdLitica.IntegrationTests.Tests.SchedulerApi.Extensions
 				whenStatement.GetGivenData<TestCreateNewTriggerModel>(BddKeyConstants.TriggerToCreate + testKey);
 
 			var response = _facade.PostCreateTrigger(session, newTimeSeries);
+			whenStatement.AddResultData(response, BddKeyConstants.LastHttpResponse + testKey);
+
+			return whenStatement;
+		}
+
+		public static WhenStatement DeleteCreatedTriggerRequestIsSend(this WhenStatement whenStatement,
+			string testKey = null)
+		{
+			whenStatement.GetStatementLogger()
+				.Information("[{ContextStatement}] Removing trigger", whenStatement.GetType().Name);
+
+			var session = whenStatement.GetSessionFromData(testKey);
+			var createdTrigger =
+				whenStatement.GetGivenData<TestCreateNewTriggerModel>(BddKeyConstants.TriggerToCreate + testKey);
+
+			var response = _facade.DeleteRemoveTrigger(session, createdTrigger.MetadataId.ToString());
 			whenStatement.AddResultData(response, BddKeyConstants.LastHttpResponse + testKey);
 
 			return whenStatement;
@@ -72,6 +89,18 @@ namespace sdLitica.IntegrationTests.Tests.SchedulerApi.Extensions
 			return whenStatement;
 		}
 
+		public static WhenStatement PauseTrigger(this WhenStatement whenStatement, Guid triggerId,
+			string testKey = null)
+		{
+			whenStatement.GetStatementLogger()
+				.Information("[{ContextStatement}] Pausing trigger", whenStatement.GetType().Name);
+
+			var session = whenStatement.GetSessionFromData(testKey);
+			var response = _facade.PostPauseTrigger(session, triggerId.ToString());
+			whenStatement.AddResultData(response, BddKeyConstants.LastHttpResponse + testKey);
+			return whenStatement;
+		}
+
 		public static WhenStatement ResumeCreatedTrigger(this WhenStatement whenStatement,
 			string testKey = null)
 		{
@@ -81,6 +110,18 @@ namespace sdLitica.IntegrationTests.Tests.SchedulerApi.Extensions
 			var session = whenStatement.GetSessionFromData(testKey);
 			var trigger = whenStatement.GetGivenData<TestCreateNewTriggerModel>(BddKeyConstants.TriggerToCreate + testKey);
 			var response = _facade.PostResumeTrigger(session, trigger.MetadataId.ToString());
+			whenStatement.AddResultData(response, BddKeyConstants.LastHttpResponse + testKey);
+			return whenStatement;
+		}
+
+		public static WhenStatement ResumeTrigger(this WhenStatement whenStatement, Guid triggerId,
+			string testKey = null)
+		{
+			whenStatement.GetStatementLogger()
+				.Information("[{ContextStatement}] Resuming trigger", whenStatement.GetType().Name);
+
+			var session = whenStatement.GetSessionFromData(testKey);
+			var response = _facade.PostResumeTrigger(session, triggerId.ToString());
 			whenStatement.AddResultData(response, BddKeyConstants.LastHttpResponse + testKey);
 			return whenStatement;
 		}

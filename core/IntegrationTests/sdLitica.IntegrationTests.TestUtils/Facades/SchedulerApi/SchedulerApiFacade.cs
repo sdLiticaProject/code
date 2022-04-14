@@ -1,6 +1,7 @@
 ﻿using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using Newtonsoft.Json.Linq;
 using sdLitica.IntegrationTests.TestUtils.Facades.SchedulerApi.Models;
 using sdLitica.IntegrationTests.TestUtils.RestUtils;
 using sdLitica.IntegrationTests.TestUtils.RestUtils.Extensions;
@@ -68,11 +69,7 @@ namespace sdLitica.IntegrationTests.TestUtils.Facades.SchedulerApi
 					new AuthenticationHeaderValue(CommonHttpConstants.AuthorizationHeader, tokenValue);
 			}
 
-			var content = new StringContent(string.Empty, Encoding.UTF8,
-				CommonHttpConstants.ApplicationJsonMedia);
-
-			return client.LogAndPost($"{BaseApiRoute}/{metadataId}",
-				content,
+			return client.LogAndDelete($"{BaseApiRoute}/{metadataId}",
 				Logger);
 		}
 

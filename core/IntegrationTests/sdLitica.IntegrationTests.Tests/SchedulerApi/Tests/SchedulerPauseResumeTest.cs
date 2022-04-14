@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using NUnit.Framework;
 using sdLitica.IntegrationTests.Tests.ProfileApi.Extensions;
 using sdLitica.IntegrationTests.Tests.SchedulerApi.Extensions;
@@ -162,6 +163,36 @@ namespace sdLitica.IntegrationTests.Tests.SchedulerApi.Tests
 				.TimePassed(TimeSpan.FromMinutes(1))
 				.Then
 				.TriggerFiredInTime(metaId, TimeSpan.FromMinutes(1));
+		}
+
+		[Test]
+		public void PauseWithNewGuidPositiveTest()
+		{
+			var metaId = Guid.NewGuid();
+			Given
+				.UserSession(Session)
+				.When
+				.GetCurrentTriggersCount()
+				.WithSuccess()
+				.PauseTrigger(metaId)
+				.WithCode(HttpStatusCode.NotFound)
+				.Then
+				.TriggersCountIncreasedBy(0);
+		}
+
+		[Test]
+		public void ResumeWithNewGuidPositiveTest()
+		{
+			var metaId = Guid.NewGuid();
+			Given
+				.UserSession(Session)
+				.When
+				.GetCurrentTriggersCount()
+				.WithSuccess()
+				.ResumeTrigger(metaId)
+				.WithCode(HttpStatusCode.NotFound)
+				.Then
+				.TriggersCountIncreasedBy(0);
 		}
 	}
 }
