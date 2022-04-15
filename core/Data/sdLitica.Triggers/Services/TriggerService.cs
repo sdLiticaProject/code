@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Quartz;
 using Quartz.Impl;
@@ -61,7 +62,7 @@ namespace sdLitica.Triggers.Services
 			}
 		}
 
-		public void EditTrigger(Guid metadataId, string cronSchedule, string fetchUrl)
+		public async Task EditTrigger(Guid metadataId, string cronSchedule, string fetchUrl)
 		{
 			try
 			{
@@ -73,7 +74,7 @@ namespace sdLitica.Triggers.Services
 					.WithCronSchedule(cronSchedule)
 					.Build();
 
-				Scheduler.RescheduleJob(new TriggerKey(metadataId.ToString()), trigger);
+				await Scheduler.RescheduleJob(new TriggerKey(metadataId.ToString()), trigger);
 			}
 			catch (SchedulerException e)
 			{

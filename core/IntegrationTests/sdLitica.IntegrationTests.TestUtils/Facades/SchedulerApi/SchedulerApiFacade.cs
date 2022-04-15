@@ -51,7 +51,7 @@ namespace sdLitica.IntegrationTests.TestUtils.Facades.SchedulerApi
 					new AuthenticationHeaderValue(CommonHttpConstants.AuthorizationHeader, tokenValue);
 			}
 
-			return client.LogAndPost($"{BaseApiRoute}/{metadataId}",
+			return client.LogAndPut($"{BaseApiRoute}/{metadataId}",
 				new StringContent(model.ToString(), Encoding.UTF8, CommonHttpConstants.ApplicationJsonMedia),
 				Logger);
 		}

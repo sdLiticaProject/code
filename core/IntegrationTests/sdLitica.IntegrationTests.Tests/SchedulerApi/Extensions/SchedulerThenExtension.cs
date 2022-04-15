@@ -49,6 +49,28 @@ namespace sdLitica.IntegrationTests.Tests.SchedulerApi.Extensions
 			return thenStatement;
 		}
 
+		public static ThenStatement TriggerFiresOnesInTime(this ThenStatement thenStatement,
+			string triggerId,
+			TimeSpan time,
+			string testKey = null)
+		{
+			var triggers = _facade.GetAllTriggers(
+					thenStatement.GetGivenData<string>(BddKeyConstants.SessionTokenKey + testKey))
+				.Map<List<TestGetTriggerModel>>();
+
+			var trigger = triggers.First(e => e.TriggerKey.Equals(triggerId.ToString()));
+
+			if (!trigger.LastFireTime.HasValue)
+			{
+				Assert.Fail("Trigger didn't fire");
+			}
+
+			Assert.That(trigger.NextFireTime - trigger.LastFireTime, Is.EqualTo(time),
+				$"Expected {triggerId} trigger to fire every {time}, but found {trigger.NextFireTime - trigger.LastFireTime}");
+
+			return thenStatement;
+		}
+
 		public static ThenStatement TriggerFiredInTime(this ThenStatement thenStatement,
 			string triggerId,
 			TimeSpan time,

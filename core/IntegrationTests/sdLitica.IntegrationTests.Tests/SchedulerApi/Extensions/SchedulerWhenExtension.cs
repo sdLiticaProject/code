@@ -33,6 +33,22 @@ namespace sdLitica.IntegrationTests.Tests.SchedulerApi.Extensions
 			return whenStatement;
 		}
 
+		public static WhenStatement EditCreatedTriggerRequestIsSend(this WhenStatement whenStatement, TestEditTriggerModel editTrigger,
+			string testKey = null)
+		{
+			whenStatement.GetStatementLogger()
+				.Information("[{ContextStatement}] Editing trigger", whenStatement.GetType().Name);
+
+			var session = whenStatement.GetSessionFromData(testKey);
+			var createdTrigger =
+				whenStatement.GetGivenData<TestCreateNewTriggerModel>(BddKeyConstants.TriggerToCreate + testKey);
+
+			var response = _facade.PutEditTrigger(session, createdTrigger.MetadataId.ToString(), editTrigger);
+			whenStatement.AddResultData(response, BddKeyConstants.LastHttpResponse + testKey);
+
+			return whenStatement;
+		}
+
 		public static WhenStatement DeleteCreatedTriggerRequestIsSend(this WhenStatement whenStatement,
 			string testKey = null)
 		{

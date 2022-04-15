@@ -56,7 +56,7 @@ namespace sdLitica.SchedulerAPI.Controllers.v1
 		/// </summary>
 		/// <param name="id">Metadata id</param>
 		/// <param name="dto">New cron schedule for the trigger</param>
-		[HttpPost("{id}")]
+		[HttpPut("{id}")]
 		public void EditTrigger([FromRoute] Guid id, [FromBody] EditTriggerDto dto)
 		{
 			if (_seriesMetadataService.HasUserTimeSeriesMetadata(UserId, id.ToString()) &&
