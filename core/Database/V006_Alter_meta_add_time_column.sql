@@ -1,0 +1,2 @@
+alter table `sdliticadb`.`TIMESERIES_METADATA` 
+add `TIMESTAMP_COLUMN` VARCHAR(36);
