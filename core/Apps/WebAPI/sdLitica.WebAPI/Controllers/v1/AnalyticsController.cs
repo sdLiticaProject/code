@@ -34,7 +34,6 @@ namespace sdLitica.WebAPI.Controllers.v1
         [HttpPost]
         public async Task<IActionResult> Calculation([FromBody] AnalyticsRequestModel analyticsRequestModel) //([FromBody] AnalyticsOperation analyticsOperation)
         {
-            System.Console.WriteLine(analyticsRequestModel.Arguments.ToString());
             UserAnalyticsOperation analyticsOperation = new UserAnalyticsOperation
             {
                 Id = Guid.NewGuid(),

@@ -115,7 +115,6 @@ namespace sdLitica
                 c.AddSecurityDefinition(basicSecurityScheme.Reference.Id, basicSecurityScheme);
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement {{basicSecurityScheme, ImmutableList<string>.Empty}});
             });
-            // services.AddNewtonsoftJson();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
