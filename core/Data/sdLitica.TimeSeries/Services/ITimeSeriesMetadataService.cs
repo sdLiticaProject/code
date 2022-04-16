@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using sdLitica.Entities.TimeSeries;
 
@@ -43,6 +41,14 @@ namespace sdLitica.TimeSeries.Services
         /// <param name="columns"></param>
         /// <returns></returns>
         Task<TimeSeriesMetadata> AddTimeSeriesMetadataColumns(string guid, IReadOnlyCollection<string> columns, string timeStampColumn);
+
+        /// <summary>
+        /// Update time-series metadata object given by guid
+        /// </summary>
+        /// <param name="guid"></param>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        Task<TimeSeriesMetadata> ChangeTimeSeriesJobStatus(string guid, string result);
 
         /// <summary>
         /// Delete time-series metadata object given by guid

@@ -71,6 +71,32 @@ namespace sdLitica.IntegrationTests.Tests.SchedulerApi.Extensions
 			return thenStatement;
 		}
 
+		public static ThenStatement TriggerCompletedSuccessfully(this ThenStatement thenStatement, string triggerId,
+			string testKey = null)
+		{
+			var triggers = _facade.GetAllTriggers(
+					thenStatement.GetGivenData<string>(BddKeyConstants.SessionTokenKey + testKey))
+				.Map<List<TestGetTriggerModel>>();
+
+			var trigger = triggers.First(e => e.TriggerKey.Equals(triggerId.ToString()));
+
+			Assert.That(trigger.LastJobResult, Is.EqualTo("Completed"));
+			return thenStatement;
+		}
+
+		public static ThenStatement TriggerCompletedWithError(this ThenStatement thenStatement, string triggerId,
+			string testKey = null)
+		{
+			var triggers = _facade.GetAllTriggers(
+					thenStatement.GetGivenData<string>(BddKeyConstants.SessionTokenKey + testKey))
+				.Map<List<TestGetTriggerModel>>();
+
+			var trigger = triggers.First(e => e.TriggerKey.Equals(triggerId.ToString()));
+
+			Assert.That(trigger.LastJobResult, Is.Not.EqualTo("Completed"));
+			return thenStatement;
+		}
+
 		public static ThenStatement TriggerFiredInTime(this ThenStatement thenStatement,
 			string triggerId,
 			TimeSpan time,

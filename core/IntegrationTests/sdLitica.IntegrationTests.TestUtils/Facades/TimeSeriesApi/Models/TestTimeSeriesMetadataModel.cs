@@ -9,6 +9,8 @@
 		public string DateModified { get; set; }
 		public string UserId { get; set; }
 		public string InfluxId { get; set; }
+		public string TimeStampColumn { get; protected set; }
+		public string LastJobResult { get; protected set; }
 
 		public override bool Equals(object? obj)
 		{

@@ -41,6 +41,14 @@ namespace sdLitica.WebAPI.Models.TimeSeries
         /// Id (name) of measurement in InfluxDB
         /// </summary>
         public string InfluxId { get; set; }
+        /// <summary>
+        /// Name of timestamp column
+        /// </summary>
+        public string TimeStampColumn { get; protected set; }
+        /// <summary>
+        /// Result od last job execution. "Completed" or exception stack trace
+        /// </summary>
+        public string LastJobResult { get; protected set; }
 
         /// <summary>
         /// no-args constructor
@@ -60,6 +68,8 @@ namespace sdLitica.WebAPI.Models.TimeSeries
             DateModified = timeSeriesMetadata.DateModified.ToString();
             UserId = timeSeriesMetadata.UserId.ToString();
             InfluxId = timeSeriesMetadata.InfluxId.ToString();
+            TimeStampColumn = timeSeriesMetadata.TimeStampColumn;
+            LastJobResult = timeSeriesMetadata.LastJobResult;
         }
     }
 }

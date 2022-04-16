@@ -39,11 +39,17 @@ namespace sdLitica.SchedulerAPI.Controllers.v1
 		[HttpPost]
 		public void AddNewTrigger([FromBody] CreateNewTriggerDto dto)
 		{
-			if (_seriesMetadataService.HasUserTimeSeriesMetadata(UserId, dto.MetadataId.ToString()) &&
-			    Uri.TryCreate(dto.FetchUrl, UriKind.Absolute, out var uriResult) &&
-			    (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps))
+			if (_seriesMetadataService.HasUserTimeSeriesMetadata(UserId, dto.MetadataId.ToString()))
 			{
-				_triggerService.AddNewTrigger(dto.MetadataId, dto.CronSchedule, dto.FetchUrl);
+				if(Uri.TryCreate(dto.FetchUrl, UriKind.Absolute, out var uriResult) &&
+				   (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps))
+				{
+					_triggerService.AddNewTrigger(dto.MetadataId, dto.CronSchedule, dto.FetchUrl);
+				}
+				else
+				{
+					throw new InvalidRequestException($"Could not create uri from {dto.FetchUrl}");
+				}
 			}
 			else
 			{
@@ -59,11 +65,18 @@ namespace sdLitica.SchedulerAPI.Controllers.v1
 		[HttpPut("{id}")]
 		public void EditTrigger([FromRoute] Guid id, [FromBody] EditTriggerDto dto)
 		{
-			if (_seriesMetadataService.HasUserTimeSeriesMetadata(UserId, id.ToString()) &&
-			    Uri.TryCreate(dto.FetchUrl, UriKind.Absolute, out var uriResult) &&
-			    (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps))
+			if (_seriesMetadataService.HasUserTimeSeriesMetadata(UserId, id.ToString()))
 			{
-				_triggerService.EditTrigger(id, dto.CronSchedule, dto.FetchUrl);
+				if(Uri.TryCreate(dto.FetchUrl, UriKind.Absolute, out var uriResult) &&
+				   (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps))
+				{
+					_triggerService.EditTrigger(id, dto.CronSchedule, dto.FetchUrl);
+				}
+				else
+				{
+					throw new InvalidRequestException($"Could not create uri from {dto.FetchUrl}");
+
+				}
 			}
 			else
 			{
@@ -78,7 +91,14 @@ namespace sdLitica.SchedulerAPI.Controllers.v1
 		[HttpDelete("{id}")]
 		public void RemoveTrigger([FromRoute] Guid id)
 		{
-			_triggerService.RemoveTrigger(id);
+			if (_seriesMetadataService.HasUserTimeSeriesMetadata(UserId, id.ToString()))
+			{
+				_triggerService.RemoveTrigger(id);
+			}
+			else
+			{
+				throw new NotFoundException($"Could not find metadata {id} for user {UserId}");
+			}
 		}
 
 		/// <summary>
@@ -88,7 +108,14 @@ namespace sdLitica.SchedulerAPI.Controllers.v1
 		[HttpPost("{id}/pause")]
 		public void PauseJob([FromRoute] Guid id)
 		{
-			_triggerService.PauseJob(id);
+			if (_seriesMetadataService.HasUserTimeSeriesMetadata(UserId, id.ToString()))
+			{
+				_triggerService.PauseJob(id);
+			}
+			else
+			{
+				throw new NotFoundException($"Could not find metadata {id} for user {UserId}");
+			}
 		}
 
 		/// <summary>
@@ -98,7 +125,14 @@ namespace sdLitica.SchedulerAPI.Controllers.v1
 		[HttpPost("{id}/resume")]
 		public void ResumeJob([FromRoute] Guid id)
 		{
-			_triggerService.ResumeJob(id);
+			if (_seriesMetadataService.HasUserTimeSeriesMetadata(UserId, id.ToString()))
+			{
+				_triggerService.ResumeJob(id);
+			}
+			else
+			{
+				throw new NotFoundException($"Could not find metadata {id} for user {UserId}");
+			}
 		}
 
 		/// <summary>
@@ -109,14 +143,15 @@ namespace sdLitica.SchedulerAPI.Controllers.v1
 		{
 			var metadataList = _seriesMetadataService.GetByUserId(UserId);
 			return metadataList
-				.Select(e => (_triggerService.GetTrigger(e.Id), _triggerService.GetJobInfo(e.Id)))
-				.Where(e => e.Item1 != null && e.Item2 != null)
+				.Select(e => (Trigger: _triggerService.GetTrigger(e.Id), JobInfo: _triggerService.GetJobInfo(e.Id), JobResult: e.LastJobResult))
+				.Where(e => e.Trigger != null && e.JobInfo != null)
 				.Select(e => new GetTriggerDto()
 				{
-					JobType = e.Item2.JobType.Name,
-					TriggerKey = e.Item2.Key.Name,
-					LastFireTime = e.Item1.GetPreviousFireTimeUtc(),
-					NextFireTime = e.Item1.GetNextFireTimeUtc(),
+					JobType = e.JobInfo.JobType.Name,
+					TriggerKey = e.JobInfo.Key.Name,
+					LastFireTime = e.Trigger.GetPreviousFireTimeUtc(),
+					NextFireTime = e.Trigger.GetNextFireTimeUtc(),
+					LastJobResult = e.JobResult,
 				}).ToList();
 		}
 	}

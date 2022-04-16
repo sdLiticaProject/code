@@ -11,7 +11,7 @@ namespace sdLitica.Triggers.Services
 	public class TriggerService : ITriggersService
 	{
 		private readonly ILogger _logger;
-		private readonly ISchedulerFactory  _schedulerFactory;
+		private readonly ISchedulerFactory _schedulerFactory;
 		private IScheduler Scheduler => _schedulerFactory.GetScheduler().Result;
 		private readonly IServiceProvider _provider;
 
@@ -31,6 +31,15 @@ namespace sdLitica.Triggers.Services
 			_logger.LogDebug("Adding new trigger. Id: {MetadataId}, cron: {CronSchedule}",
 				metadataId,
 				cronSchedule);
+
+			if (!CronExpression.IsValidExpression(cronSchedule))
+			{
+				_logger.LogWarning(
+					"Could not create trigger {Trigger} with cron schedule {CronSchedule}",
+					metadataId, cronSchedule);
+				throw new InvalidRequestException(
+					$"Could not create trigger {metadataId} with cron schedule {cronSchedule}");
+			}
 
 			if (Scheduler.GetJobDetail(new JobKey(metadataId.ToString())).Result != null)
 			{
@@ -52,13 +61,12 @@ namespace sdLitica.Triggers.Services
 
 				Scheduler.ScheduleJob(job, trigger);
 			}
-			catch (SchedulerException e)
+			catch (Exception e)
 			{
 				_logger.LogWarning(
 					"Could not create trigger {Trigger} with cron schedule {CronSchedule}. Exception occured: {Exception}",
 					metadataId, cronSchedule, e);
-				throw new InvalidRequestException(
-					$"Could not create trigger {metadataId} with cron schedule {cronSchedule}. Exception occured: {e}");
+				throw;
 			}
 		}
 
@@ -66,6 +74,19 @@ namespace sdLitica.Triggers.Services
 		{
 			try
 			{
+				_logger.LogDebug("Editing trigger. Id: {MetadataId}, cron: {CronSchedule}",
+					metadataId,
+					cronSchedule);
+
+				if (!CronExpression.IsValidExpression(cronSchedule))
+				{
+					_logger.LogWarning(
+						"Could not edit trigger {Trigger} with cron schedule {CronSchedule}",
+						metadataId, cronSchedule);
+					throw new InvalidRequestException(
+						$"Could not edit trigger {metadataId} with cron schedule {cronSchedule}");
+				}
+
 				var trigger = TriggerBuilder.Create()
 					.WithIdentity(metadataId.ToString())
 					.ForJob(metadataId.ToString())
@@ -76,13 +97,12 @@ namespace sdLitica.Triggers.Services
 
 				await Scheduler.RescheduleJob(new TriggerKey(metadataId.ToString()), trigger);
 			}
-			catch (SchedulerException e)
+			catch (Exception e)
 			{
 				_logger.LogWarning(
 					"Could not reschedule trigger with cron schedule {CronSchedule}. Exception occured: {Exception}",
 					cronSchedule, e);
-				throw new ArgumentException(
-					$"Could not reschedule trigger with cron schedule {cronSchedule}. Exception occured: {e}");
+				throw;
 			}
 		}
 

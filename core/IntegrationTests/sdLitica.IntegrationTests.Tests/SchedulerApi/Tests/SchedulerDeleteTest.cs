@@ -88,5 +88,53 @@ namespace sdLitica.IntegrationTests.Tests.SchedulerApi.Tests
 				.Then
 				.TriggersCountIncreasedBy(0);
 		}
+
+		[Test]
+		public void DeleteNonExistentTriggerTest()
+		{
+			Given
+				.UserSession(Session)
+				.When
+				.DeleteTriggerRequestIsSend(Guid.NewGuid().ToString())
+				.Then
+				.ResponseHasCode(HttpStatusCode.NotFound);
+		}
+
+		[Test]
+		public void DeleteWithTsPositiveTest()
+		{
+			var createdTs = Given
+				.NewTimeSeries(new TestTimeSeriesMetadataModel
+				{
+					Description = TestStringHelper.RandomLatinString(),
+					Name = TestStringHelper.RandomLatinString(),
+				})
+				.UserSession(Session)
+				.When
+				.CreateNewTimeSeriesRequestIsSend()
+				.WithSuccess()
+				.Then
+				.CreatedTimeSeriesIsEqualToExpected()
+				.GetResultData<TestTimeSeriesMetadataModel>(BddKeyConstants.CreatedTimeSeries);
+
+			var metaId = createdTs.Id;
+			Given
+				.UserSession(Session)
+				.NewTrigger(new TestCreateNewTriggerModel()
+				{
+					CronSchedule = "0 0/1 * * * ?",
+					MetadataId = Guid.Parse(metaId),
+					FetchUrl = Configuration.SchedulerTestDataUrl
+				})
+				.When
+				.GetCurrentTriggersCount()
+				.WithSuccess()
+				.CreateNewTriggerRequestIsSend()
+				.WithSuccess()
+				.RemoveTimeSeriesRequestIsSend(metaId)
+				.WithSuccess()
+				.Then
+				.TriggersCountIncreasedBy(0);
+		}
 	}
 }

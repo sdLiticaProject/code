@@ -90,6 +90,15 @@ namespace sdLitica.TimeSeries.Services
             return t;
         }
 
+        public async Task<TimeSeriesMetadata> ChangeTimeSeriesJobStatus(string guid, string result)
+        {
+            TimeSeriesMetadata t = _timeSeriesMetadataRepository.GetById(Guid.Parse(guid));
+            t.SetJobResult(result);
+            _timeSeriesMetadataRepository.Update(t);
+            await _timeSeriesMetadataRepository.SaveChangesAsync();
+            return t;
+        }
+
         /// <summary>
         /// Gets list of time-series metadata objects owned by user given by userId
         /// </summary>

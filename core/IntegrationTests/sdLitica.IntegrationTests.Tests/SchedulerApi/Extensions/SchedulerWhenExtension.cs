@@ -49,6 +49,20 @@ namespace sdLitica.IntegrationTests.Tests.SchedulerApi.Extensions
 			return whenStatement;
 		}
 
+		public static WhenStatement EditTriggerRequestIsSend(this WhenStatement whenStatement, string triggerId, TestEditTriggerModel editTrigger,
+			string testKey = null)
+		{
+			whenStatement.GetStatementLogger()
+				.Information("[{ContextStatement}] Editing trigger", whenStatement.GetType().Name);
+
+			var session = whenStatement.GetSessionFromData(testKey);
+
+			var response = _facade.PutEditTrigger(session, triggerId, editTrigger);
+			whenStatement.AddResultData(response, BddKeyConstants.LastHttpResponse + testKey);
+
+			return whenStatement;
+		}
+
 		public static WhenStatement DeleteCreatedTriggerRequestIsSend(this WhenStatement whenStatement,
 			string testKey = null)
 		{
@@ -60,6 +74,20 @@ namespace sdLitica.IntegrationTests.Tests.SchedulerApi.Extensions
 				whenStatement.GetGivenData<TestCreateNewTriggerModel>(BddKeyConstants.TriggerToCreate + testKey);
 
 			var response = _facade.DeleteRemoveTrigger(session, createdTrigger.MetadataId.ToString());
+			whenStatement.AddResultData(response, BddKeyConstants.LastHttpResponse + testKey);
+
+			return whenStatement;
+		}
+
+		public static WhenStatement DeleteTriggerRequestIsSend(this WhenStatement whenStatement, string triggerId,
+			string testKey = null)
+		{
+			whenStatement.GetStatementLogger()
+				.Information("[{ContextStatement}] Removing trigger", whenStatement.GetType().Name);
+
+			var session = whenStatement.GetSessionFromData(testKey);
+
+			var response = _facade.DeleteRemoveTrigger(session, triggerId);
 			whenStatement.AddResultData(response, BddKeyConstants.LastHttpResponse + testKey);
 
 			return whenStatement;
