@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Quartz;
 using sdLitica.Entities.Scheduler;
 using sdLitica.Exceptions.Http;
 using sdLitica.TimeSeries.Services;
@@ -39,21 +40,23 @@ namespace sdLitica.SchedulerAPI.Controllers.v1
 		[HttpPost]
 		public void AddNewTrigger([FromBody] CreateNewTriggerDto dto)
 		{
-			if (_seriesMetadataService.HasUserTimeSeriesMetadata(UserId, dto.MetadataId.ToString()))
+			if (!_seriesMetadataService.HasUserTimeSeriesMetadata(UserId, dto.MetadataId.ToString()))
 			{
-				if(Uri.TryCreate(dto.FetchUrl, UriKind.Absolute, out var uriResult) &&
-				   (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps))
-				{
-					_triggerService.AddNewTrigger(dto.MetadataId, dto.CronSchedule, dto.FetchUrl);
-				}
-				else
-				{
-					throw new InvalidRequestException($"Could not create uri from {dto.FetchUrl}");
-				}
+				throw new NotFoundException($"Could not find metadata {dto.MetadataId} for user {UserId}");
+			}
+			if (!CronExpression.IsValidExpression(dto.CronSchedule))
+			{
+				throw new InvalidRequestException(
+					$"Could not edit trigger {dto.MetadataId} with cron schedule {dto.CronSchedule}");
+			}
+			if (Uri.TryCreate(dto.FetchUrl, UriKind.Absolute, out var uriResult) &&
+			    (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps))
+			{
+				_triggerService.AddNewTrigger(dto.MetadataId, dto.CronSchedule, dto.FetchUrl);
 			}
 			else
 			{
-				throw new NotFoundException($"Could not find metadata {dto.MetadataId} for user {UserId}");
+				throw new InvalidRequestException($"Could not create uri from {dto.FetchUrl}");
 			}
 		}
 
@@ -65,22 +68,23 @@ namespace sdLitica.SchedulerAPI.Controllers.v1
 		[HttpPut("{id}")]
 		public void EditTrigger([FromRoute] Guid id, [FromBody] EditTriggerDto dto)
 		{
-			if (_seriesMetadataService.HasUserTimeSeriesMetadata(UserId, id.ToString()))
+			if (!_seriesMetadataService.HasUserTimeSeriesMetadata(UserId, id.ToString()))
 			{
-				if(Uri.TryCreate(dto.FetchUrl, UriKind.Absolute, out var uriResult) &&
-				   (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps))
-				{
-					_triggerService.EditTrigger(id, dto.CronSchedule, dto.FetchUrl);
-				}
-				else
-				{
-					throw new InvalidRequestException($"Could not create uri from {dto.FetchUrl}");
-
-				}
+				throw new NotFoundException($"Could not find metadata {id} for user {UserId}");
+			}
+			if (!CronExpression.IsValidExpression(dto.CronSchedule))
+			{
+				throw new InvalidRequestException(
+					$"Could not edit trigger {id} with cron schedule {dto.CronSchedule}");
+			}
+			if (Uri.TryCreate(dto.FetchUrl, UriKind.Absolute, out var uriResult) &&
+			    (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps))
+			{
+				_triggerService.EditTrigger(id, dto.CronSchedule, dto.FetchUrl);
 			}
 			else
 			{
-				throw new NotFoundException($"Could not find metadata {id} for user {UserId}");
+				throw new InvalidRequestException($"Could not create uri from {dto.FetchUrl}");
 			}
 		}
 
@@ -143,7 +147,8 @@ namespace sdLitica.SchedulerAPI.Controllers.v1
 		{
 			var metadataList = _seriesMetadataService.GetByUserId(UserId);
 			return metadataList
-				.Select(e => (Trigger: _triggerService.GetTrigger(e.Id), JobInfo: _triggerService.GetJobInfo(e.Id), JobResult: e.LastJobResult))
+				.Select(e => (Trigger: _triggerService.GetTrigger(e.Id), JobInfo: _triggerService.GetJobInfo(e.Id),
+					JobResult: e.LastJobResult))
 				.Where(e => e.Trigger != null && e.JobInfo != null)
 				.Select(e => new GetTriggerDto()
 				{

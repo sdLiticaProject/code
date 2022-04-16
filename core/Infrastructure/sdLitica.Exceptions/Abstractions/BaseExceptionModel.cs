@@ -55,6 +55,7 @@ namespace sdLitica.Exceptions.Abstractions
         {
             return (new JObject(
                        new JProperty(nameof(Code), Code),
+                       new JProperty(nameof(StatusCode), StatusCode),
                        new JProperty(nameof(EntityId), EntityId),
                        new JProperty(nameof(Message), Message)
                    )).ToString();

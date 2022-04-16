@@ -32,15 +32,6 @@ namespace sdLitica.Triggers.Services
 				metadataId,
 				cronSchedule);
 
-			if (!CronExpression.IsValidExpression(cronSchedule))
-			{
-				_logger.LogWarning(
-					"Could not create trigger {Trigger} with cron schedule {CronSchedule}",
-					metadataId, cronSchedule);
-				throw new InvalidRequestException(
-					$"Could not create trigger {metadataId} with cron schedule {cronSchedule}");
-			}
-
 			if (Scheduler.GetJobDetail(new JobKey(metadataId.ToString())).Result != null)
 			{
 				throw new InvalidRequestException($"Trigger with id {metadataId} already exists");
@@ -52,58 +43,29 @@ namespace sdLitica.Triggers.Services
 				.UsingJobData("fetchUrl", fetchUrl)
 				.Build();
 
-			try
-			{
 				var trigger = TriggerBuilder.Create().WithIdentity(metadataId.ToString())
 					.StartNow()
 					.WithCronSchedule(cronSchedule)
 					.Build();
 
 				Scheduler.ScheduleJob(job, trigger);
-			}
-			catch (Exception e)
-			{
-				_logger.LogWarning(
-					"Could not create trigger {Trigger} with cron schedule {CronSchedule}. Exception occured: {Exception}",
-					metadataId, cronSchedule, e);
-				throw;
-			}
 		}
 
 		public async Task EditTrigger(Guid metadataId, string cronSchedule, string fetchUrl)
 		{
-			try
-			{
-				_logger.LogDebug("Editing trigger. Id: {MetadataId}, cron: {CronSchedule}",
-					metadataId,
-					cronSchedule);
+			_logger.LogDebug("Editing trigger. Id: {MetadataId}, cron: {CronSchedule}",
+				metadataId,
+				cronSchedule);
 
-				if (!CronExpression.IsValidExpression(cronSchedule))
-				{
-					_logger.LogWarning(
-						"Could not edit trigger {Trigger} with cron schedule {CronSchedule}",
-						metadataId, cronSchedule);
-					throw new InvalidRequestException(
-						$"Could not edit trigger {metadataId} with cron schedule {cronSchedule}");
-				}
+			var trigger = TriggerBuilder.Create()
+				.WithIdentity(metadataId.ToString())
+				.ForJob(metadataId.ToString())
+				.UsingJobData("fetchUrl", fetchUrl)
+				.StartNow()
+				.WithCronSchedule(cronSchedule)
+				.Build();
 
-				var trigger = TriggerBuilder.Create()
-					.WithIdentity(metadataId.ToString())
-					.ForJob(metadataId.ToString())
-					.UsingJobData("fetchUrl", fetchUrl)
-					.StartNow()
-					.WithCronSchedule(cronSchedule)
-					.Build();
-
-				await Scheduler.RescheduleJob(new TriggerKey(metadataId.ToString()), trigger);
-			}
-			catch (Exception e)
-			{
-				_logger.LogWarning(
-					"Could not reschedule trigger with cron schedule {CronSchedule}. Exception occured: {Exception}",
-					cronSchedule, e);
-				throw;
-			}
+			await Scheduler.RescheduleJob(new TriggerKey(metadataId.ToString()), trigger);
 		}
 
 		public void RemoveTrigger(Guid metadataId)
