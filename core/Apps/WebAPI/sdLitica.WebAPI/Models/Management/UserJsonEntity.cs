@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using sdLitica.WebAPI.Entities.Common;
+using sdLitica.CommonApiServices.ApiVersion.JsonAPI;
 using sdLitica.Entities.Management;
 using static sdLitica.Helpers.ReflectionHelper;
 

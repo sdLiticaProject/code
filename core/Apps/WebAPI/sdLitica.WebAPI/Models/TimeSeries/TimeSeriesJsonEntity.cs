@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using sdLitica.WebAPI.Entities.Common;
+using sdLitica.CommonApiServices.ApiVersion.JsonAPI;
 using sdLitica.WebAPI.Models.TimeSeries;
 
 namespace sdLitica.WebAPI.Models.TimeSeries

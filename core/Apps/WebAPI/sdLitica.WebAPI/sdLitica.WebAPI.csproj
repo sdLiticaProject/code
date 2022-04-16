@@ -16,5 +16,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Infrastructure\Bootstrap\sdLitica.Management.Bootstrap\sdLitica.Bootstrap.csproj" />
+    <ProjectReference Include="..\..\..\Infrastructure\sdLitica.CommonApiServices\sdLitica.CommonApiServices.csproj" />
   </ItemGroup>
 </Project>

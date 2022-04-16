@@ -48,6 +48,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sdLitica.IntegrationTests.T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sdLitica.IntegrationTests.TestUtils", "core\IntegrationTests\sdLitica.IntegrationTests.TestUtils\sdLitica.IntegrationTests.TestUtils.csproj", "{9AD07E2F-8493-4BED-8900-D7F2CB195A40}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sdLitica.SchedulerAPI", "core\Apps\sdLitica.SchedulerAPI\sdLitica.SchedulerAPI.csproj", "{CEBBC96B-3866-4301-979E-474428F252CD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sdLitica.CommonApiServices", "core\Infrastructure\sdLitica.CommonApiServices\sdLitica.CommonApiServices.csproj", "{B8D33BC5-4921-4F82-9061-481B2CF9D67D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sdLitica.Triggers", "core\Data\sdLitica.Triggers\sdLitica.Triggers.csproj", "{2879A3FC-C2C0-43C8-80BD-0E25C52CAF7F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -77,6 +83,9 @@ Global
 		{CCD022F2-98F9-4141-B284-178BCAB84035} = {E4AD5B6D-7BC2-4ADA-A887-5044899E20AE}
 		{80701E5B-722F-40D6-BB7A-348C3ABCF3AB} = {73C36E56-F4A6-4710-89EA-D76D7B12333D}
 		{9AD07E2F-8493-4BED-8900-D7F2CB195A40} = {73C36E56-F4A6-4710-89EA-D76D7B12333D}
+		{CEBBC96B-3866-4301-979E-474428F252CD} = {4182E104-679C-4964-AD03-1BA574F613E9}
+		{B8D33BC5-4921-4F82-9061-481B2CF9D67D} = {B71C03CC-9EDE-4199-AF7A-5DF7D1EF2EBB}
+		{2879A3FC-C2C0-43C8-80BD-0E25C52CAF7F} = {E61E8393-9F2F-4F4F-B0AB-B24461B692C6}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{5DB7E23A-EFF7-4395-A94F-B005EDF06A4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -135,5 +144,17 @@ Global
 		{9AD07E2F-8493-4BED-8900-D7F2CB195A40}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9AD07E2F-8493-4BED-8900-D7F2CB195A40}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9AD07E2F-8493-4BED-8900-D7F2CB195A40}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CEBBC96B-3866-4301-979E-474428F252CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CEBBC96B-3866-4301-979E-474428F252CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CEBBC96B-3866-4301-979E-474428F252CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CEBBC96B-3866-4301-979E-474428F252CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8D33BC5-4921-4F82-9061-481B2CF9D67D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8D33BC5-4921-4F82-9061-481B2CF9D67D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8D33BC5-4921-4F82-9061-481B2CF9D67D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8D33BC5-4921-4F82-9061-481B2CF9D67D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2879A3FC-C2C0-43C8-80BD-0E25C52CAF7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2879A3FC-C2C0-43C8-80BD-0E25C52CAF7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2879A3FC-C2C0-43C8-80BD-0E25C52CAF7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2879A3FC-C2C0-43C8-80BD-0E25C52CAF7F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

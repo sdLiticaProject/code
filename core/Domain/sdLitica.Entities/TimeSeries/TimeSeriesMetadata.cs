@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 using sdLitica.Entities.Abstractions;
 using sdLitica.Entities.Management;
 
@@ -70,6 +72,18 @@ namespace sdLitica.Entities.TimeSeries
         public string Columns { get; protected set; }
 
         /// <summary>
+        /// Comma-separated list of columns' names, updates when loading the time-series
+        /// </summary>
+        [Column("TIMESTAMP_COLUMN")]
+        public string TimeStampColumn { get; protected set; }
+
+        /// <summary>
+        /// "Completed", if job finished successfully. Exception if one occured during job execution
+        /// </summary>
+        [Column("LAST_JOB_RESULT")]
+        public string LastJobResult { get; protected set; }
+
+        /// <summary>
         /// Modify time-series
         /// </summary>
         /// <param name="name"></param>
@@ -80,6 +94,23 @@ namespace sdLitica.Entities.TimeSeries
             Description = description;
             DateModified = DateTime.Now;
         }
+
+        /// <summary>
+        /// Modify time-series job result
+        /// </summary>
+        /// <param name="result"></param>
+        public void SetJobResult(string result)
+        {
+            LastJobResult = result;
+        }
+
+        public void SetColumns(IReadOnlyCollection<string> columns, string timeStampColumn)
+        {
+            Columns = string.Join(",", columns).ToLower();
+            TimeStampColumn = timeStampColumn;
+            ColumnsCount = columns.Count;
+        }
+
 
         /// <summary>
         /// Create new time-series metadata entity

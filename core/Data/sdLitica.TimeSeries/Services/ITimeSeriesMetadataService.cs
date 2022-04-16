@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using sdLitica.Entities.TimeSeries;
 
@@ -37,6 +35,22 @@ namespace sdLitica.TimeSeries.Services
         Task<TimeSeriesMetadata> UpdateTimeSeriesMetadata(string guid, string name, string description);
 
         /// <summary>
+        /// Update time-series metadata object given by guid
+        /// </summary>
+        /// <param name="guid"></param>
+        /// <param name="columns"></param>
+        /// <returns></returns>
+        Task<TimeSeriesMetadata> AddTimeSeriesMetadataColumns(string guid, IReadOnlyCollection<string> columns, string timeStampColumn);
+
+        /// <summary>
+        /// Update time-series metadata object given by guid
+        /// </summary>
+        /// <param name="guid"></param>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        Task<TimeSeriesMetadata> ChangeTimeSeriesJobStatus(string guid, string result);
+
+        /// <summary>
         /// Delete time-series metadata object given by guid
         /// </summary>
         /// <param name="guid"></param>
@@ -49,5 +63,13 @@ namespace sdLitica.TimeSeries.Services
         /// <param name="guid"></param>
         /// <returns></returns>
         TimeSeriesMetadata GetTimeSeriesMetadata(string guid);
+
+        /// <summary>
+        /// Checks existence of given metadata for the user
+        /// </summary>
+        /// <param name="userId">Possible owner of the metadata</param>
+        /// <param name="metadataGuid">Metadata id</param>
+        /// <returns></returns>
+        bool HasUserTimeSeriesMetadata(string userId, string metadataGuid);
     }
 }

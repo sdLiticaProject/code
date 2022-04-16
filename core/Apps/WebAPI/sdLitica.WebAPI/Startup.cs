@@ -29,8 +29,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using sdLitica.Bootstrap.Events;
 using sdLitica.Bootstrap.Extensions;
-using sdLitica.Filters;
-using sdLitica.WebAPI.Models.Security;
+using sdLitica.CommonApiServices.Filters;
+using sdLitica.CommonApiServices.Security;
 
 namespace sdLitica
 {

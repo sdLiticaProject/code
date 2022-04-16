@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
+using sdLitica.IntegrationTests.TestUtils.RestUtils.Models;
 
 namespace sdLitica.IntegrationTests.TestUtils.Facades.ProfileApi.Models
 {

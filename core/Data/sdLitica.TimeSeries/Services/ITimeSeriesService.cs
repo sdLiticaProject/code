@@ -1,7 +1,6 @@
-using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 using Vibrant.InfluxDB.Client;
 using Vibrant.InfluxDB.Client.Rows;
 
@@ -19,7 +18,8 @@ namespace sdLitica.TimeSeries.Services
         Task<InfluxResult<DynamicInfluxRow>> ReadMeasurementById(string measurementId, string from, string to, string step);
         Task<InfluxResult> DeleteMeasurementById(string measurementId);
 
-        Task<string> UploadDataFromCsv(string measurementId, List<string> file);
+        Task<List<string>> UploadDataFromCsv(string measurementId, List<string> file);
 
+        Task AppendDataFromJson(string measurementId, JArray newRowsArray, string columns, string timeColumn);
     }
 }

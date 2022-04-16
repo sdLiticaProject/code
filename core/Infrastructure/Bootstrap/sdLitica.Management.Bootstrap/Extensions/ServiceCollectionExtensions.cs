@@ -49,5 +49,14 @@ namespace sdLitica.Bootstrap.Extensions
         {
             services.AddEvents();
         }
+
+        /// <summary>
+        /// This method adds events and messages (eg. Rabbit MQ)
+        /// </summary>
+        /// <param name="services"></param>
+        public static void AddScheduler(this IServiceCollection services)
+        {
+            services.AddSchedulingServices();
+        }
     }
 }

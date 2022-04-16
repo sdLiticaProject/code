@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using sdLitica.WebAPI.Entities.Common;
+using sdLitica.CommonApiServices.ApiVersion.JsonAPI;
 
 namespace sdLitica.WebAPI.Controllers.v1
 {

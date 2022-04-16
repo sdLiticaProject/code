@@ -31,11 +31,11 @@ namespace sdLitica.IntegrationTests.TestUtils.BddUtils
             }
         }
 
-        public T GetResultData<T>(string additionalKey = null) where T : class
+        public T GetResultData<T>(string additionalKey = null)
         {
             try
             {
-                return _thenData[GetDictionaryKey(typeof(T), additionalKey)] as T;
+                return (T) _thenData[GetDictionaryKey(typeof(T), additionalKey)];
             }
             catch
             {

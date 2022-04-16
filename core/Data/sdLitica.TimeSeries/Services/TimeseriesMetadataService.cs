@@ -71,6 +71,34 @@ namespace sdLitica.TimeSeries.Services
             return t;
         }
 
+
+        /// <summary>
+        /// Update time-series metadata object given by guid
+        /// </summary>
+        /// <param name="newMetadata">Metadata to update</param>
+        /// <returns></returns>
+        public async Task<TimeSeriesMetadata> AddTimeSeriesMetadataColumns(string guid, IReadOnlyCollection<string> columns, string timeStampColumn)
+        {
+            TimeSeriesMetadata t = _timeSeriesMetadataRepository.GetById(Guid.Parse(guid));
+            if (t == null)
+            {
+                throw new NotFoundException("this time-series is not found");
+            }
+            t.SetColumns(columns, timeStampColumn);
+            _timeSeriesMetadataRepository.Update(t);
+            await _timeSeriesMetadataRepository.SaveChangesAsync();
+            return t;
+        }
+
+        public async Task<TimeSeriesMetadata> ChangeTimeSeriesJobStatus(string guid, string result)
+        {
+            TimeSeriesMetadata t = _timeSeriesMetadataRepository.GetById(Guid.Parse(guid));
+            t.SetJobResult(result);
+            _timeSeriesMetadataRepository.Update(t);
+            await _timeSeriesMetadataRepository.SaveChangesAsync();
+            return t;
+        }
+
         /// <summary>
         /// Gets list of time-series metadata objects owned by user given by userId
         /// </summary>
@@ -89,6 +117,11 @@ namespace sdLitica.TimeSeries.Services
         public TimeSeriesMetadata GetTimeSeriesMetadata(string guid)
         {
             return _timeSeriesMetadataRepository.GetByIdReadonly(new Guid(guid));
+        }
+
+        public bool HasUserTimeSeriesMetadata(string userId, string metadataGuid)
+        {
+            return _timeSeriesMetadataRepository.GetByIdWithUserId(Guid.Parse(metadataGuid), Guid.Parse(userId));
         }
 
         /// <summary>

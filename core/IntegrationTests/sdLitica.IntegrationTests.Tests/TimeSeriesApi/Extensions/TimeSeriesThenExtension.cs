@@ -129,5 +129,27 @@ namespace sdLitica.IntegrationTests.Tests.TimeSeriesApi.Extensions
 
 			return thenStatement;
 		}
+
+		public static ThenStatement TimeSeriesDataEntitiesCountIsEqualTo(this ThenStatement thenStatement,
+			int expected,
+			string testKey = null)
+		{
+			TestGetTimeSeriesDataModel actual = null;
+
+			try
+			{
+				actual =
+					thenStatement.GetResultData<TestGetTimeSeriesDataModel>(
+						BddKeyConstants.UserTimeSeriesData + testKey);
+			}
+			catch (KeyNotFoundException e)
+			{
+				Assert.Fail("Was unable to get user time-series data due to request failure.");
+			}
+
+			Assert.That(actual.entities.Count, Is.EqualTo(expected));
+
+			return thenStatement;
+		}
 	}
 }
