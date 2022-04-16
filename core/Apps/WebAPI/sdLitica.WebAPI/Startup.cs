@@ -31,6 +31,7 @@ using sdLitica.Bootstrap.Events;
 using sdLitica.Bootstrap.Extensions;
 using sdLitica.Filters;
 using sdLitica.WebAPI.Models.Security;
+using Newtonsoft.Json;
 
 namespace sdLitica
 {
@@ -93,7 +94,7 @@ namespace sdLitica
                     config.Filters.Add(
                         new AuthorizeFilter(new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build()));
                 }
-            );
+            ).AddNewtonsoftJson();
 
             services.AddSwaggerGen(c =>
             {
