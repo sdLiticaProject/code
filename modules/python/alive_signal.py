@@ -7,13 +7,14 @@ import os
 import uuid
 from pathlib import Path
 from datetime import datetime
+import pika
+
 repo_root = Path().resolve()
 sys.path.append(str(repo_root))
 sys.path.append(os.path.abspath(".."))
 
-import pika
 
-from analysis.approximation import approximation_methods
+from analysis.simple import approximation_methods
 
 class SignalSender:
     def __init__(self, alive_signal_config: AliveSignalConfig, amqp_config: AMQPConfig):
