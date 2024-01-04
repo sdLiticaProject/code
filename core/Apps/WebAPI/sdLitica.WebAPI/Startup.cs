@@ -81,7 +81,10 @@ namespace sdLitica
             services.AddCors(options =>
             {
                 options.AddPolicy(name: MyAllowSpecificOrigins,
-                    builder => { builder.WithOrigins("http://sdlitica.sdcloud.io"); });
+                    builder =>
+                    {
+                        builder.WithOrigins("http://sdlitica.sdcloud.io", "http://localhost:3000").AllowAnyHeader().AllowAnyMethod();
+                    });
             });
 
             services.AddMvc(
@@ -125,17 +128,28 @@ namespace sdLitica
             {
                 app.UseDeveloperExceptionPage();
             }
+            
+            var webSocketOptions = new WebSocketOptions
+            {
+                KeepAliveInterval = TimeSpan.FromMinutes(1)
+            };
+            
+            // WHY???
+            // https://github.com/dotnet/AspNetCore.Docs/pull/21695
+            app.UseWebSockets(webSocketOptions);
 
             app.UseCors(MyAllowSpecificOrigins);
             app.UseAuthentication();
 
             app.UseMvc();
             app.UseSwagger();
+            
+            // app.UseMiddleware<WebSocketMiddleware>();
 
             app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "Insight Project REST API V1"); });
 
             //sample subscribe for RabbitMQ
-            app.SubscribeEvents(); // todo
+            app.SubscribeEvents();
         }
     }
 }

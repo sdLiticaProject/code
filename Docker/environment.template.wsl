@@ -1,0 +1,51 @@
+# RebbitMQ configuration
+SDCloudRabbitMQVHost="/"
+SDCloudRabbitMQHost="rabbitmq"
+SDCloudRabbitMQUserName="guest"
+SDCloudRabbitMQPassword="guest"
+
+# MariaDB configuration
+SDCloudDataBaseConnectionString="Server=mariadb;Port=3306;DataBase=SdLitica;Uid=sdcloud;Pooling=True"
+
+# System storage configuration
+SDCloudFileStorageProviderType="local"
+SDCloudFileStorageBasePath="/tmo"
+
+# Artifactory configuration
+SDCloudArtifactoryEndPoint="none"
+SDCloudArtifactoryApiKey="none"
+SDCloudArtifactoryAuthType="Basic"
+SDCloudArtifactoryRepositoryId="none"
+
+# Recaptcha configuration
+SDCloudRecaptchaApiPublicKey="none"
+SDCloudRecaptchaApiSecretKey="none"
+
+# Registration form configuration
+SDCloudRegistrtionFormIsRecaptchaAvailable="false"
+SDCloudRegistrtionFormIsOrganisationInfoAvailable="true"
+
+# MongoDB configuration
+SDCloudMongoDataStorageConnectionString="mongodb://sdcloud_prod_user:mdbCloud22!z@mongodb:27017?connect=replicaSet"
+SDCloudMongoDataStorageDatabaseName="sdcloud_data"
+
+# System settings
+SDCloudModelsExecutionMode="rmq"
+SDCloudIsDebug="false"
+
+# Mail sender configuration
+SDCloudMailIsEnabled="false"
+SDCloudMailSMTPServerAddress="example.com"
+SDCloudMailSMTPServerPort="12345"
+SDCloudMailSenderAddress="user@example.com"
+SDCloudMailIsAuthRequired="false"
+SDCloudMailSMTPServerLogin="login"
+SDCloudMailSMTPServerPassword="password"
+SDCloudMailIsMessageSigningEnabled="false"
+SDCloudMailPathToMessageSigningPEMKey="some-key"
+
+# Slack notifications configuration
+SDCloudSlackUserName="userName"
+SDCloudSlackCustomIconOrEmoji="emoji"
+SDCloudSlackFeedbackHookUrl="http://example.com"
+SDCloudSlackFeedbackHookChannelName="channel-name"

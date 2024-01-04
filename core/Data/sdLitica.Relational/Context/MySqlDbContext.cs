@@ -61,7 +61,10 @@ namespace sdLitica.Relational.Context
             modelBuilder.Entity<UserApiKey>();
 
             modelBuilder.Entity<TimeSeriesMetadata>();
+            modelBuilder.Entity<BucketMetadata>();
 
+            modelBuilder.Entity<DashboardMetadata>();
+            modelBuilder.Entity<WidgetMetadata>();
 
             base.OnModelCreating(modelBuilder);
         }

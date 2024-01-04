@@ -1,4 +1,5 @@
 ﻿using Deedle;
+using InfluxDB.Client.Core.Flux.Domain;
 using sdLitica.Entities.Analytics;
 using sdLitica.Events.Abstractions;
 using sdLitica.Events.Integration;
@@ -7,8 +8,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Vibrant.InfluxDB.Client;
-using Vibrant.InfluxDB.Client.Rows;
+//using Vibrant.InfluxDB.Client;
+//using Vibrant.InfluxDB.Client.Rows;
 
 namespace sdLitica.FSharpAnalyticalModule.IntegrationEvents.EventHandling
 {
@@ -17,12 +18,15 @@ namespace sdLitica.FSharpAnalyticalModule.IntegrationEvents.EventHandling
     {
 
         static ITimeSeriesService _timeSeriesService;
+        private static IBucketMetadataService _bucketMetadataService;
         static IEventBus _eventBus;
         public AnalyticsIntegrationEventHandler(
             ITimeSeriesService timeSeriesService,
+            IBucketMetadataService bucketMetadataService,
             IEventBus eventBus)
         {
             _timeSeriesService = timeSeriesService;
+            _bucketMetadataService = bucketMetadataService;
             _eventBus = eventBus;
         }
         public async Task Handle(TimeSeriesAnalysisRequestEvent @event, string operationName)
@@ -31,13 +35,15 @@ namespace sdLitica.FSharpAnalyticalModule.IntegrationEvents.EventHandling
             
             try
             {
-                InfluxResult<DynamicInfluxRow> influxResult =
-                    await _timeSeriesService.ReadMeasurementById(operation.TimeSeriesId);
-                List<DynamicInfluxRow> rowsList = influxResult.Series[0].Rows;
+                List<FluxTable> influxResult =
+                    await _timeSeriesService.ReadMeasurementById(operation.TimeSeriesId, _bucketMetadataService.GetBucketMetadata(operation.TimeSeriesId).InfluxId);
+                //List<DynamicInfluxRow> rowsList = influxResult.Series[0].Rows;
+                var rowsList = influxResult[0].Records;
                 Series<DateTime?, double> series = rowsList
                     .Select(x => KeyValue.Create(
-                        x.Timestamp,
-                        (double)x.Fields[operation.Arguments["column"].ToString()])).
+                        x.GetTimeInDateTime(),
+                        (double)x.GetValueByKey(operation.Arguments["column"].ToString()))).
+                        //(double)x.Fields[operation.Arguments["column"].ToString()])).
                     ToSeries();
 
                 // apply operation

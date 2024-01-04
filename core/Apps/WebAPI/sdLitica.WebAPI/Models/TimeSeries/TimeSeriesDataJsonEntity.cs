@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
+using CsvHelper.Configuration.Attributes;
 using sdLitica.WebAPI.Entities.Common;
 using sdLitica.WebAPI.Models.TimeSeries;
 
@@ -46,6 +48,7 @@ namespace sdLitica.WebAPI.Models.TimeSeries
         /// <summary>
         /// List of API required links
         /// </summary>
+        [JsonIgnore]
         public List<EntityLinkModel> Links { get; set; }
     }
 }

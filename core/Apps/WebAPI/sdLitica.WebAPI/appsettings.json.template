@@ -1,0 +1,32 @@
+﻿{
+  "Logging": {
+    "IncludeScopes": false,
+    "LogLevel": {
+      "Default": "Debug",
+      "System": "Information",
+      "Microsoft": "Information"
+    }
+  },
+  "ConnectionStrings": {
+    "MySql": "$SDLiticaDataBaseConnectionString"
+  },
+  "Security": {
+    "TokenExpirationInHours": 3
+  },
+  "TimeSeries": {
+    "InfluxHostName": "$SDLiticaInfluxHostName",
+    "InfluxToken":"$SDLiticaInfluxToken",
+    "InfluxOrgId":"$SDLiticaInfluxOrgId"
+  },
+  "RabbitMQ": {
+    "Username": "$SDLiticaRabbitMQUserName",
+    "Password": "$SDLiticaRabbitMQPassword",
+    "Host": "$SDLiticaRabbitMQHost",
+    "VirtualHost": "$SDLiticaRabbitMQVHost",
+    "Port": "$SDLiticaRabbitMQPort"
+  },
+  "Analytics": {
+    "ModuleHearbeatInterval": 5000,
+    "ModuleDeadTimeout": 15000
+  }
+}

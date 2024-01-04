@@ -85,7 +85,7 @@ namespace sdLitica.WebAPI.Controllers.v1
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<UserModel> UpdateUser([FromBody] UserUpdateModel updatedUser)
         {
-            User user = _userService.UpdateUser(new Guid(UserId), updatedUser.FirstName, updatedUser.LastName);
+            User user = _userService.UpdateUser(updatedUser.UserId, updatedUser.FirstName, updatedUser.LastName);
             return new UserModel(user);
         }
 

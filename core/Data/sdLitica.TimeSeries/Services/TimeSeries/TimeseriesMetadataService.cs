@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json;
 using System.Threading.Tasks;
 using sdLitica.Entities.Management;
 using sdLitica.Entities.TimeSeries;
@@ -16,7 +17,8 @@ namespace sdLitica.TimeSeries.Services
     public class TimeseriesMetadataService : ITimeSeriesMetadataService
     {
         private readonly IAppSettings _appSettings;
-        private readonly UserService _userService;
+        private readonly IBucketMetadataService _bucketMetadataService;
+        private readonly BucketMetadataRepository _bucketMetadataRepository;
         private readonly TimeSeriesMetadataRepository _timeSeriesMetadataRepository;
 
         /// <summary>
@@ -25,11 +27,12 @@ namespace sdLitica.TimeSeries.Services
         /// <param name="appSettings"></param>
         /// <param name="userService"></param>
         /// <param name="timeSeriesMetadataRepository"></param>
-        public TimeseriesMetadataService(IAppSettings appSettings, UserService userService, TimeSeriesMetadataRepository timeSeriesMetadataRepository)
+        public TimeseriesMetadataService(IAppSettings appSettings, IBucketMetadataService bucketMetadataService, TimeSeriesMetadataRepository timeSeriesMetadataRepository, BucketMetadataRepository bucketMetadataRepository)
         {
             _appSettings = appSettings;
-            _userService = userService;
+            _bucketMetadataService = bucketMetadataService;
             _timeSeriesMetadataRepository = timeSeriesMetadataRepository;
+            _bucketMetadataRepository = bucketMetadataRepository;
         }
 
         /// <summary>
@@ -39,10 +42,10 @@ namespace sdLitica.TimeSeries.Services
         /// <param name="description"></param>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public async Task<TimeSeriesMetadata> AddTimeseriesMetadata(string name, string description, string userId)
+        public async Task<TimeSeriesMetadata> AddTimeseriesMetadata(string name, string description, string bucketId, string type)
         {
-            User user = _userService.GetUser(new Guid(userId));
-            TimeSeriesMetadata t = TimeSeriesMetadata.Create(name, user, description);
+            BucketMetadata bucketMetadata = _bucketMetadataService.GetBucketMetadata(bucketId);
+            TimeSeriesMetadata t = TimeSeriesMetadata.Create(name, bucketMetadata, type,description);
             _timeSeriesMetadataRepository.Add(t);
             await _timeSeriesMetadataRepository.SaveChangesAsync();
             return t;
@@ -70,15 +73,28 @@ namespace sdLitica.TimeSeries.Services
             await _timeSeriesMetadataRepository.SaveChangesAsync();
             return t;
         }
-
-        /// <summary>
-        /// Gets list of time-series metadata objects owned by user given by userId
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <returns></returns>
-        public List<TimeSeriesMetadata> GetByUserId(string userId)
+        
+        public async Task<TimeSeriesMetadata> UpdateTimeSeriesMetadata(string guid, string name, string description,
+            int rowsCount, int columnsCount, HashSet<string> columns, Dictionary<string, HashSet<string>> tags)
         {
-            return _timeSeriesMetadataRepository.GetByUserId(new Guid(userId));
+            TimeSeriesMetadata t = _timeSeriesMetadataRepository.GetById(new Guid(guid));
+            if (t == null)
+            {
+                throw new NotFoundException("this time-series is not found");
+            }
+
+            if (name == "") name = t.Name;
+            if (description == "") description = t.Description; // maybe default value instead of ""
+
+            t.Modify(name, description, rowsCount, columnsCount, JsonSerializer.Serialize(columns), JsonSerializer.Serialize(tags));
+            await _timeSeriesMetadataRepository.SaveChangesAsync();
+            return t;
+        }
+
+        
+        public List<TimeSeriesMetadata> GetByBucketId(string bucketId)
+        {
+            return _timeSeriesMetadataRepository.GetByBucketId(new Guid(bucketId));
         }
 
         /// <summary>
@@ -88,7 +104,7 @@ namespace sdLitica.TimeSeries.Services
         /// <returns></returns>
         public TimeSeriesMetadata GetTimeSeriesMetadata(string guid)
         {
-            return _timeSeriesMetadataRepository.GetByIdReadonly(new Guid(guid));
+            return _timeSeriesMetadataRepository.GetById(new Guid(guid));
         }
 
         /// <summary>

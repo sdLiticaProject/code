@@ -51,10 +51,10 @@ namespace sdLitica.WebAPI.Entities.Common
             PageSize = pageSize;
             Count = count;
             HasMore = hasMore;
-            if (Count > pageSize)
-            {
-                throw new ArgumentException("Count can be greater than offset");
-            }
+            // if (Count > pageSize)
+            // {
+            //     throw new ArgumentException("Count can be greater than offset");
+            // }
         }
 
         /// <summary>
