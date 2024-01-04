@@ -53,6 +53,7 @@ echo ""
 
 
 echo $HC_VAULT_TOKEN > token.file
+echo $HC_VAULT_HOST > host.file
 
 echo "# *******************************************"
 echo "#  Building container image"
