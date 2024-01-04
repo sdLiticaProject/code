@@ -65,6 +65,7 @@ pipeline {
                         set +x
                          GIT_REVISION=`cat currenntVersion`
                          export HC_VAULT_HOST="secrets.cloud.cosm-lab.science"
+                         cd core/Apps/WebAPI/sdLitica.WebAPI
                          chmod +x ./Docker/buildAndRun.sh
                          ./Docker/buildAndRun.sh preprod "$GIT_REVISION"
                     '''
