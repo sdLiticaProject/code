@@ -9,7 +9,7 @@ RUN set -x \
         && addgroup --system --gid 102 sdlitica-admin \
         && adduser --system --disabled-login --ingroup sdlitica-admin --no-create-home --home /nonexistent --gecos "sdlitica admin user" --shell /bin/false --uid 102 sdlitica-admin \
 	&& apt update \
-        && apt install -y --no-install-recommends gettext-base jq \
+        && apt install -y --no-install-recommends curl gettext-base jq \
         && rm -rf /tmp/*
 
 
