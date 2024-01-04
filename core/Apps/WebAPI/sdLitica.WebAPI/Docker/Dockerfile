@@ -42,7 +42,7 @@ COPY --chown=sdlitica-admin:sdlitica-admin host.file /var/secret/hc_vault_host
 COPY --chown=sdlitica-admin:sdlitica-admin \
                 ./Docker/configResolver.sh \
                 ./Docker/resolveConfiguration.sh \
-                ./Docker/environment.template.wsl \
+                ./Docker/environment.template \
                 ./Docker/environment.template.wsl \
                 /opt/cloud/
 
