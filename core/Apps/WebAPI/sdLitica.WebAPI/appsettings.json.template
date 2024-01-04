@@ -8,22 +8,22 @@
     }
   },
   "ConnectionStrings": {
-    "MySql": "$SDLiticaDataBaseConnectionString"
+    "MySql": "Server=$SDLitica_MARIADB_HOST;Port=$SDLitica_MARIADB_PORT;DataBase=$SDLitica_MARIADB_NAME;Uid=$SDLitica_MARIADB_NAME;Password=$SDLitica_MARIADB_NAME;Pooling=True"
   },
   "Security": {
     "TokenExpirationInHours": 3
   },
   "TimeSeries": {
-    "InfluxHostName": "$SDLiticaInfluxHostName",
-    "InfluxToken":"$SDLiticaInfluxToken",
-    "InfluxOrgId":"$SDLiticaInfluxOrgId"
+    "InfluxHostName": "$SDLitica_InfluxHostName",
+    "InfluxToken":"$SDLitica_InfluxToken",
+    "InfluxOrgId":"$SDLitica_InfluxOrgId"
   },
   "RabbitMQ": {
-    "Username": "$SDLiticaRabbitMQUserName",
-    "Password": "$SDLiticaRabbitMQPassword",
-    "Host": "$SDLiticaRabbitMQHost",
-    "VirtualHost": "$SDLiticaRabbitMQVHost",
-    "Port": "$SDLiticaRabbitMQPort"
+    "Username": "$SDLitica_RabbitMQUserName",
+    "Password": "$SDLitica_RabbitMQPassword",
+    "Host": "$SDLitica_RabbitMQHost",
+    "VirtualHost": "$SDLitica_RabbitMQVHost",
+    "Port": "$SDLitica_RabbitMQPort"
   },
   "Analytics": {
     "ModuleHearbeatInterval": 5000,

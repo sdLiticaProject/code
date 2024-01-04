@@ -1,5 +1,9 @@
 # MariaDB configuration
-SDLiticaDataBaseConnectionString="Server=mariadb;Port=3306;DataBase=sdlitica;Uid=sdlitica;Password=sdlitica;Pooling=True"
+SDLitica_MARIADB_HOST="mariadb"
+SDLitica_MARIADB_PORT="3306"
+SDLitica_MARIADB_USER="sdlitica"
+SDLitica_MARIADB_PASSWORD="sdlitica"
+SDLitica_MARIADB_NAME="sdlitica"
 
 # InfluxDB configuration
 SDLiticaInfluxHostName="http://influxdb:8086",
