@@ -8,7 +8,7 @@
     }
   },
   "ConnectionStrings": {
-    "MySql": "Server=$SDLitica_MARIADB_HOST;Port=$SDLitica_MARIADB_PORT;DataBase=$SDLitica_MARIADB_NAME;Uid=$SDLitica_MARIADB_NAME;Password=$SDLitica_MARIADB_NAME;Pooling=True"
+    "MySql": "Server=$SDLitica_MARIADB_HOST;Port=$SDLitica_MARIADB_PORT;DataBase=$SDLitica_MARIADB_NAME;Uid=$SDLitica_MARIADB_USER;Password=$SDLitica_MARIADB_PASSWORD;Pooling=True"
   },
   "Security": {
     "TokenExpirationInHours": 3
