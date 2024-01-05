@@ -1,0 +1,18 @@
+# MariaDB configuration
+SDLitica_MARIADB_HOST="vault://sdlitica/data/mariadb/$PREFIX:host"
+SDLitica_MARIADB_PORT="vault://sdlitica/data/mariadb/$PREFIX:port"
+SDLitica_MARIADB_USER="vault://sdlitica/data/mariadb/$PREFIX:user"
+SDLitica_MARIADB_PASSWORD="vault://sdlitica/data/mariadb/$PREFIX:password"
+SDLitica_MARIADB_NAME="vault://sdlitica/data/mariadb/$PREFIX:database"
+
+# InfluxDB configuration
+SDLitica_InfluxHostName="vault://sdlitica/data/influxdb/$PREFIX:url"
+SDLitica_InfluxToken="vault://sdlitica/data/influxdb/$PREFIX:token"
+SDLitica_InfluxOrgId="vault://sdlitica/data/influxdb/$PREFIX:orgId"
+
+# RebbitMQ configuration
+SDLitica_RabbitMQVHost="vault://vmp-cloud/data/rabbitmq/$PREFIX:vhost"
+SDLitica_RabbitMQUserName="vault://vmp-cloud/data/rabbitmq/$PREFIX:user"
+SDLitica_RabbitMQPassword="vault://vmp-cloud/data/rabbitmq/$PREFIX:password"
+SDLitica_RabbitMQHost="vault://vmp-cloud/data/rabbitmq/$PREFIX:host"
+SDLitica_RabbitMQPort="vault://vmp-cloud/data/rabbitmq/$PREFIX:port"

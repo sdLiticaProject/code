@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using sdLitica.Bootstrap.Settings;
 using sdLitica.Relational.Context;
 using sdLitica.TimeSeries.Services;
+using sdLitica.TimeSeries.Services.Dashboard;
 
 namespace sdLitica.Bootstrap.Data
 {
@@ -27,6 +28,9 @@ namespace sdLitica.Bootstrap.Data
         internal static void AddTimeSeries(this IServiceCollection services)
         {
             services.AddScoped<ITimeSeriesService, TimeSeriesService>();
+            services.AddScoped<IBucketService, BucketService>();
+            services.AddScoped<IDashboardService, DashBoardService>();
+            services.AddScoped<IWidgetService, WidgetService>();
         }
     }
 }

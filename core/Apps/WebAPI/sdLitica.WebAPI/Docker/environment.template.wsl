@@ -1,0 +1,18 @@
+# MariaDB configuration
+SDLitica_MARIADB_HOST="mariadb"
+SDLitica_MARIADB_PORT="3306"
+SDLitica_MARIADB_USER="sdlitica"
+SDLitica_MARIADB_PASSWORD="sdlitica"
+SDLitica_MARIADB_NAME="sdlitica"
+
+# InfluxDB configuration
+SDLiticaInfluxHostName="http://influxdb:8086",
+SDLiticaInfluxToken="8236BzCR-JOqEFpoSQwDo7xSMkHyb-u754rXhkmU81GMG-39ULW24U0pJNuN-Cix1vBmohBcQB5zrcHde7oH1w==",
+SDLiticaInfluxOrgId="953c0b8b4664bc5d"
+
+# RebbitMQ configuration
+SDLiticaRabbitMQVHost="/"
+SDLiticaRabbitMQUserName="guest"
+SDLiticaRabbitMQPassword="guest"
+SDLiticaRabbitMQHost="rabbitmq"
+SDLiticaRabbitMQPort="5672"

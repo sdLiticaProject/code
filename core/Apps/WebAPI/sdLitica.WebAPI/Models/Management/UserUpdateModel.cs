@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace sdLitica.WebAPI.Models.Management
 {
@@ -7,6 +8,13 @@ namespace sdLitica.WebAPI.Models.Management
     /// </summary>
     public class UserUpdateModel
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        [Required]
+        [Display(Name = nameof(UserId))]
+        public Guid UserId { get; set; }
+        
         /// <summary>
         /// 
         /// </summary>

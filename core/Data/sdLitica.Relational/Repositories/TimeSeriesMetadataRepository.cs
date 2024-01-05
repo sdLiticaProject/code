@@ -28,9 +28,9 @@ namespace sdLitica.Relational.Repositories
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public List<TimeSeriesMetadata> GetByUserId(Guid userId)
+        public List<TimeSeriesMetadata> GetByBucketId(Guid bucketId)
         {
-            return Entity.Include(e => e.User).Where(e => e.UserId.Equals(userId)).ToList();
+            return Entity.Include(e => e.Bucket).Where(e => e.BucketId.Equals(bucketId)).ToList();
         }
 
         /// <summary>

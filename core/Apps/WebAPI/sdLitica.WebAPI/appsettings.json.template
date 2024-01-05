@@ -1,0 +1,32 @@
+﻿{
+  "Logging": {
+    "IncludeScopes": false,
+    "LogLevel": {
+      "Default": "Debug",
+      "System": "Information",
+      "Microsoft": "Information"
+    }
+  },
+  "ConnectionStrings": {
+    "MySql": "Server=$SDLitica_MARIADB_HOST;Port=$SDLitica_MARIADB_PORT;DataBase=$SDLitica_MARIADB_NAME;Uid=$SDLitica_MARIADB_USER;Password=$SDLitica_MARIADB_PASSWORD;Pooling=True"
+  },
+  "Security": {
+    "TokenExpirationInHours": 3
+  },
+  "TimeSeries": {
+    "InfluxHostName": "$SDLitica_InfluxHostName",
+    "InfluxToken":"$SDLitica_InfluxToken",
+    "InfluxOrgId":"$SDLitica_InfluxOrgId"
+  },
+  "RabbitMQ": {
+    "Username": "$SDLitica_RabbitMQUserName",
+    "Password": "$SDLitica_RabbitMQPassword",
+    "Host": "$SDLitica_RabbitMQHost",
+    "VirtualHost": "$SDLitica_RabbitMQVHost",
+    "Port": "$SDLitica_RabbitMQPort"
+  },
+  "Analytics": {
+    "ModuleHearbeatInterval": 5000,
+    "ModuleDeadTimeout": 15000
+  }
+}

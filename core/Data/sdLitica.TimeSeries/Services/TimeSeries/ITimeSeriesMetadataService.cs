@@ -18,14 +18,14 @@ namespace sdLitica.TimeSeries.Services
         /// <param name="description"></param>
         /// <param name="userId"></param>
         /// <returns></returns>
-        Task<TimeSeriesMetadata> AddTimeseriesMetadata(string name, string description, string userId);
+        Task<TimeSeriesMetadata> AddTimeseriesMetadata(string name, string description, string bucketId, string type);
 
         /// <summary>
         /// Get time-series metadata object by user-id
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        List<TimeSeriesMetadata> GetByUserId(string userId);
+        List<TimeSeriesMetadata> GetByBucketId(string bucketId);
 
         /// <summary>
         /// Update time-series metadata object given by guid
@@ -35,6 +35,20 @@ namespace sdLitica.TimeSeries.Services
         /// <param name="description"></param>
         /// <returns></returns>
         Task<TimeSeriesMetadata> UpdateTimeSeriesMetadata(string guid, string name, string description);
+
+        /// <summary>
+        /// Update time-series metadata object given by guid
+        /// </summary>
+        /// <param name="guid"></param>
+        /// <param name="name"></param>
+        /// <param name="description"></param>
+        /// <param name="rowsCount"></param>
+        /// <param name="columnsCount"></param>
+        /// <param name="columns"></param>
+        /// <param name="tags"></param>
+        /// <returns></returns>
+        Task<TimeSeriesMetadata> UpdateTimeSeriesMetadata(string guid, string name, string description, int rowsCount,
+            int columnsCount, HashSet<string> columns, Dictionary<string, HashSet<string>> tags);
 
         /// <summary>
         /// Delete time-series metadata object given by guid

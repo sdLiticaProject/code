@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using sdLitica.Entities.TimeSeries;
 
@@ -21,6 +22,8 @@ namespace sdLitica.WebAPI.Models.TimeSeries
         /// </summary>
         [Required]
         public string Name { get; set; }
+        
+        public string Type { get; set; }
         /// <summary>
         /// Description of time-series
         /// </summary>
@@ -36,11 +39,19 @@ namespace sdLitica.WebAPI.Models.TimeSeries
         /// <summary>
         /// Id of user who owns this time-series object
         /// </summary>
-        public string UserId { get; set; }
+        public string BucketId { get; set; }
         /// <summary>
         /// Id (name) of measurement in InfluxDB
         /// </summary>
         public string InfluxId { get; set; }
+        
+        public int RowsCount { get; set; }
+        
+        public int ColumnsCount { get; set; }
+        
+        public HashSet<string> Columns { get; set; }
+        
+        public Dictionary<string, HashSet<string>> Tags { get; set; }
 
         /// <summary>
         /// no-args constructor
@@ -58,8 +69,13 @@ namespace sdLitica.WebAPI.Models.TimeSeries
             Description = timeSeriesMetadata.Description;
             DateCreated = timeSeriesMetadata.DateCreated.ToString();
             DateModified = timeSeriesMetadata.DateModified.ToString();
-            UserId = timeSeriesMetadata.UserId.ToString();
+            BucketId = timeSeriesMetadata.BucketId.ToString();
+            Type = timeSeriesMetadata.Type;
             InfluxId = timeSeriesMetadata.InfluxId.ToString();
+            RowsCount = timeSeriesMetadata.RowsCount;
+            ColumnsCount = timeSeriesMetadata.ColumnsCount;
+            Columns = JsonSerializer.Deserialize<HashSet<string>>(timeSeriesMetadata.Columns);
+            Tags = JsonSerializer.Deserialize<Dictionary<string, HashSet<string>>>(timeSeriesMetadata.Tags);
         }
     }
 }
